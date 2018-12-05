@@ -3,7 +3,7 @@
 # 
 
 
-inputData = open('input5.txt','r')
+inputData = open('../data/input5.txt','r')
 testData = 'dabAcCaCBAcCcaDA'
 
 data = inputData.readlines()[0].replace('\n','')
@@ -18,10 +18,10 @@ def react(polymer):
         for pos in range(len(polymer)-1):
             if (polymer[pos].islower() and (polymer[pos].upper() == polymer[pos+1])) or (polymer[pos].isupper() and (polymer[pos].lower() == polymer[pos+1])):
                 unit = polymer[pos:pos+2]
-                newstr = polymer[:pos] + polymer[pos+2:]
-                # newstr = polymer.replace(unit,'')
+                # newstr = polymer[:pos] + polymer[pos+2:]
+                newstr = polymer.replace(unit,'')
                 deleted = True
-                # print('removed', unit, 'at pos', pos, 'New length:', len(newstr), 'New string:', newstr)
+                # print('removed', unit, 'at pos', pos, 'New length:', len(newstr)) #, 'New string:', newstr)
                 break
         polymer = newstr
     return polymer
@@ -41,7 +41,7 @@ for c in unitlist:
     if length > len(newstr):
         length = len(newstr)
         savedUnit = c
-        print('removed', c, 'New length:', len(newstr))
+        # print('removed', c, 'New length:', len(newstr))
 
 print('Part 2:', length,'units remain after removing',savedUnit, 'through optimized reduction')
 
