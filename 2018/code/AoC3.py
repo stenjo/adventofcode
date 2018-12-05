@@ -4,6 +4,10 @@
 # #3 @ 5,5: 2x2
 
 import pprint
+import datetime, time
+from datetime import timedelta
+
+start = datetime.datetime.now()
 
 inputData = open('../data/input3.txt','r')
 testData = ['#1 @ 1,3: 4x4','#2 @ 3,1: 4x4', '#3 @ 5,5: 2x2']
@@ -68,3 +72,6 @@ for key, value in rquests.items():
 print('\nPart 1:', patchCount, 'square inches of fabric are within two or more claims')
 print(patchRequired, 'square inches of sheet requested. Sheet size is:', maxX+1, 'width by', maxY+1, 'height')
 print('\nPart 2: Request', requestkeys, 'is the only request intact\n')
+end = datetime.datetime.now()
+duration = end-start
+print('Completed in',duration.microseconds/1000,'ms')
