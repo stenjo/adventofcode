@@ -1,5 +1,5 @@
 
-inputData = open('input.txt','r')
+inputData = open('../data/input.txt','r')
 testData = [+3, +3, +4, -2, -4]
 data = inputData.readlines()
 #data = testData
@@ -17,5 +17,5 @@ while not found:
         savedFrequencies.append(frequency)
         #print (savedFrequencies)
     
-#print (frequency)
+print (frequency)
 

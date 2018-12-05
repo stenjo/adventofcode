@@ -2,7 +2,7 @@
 import datetime, time
 from datetime import timedelta
 import collections
-inputData = open('input4.txt','r')
+inputData = open('../data/input4.txt','r')
 #inputData = open('test4.txt','r')
 
 data = inputData.readlines()
@@ -19,7 +19,7 @@ for line in data:
     t = datetime.datetime.strptime(date, '%Y-%m-%d %H:%M')
     lines[l[0]] = log
     
-print(len(lines), 'read')
+print('Input data:', len(lines), 'lines read')
 print()
 
 for dt, log in sorted(lines.items(), key=lambda t:t[0]):
@@ -66,7 +66,7 @@ for minute in range(60):
         savedSleepCount = sleepCount
         asleepAtTime = minute
 
-print('Guard', guard, 'is most frequently asleep at', asleepAtTime, 'minutes of the midnight hour')
+print('Part 1: Guard', guard, 'is most frequently asleep at', asleepAtTime, 'minutes of the midnight hour')
 print('solution is:', int(guard.replace('#',''))*asleepAtTime)
 
 savedGuard = ''
@@ -91,9 +91,9 @@ for guard in guards.keys():
         savedGuard = guard
         savedMinute = asleepAtTime
         
-    print(guard, guardSleepCount, savedSleepCount)
+    # print(guard, guardSleepCount, savedSleepCount)
 
-print('Guard', savedGuard, 'is most frequently asleep at', savedMinute, 'minutes of the midnight hour')
+print('Part 2: Guard', savedGuard, 'is most frequently asleep at', savedMinute, 'minutes of the midnight hour')
 print('solution is:', int(savedGuard.replace('#',''))*savedMinute)
 
 #print(filteredSleepTimes)

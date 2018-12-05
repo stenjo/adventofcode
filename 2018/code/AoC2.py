@@ -1,6 +1,6 @@
 # Advent of Code 2018: https://adventofcode.com/2018/day/2
 
-inputData = open('input2.txt','r')
+inputData = open('../data/input2.txt','r')
 testData = ['abcdef','bababc', 'abbcde', 'abcccd', 'aabcdd', 'abcdee','ababab']
 testData2 = ['abcde','fghij', 'klmno', 'pqrst', 'fguij', 'axcye','wvxyz']
 

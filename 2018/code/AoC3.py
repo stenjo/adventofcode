@@ -4,7 +4,7 @@
 # #3 @ 5,5: 2x2
 
 
-inputData = open('input3.txt','r')
+inputData = open('../data/input3.txt','r')
 testData = ['#1 @ 1,3: 4x4','#2 @ 3,1: 4x4', '#3 @ 5,5: 2x2']
 testData2 = ['abcde','fghij', 'klmno', 'pqrst', 'fguij', 'axcye','wvxyz']
 
@@ -98,6 +98,7 @@ for key, value in rquests.items():
 print(fabricSheet)
 print(requestkeys)
 
+# print('Part 1: Guard', guard, 'is most frequently asleep at', asleepAtTime, 'minutes of the midnight hour')
 
 
 
