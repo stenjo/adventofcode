@@ -76,8 +76,7 @@ pp = pprint.PrettyPrinter(width=180, compact=True)
 fabricSheet = []
 patchCount = 0
 for key, value in rquests.items():
-    # print(key)
-    idx = 0
+    print(key)
     for item in value:
         if item not in fabricSheet:
             fabricSheet.append(item)
@@ -88,9 +87,7 @@ for key, value in rquests.items():
                         requestkeys.remove(rkey)
             patchCount +=1    
           
-        idx += 1
         # print(item)
-    print(key)
 
 print('\nPart 1:', patchCount, 'square inches of fabric are within two or more claims')
 print(len(fabricSheet), 'square inches of sheet requested. Sheet size is:', maxX+1, 'width by', maxY+1, 'height')
