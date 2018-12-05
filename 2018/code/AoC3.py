@@ -3,14 +3,13 @@
 # #2 @ 3,1: 4x4
 # #3 @ 5,5: 2x2
 
+import pprint
 
 inputData = open('../data/input3.txt','r')
 testData = ['#1 @ 1,3: 4x4','#2 @ 3,1: 4x4', '#3 @ 5,5: 2x2']
-testData2 = ['abcde','fghij', 'klmno', 'pqrst', 'fguij', 'axcye','wvxyz']
 
-#data = inputData.readlines()
-data = testData
-#data = testData2
+data = inputData.readlines()
+# data = testData
 
 def overlap(patch1, patch2):
     #range()
@@ -38,21 +37,6 @@ def intersection(lst1, lst2):
     lst3 = [value for value in lst1 if value in lst2] 
     return lst3 
 
-   
-squares =[]
-overlapCounter = 0
-for item in data:
-    m = matrix(item)
-    sq = intersection(m,squares)
-    if sq != [] :
-        overlapCounter += len(sq)
-    squares = list(set(squares + m))
-    
-#     print('      m: ', m)
-#     print('     sq: ', sq)
-#     print('squares: ', squares)
-
-# print (overlapCounter)
 
 def patch(claim):
     id, at, pos, size = claim.replace(':','').split(' ') 
@@ -65,9 +49,10 @@ def patch(claim):
 
     return patches
 
-fabricSheet = dict()
 rquests = dict()
 requestkeys = []
+maxX = 0
+maxY = 0
 for item in data:
     id, at, pos, size = item.replace(':','').split(' ') 
     x,y = pos.split(',')
@@ -76,29 +61,44 @@ for item in data:
     for posx in range(int(x)+1, int(x)+int(w)+1):
         for posy in range(int(y)+1,int(y)+int(h)+1):
             patches.append([posx, posy])
+            if maxX < posx:
+                maxX = posx
+            if maxY < posy:
+                maxY = posy
+
     rquests[id] = patches
     requestkeys.append(id)
 
-# print(rquests)
-# print(requestkeys)
+pp = pprint.PrettyPrinter(width=180, compact=True)
+# pp.pprint(rquests)
+# print('Request keys:', requestkeys)
 
+fabricSheet = []
+patchCount = 0
 for key, value in rquests.items():
-    print(key)
+    # print(key)
     idx = 0
     for item in value:
-        if item not in fabricSheet.items():
-            fabricSheet[str(key)+':'+str(idx)]=item
+        if item not in fabricSheet:
+            fabricSheet.append(item)
         else:
-            if key in requestkeys:
-                requestkeys.remove(key)
+            for rkey, rvalue in rquests.items():
+                if item in rvalue:
+                    if rkey in requestkeys:
+                        requestkeys.remove(rkey)
+            patchCount +=1    
+          
         idx += 1
         # print(item)
+    print(key)
 
+print('\nPart 1:', patchCount, 'square inches of fabric are within two or more claims')
+print(len(fabricSheet), 'square inches of sheet requested. Sheet size is:', maxX+1, 'width by', maxY+1, 'height')
 
-print(fabricSheet)
-print(requestkeys)
+# pp.pprint(fabricSheet)
+# print(requestkeys)
 
-# print('Part 1: Guard', guard, 'is most frequently asleep at', asleepAtTime, 'minutes of the midnight hour')
+print('\nPart 2: Request', requestkeys, 'is the only request intact\n')
 
 
 
