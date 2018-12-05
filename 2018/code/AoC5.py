@@ -1,7 +1,10 @@
 # Advent of Code 2018: https://adventofcode.com/2018/day/5
 # 
 # 
+import datetime, time
+from datetime import timedelta
 
+start = datetime.datetime.now()
 
 inputData = open('../data/input5.txt','r')
 testData = 'dabAcCaCBAcCcaDA'
@@ -28,7 +31,7 @@ def react(polymer):
 
 reacted = react(data)
 
-print('Part 1:', len(reacted),'units remain after reduction')
+print('\nPart 1:', len(reacted),'units remain after reduction')
 
 length = len(reacted)
 unitlist = set(reacted.lower())
@@ -43,7 +46,9 @@ for c in unitlist:
         savedUnit = c
         # print('removed', c, 'New length:', len(newstr))
 
-print('Part 2:', length,'units remain after removing',savedUnit, 'through optimized reduction')
+print('\nPart 2:', length,'units remain after removing',savedUnit, 'through optimized reduction')
 
 
-
+end = datetime.datetime.now()
+duration = end-start
+print('Completed in',duration.microseconds/1000,'ms')

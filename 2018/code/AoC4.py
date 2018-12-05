@@ -2,6 +2,9 @@
 import datetime, time
 from datetime import timedelta
 import collections
+
+start = datetime.datetime.now()
+
 inputData = open('../data/input4.txt','r')
 #inputData = open('test4.txt','r')
 
@@ -108,3 +111,6 @@ print('solution is:', int(savedGuard.replace('#',''))*savedMinute)
 # print('second     :', dt.second)
 # print('microsecond:', dt.microsecond)
 # print('tzinfo     :', dt.tzinfo)
+end = datetime.datetime.now()
+duration = end-start
+print('Completed in',duration.microseconds/1000,'ms')
