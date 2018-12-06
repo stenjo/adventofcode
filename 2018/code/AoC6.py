@@ -73,6 +73,24 @@ for item in data:
     if len(w)>0 and len(n)>0 and len(e)>0 and len(s)>0:
         candidates.append(data.index(item))        
 
+# Alternative candidates
+candidates2 = []
+for item in data:
+    tr = False
+    tl = False
+    br = False
+    bl = False
+    for comp in data:
+        if comp != item:
+            if comp[0] < item[0] and comp[1] < item[1]: tr = True 
+            if comp[0] < item[0] and comp[1] > item[1]: br = True 
+            if comp[0] > item[0] and comp[1] < item[1]: tl = True 
+            if comp[0] > item[0] and comp[1] > item[1]: bl = True 
+
+    if tr and tl and br and bl:
+        candidates2.append(data.index(item))        
+    
+
 #Create a virual chronal grid
 x = maxX+2
 y = maxY+1
@@ -119,7 +137,7 @@ if DEBUG:
 
 
 saveArea = 0
-for num in candidates:
+for num in candidates2:
     count = 0
     for col in range(x):
         for j in range(y):
