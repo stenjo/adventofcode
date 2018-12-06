@@ -133,9 +133,13 @@ if DEBUG:
     for row in matrix:
         print(' '.join([str(elem) for elem in row]))
 
-    print(maxNum)
+    print('items in list:',maxNum)
+
+print('Candidates 1:', len(candidates))
+print('Candidates 2:', len(candidates2))
 
 
+patches = dict()
 saveArea = 0
 for num in candidates2:
     count = 0
@@ -155,8 +159,12 @@ for num in candidates2:
         print('Found', count, 'occurrences of', chr(ord('A')+num))
     else:
         print('Found', count, 'occurrences of', num)
+    
+    patches[num] = count
 
+patch = sorted(patches.items(), key = lambda t:t[1], reverse=True)[0][0]
 
+pp.pprint(sorted(patches.items(), key = lambda t:t[1], reverse=True))
 
 print('\nPart 1: The largest area not infinite is', saveArea)
 
