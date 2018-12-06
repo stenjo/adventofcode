@@ -31,7 +31,16 @@ pp = pprint.PrettyPrinter(width=180, compact=True)
 pp.pprint(data)
 
 def manhattan(item1, item2):
-        return abs(item1[0] - item2[0]) + abs(item1[1] - item2[1])
+    return abs(item1[0] - item2[0]) + abs(item1[1] - item2[1])
+
+def manhattanArray(item, array):
+    a = [[0]*2]
+    for i in array:
+        if i != item:
+            a.append([manhattan(item, i),array.index(i)])
+    # return sorted(a)
+    return sorted(a, key=lambda t:t[0])
+
 
 savedArea = 0
 maxX = 0
@@ -68,16 +77,46 @@ for item in data:
         print(item,west,north,east,south, area)
 
 #Create a virual chronal grid
-x = maxX + 1
-y = maxY + 1
+x = maxX + 2
+y = maxY + 2
 matrix = [[0] * y for i in range(x)]
 for item in data:
-    matrix[item[0]][item[1]] += 1
+    matrix[item[0]][item[1]] = str(data.index(item))
 
 #Print it!
 print('Matrix:')
 for row in matrix:
     print(' '.join([str(elem) for elem in row]))
+
+maxNum = 0
+for i in range(maxX):
+    for j in range(maxY):
+        points = manhattanArray([i,j],data)
+        point = points[1]
+        print(points)
+        if [i,j] in data:
+            matrix[i][j] = data.index([i,j])
+            if maxNum < data.index([i,j]):
+                maxNum = data.index([i,j])
+            # matrix[i][j] = '#'+str(data.index([i,j]))
+        elif (points[1][0] == points[2][0]):
+            matrix[i][j] = '.'
+        else:
+            matrix[i][j] = point[1]
+
+print('Matrix:')
+for row in matrix:
+    print(' '.join([str(elem) for elem in row]))
+
+print(maxNum)
+
+for num in range(maxNum):
+    count = 0
+    for i in range(maxX):
+        for j in range(maxY):
+            if matrix[i][j] == num:
+                count += 1
+    print('Found', count, 'occurrences of', num)
 
 exit()
 
