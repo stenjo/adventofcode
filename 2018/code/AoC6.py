@@ -24,8 +24,7 @@ for i in range(len(inData)):
     a = []
     for j in range(len(r)):
         a.append(int(r[j].strip()))
-    sum += max(a) - min(a)
-    data.append(sorted(a[:]))
+    data.append(a[:])
 
 pp = pprint.PrettyPrinter(width=180, compact=True)
 pp.pprint(data)
@@ -34,10 +33,11 @@ def manhattan(item1, item2):
     return abs(item1[0] - item2[0]) + abs(item1[1] - item2[1])
 
 def manhattanArray(item, array):
-    a = [[0]*2]
+    a = []
     for i in array:
         if i != item:
             a.append([manhattan(item, i),array.index(i)])
+    print(a)
     # return sorted(a)
     return sorted(a, key=lambda t:t[0])
 
@@ -77,9 +77,9 @@ for item in data:
         print(item,west,north,east,south, area)
 
 #Create a virual chronal grid
-x = maxX + 2
-y = maxY + 2
-matrix = [[0] * y for i in range(x)]
+x = maxX+5
+y = maxY+2
+matrix = [[0] * x for i in range(y)]
 for item in data:
     matrix[item[0]][item[1]] = str(data.index(item))
 
@@ -92,17 +92,18 @@ maxNum = 0
 for i in range(maxX):
     for j in range(maxY):
         points = manhattanArray([i,j],data)
-        point = points[1]
-        print(points)
+        point = points[0]
+        # print(points)
         if [i,j] in data:
-            matrix[i][j] = data.index([i,j])
+            print([i,j])
+            # matrix[i][j] = data.index([i,j])
             if maxNum < data.index([i,j]):
                 maxNum = data.index([i,j])
-            # matrix[i][j] = '#'+str(data.index([i,j]))
-        elif (points[1][0] == points[2][0]):
+            matrix[i][j] = chr(ord('A')+data.index([i,j]))
+        elif (points[0][0] == points[1][0]):
             matrix[i][j] = '.'
         else:
-            matrix[i][j] = point[1]
+            matrix[i][j] = chr(ord('a')+point[1])
 
 print('Matrix:')
 for row in matrix:
@@ -110,11 +111,11 @@ for row in matrix:
 
 print(maxNum)
 
-for num in range(maxNum):
+for num in range(maxNum+1):
     count = 0
     for i in range(maxX):
         for j in range(maxY):
-            if matrix[i][j] == num:
+            if matrix[j][i] == chr(ord('a')+num):
                 count += 1
     print('Found', count, 'occurrences of', num)
 
