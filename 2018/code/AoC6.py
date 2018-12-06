@@ -5,6 +5,7 @@ import datetime, time
 from datetime import timedelta
 import pprint
 
+DEBUG = False
 
 start = datetime.datetime.now()
 
@@ -12,9 +13,11 @@ inputData = open('../data/input6.txt','r')
 testData = ['1, 1','1, 6','8, 3','3, 4','5, 5','8, 9']
 liveData = inputData.readlines()
 
-inData = testData
-# inData = testData2
-# inData = liveData
+if DEBUG:
+    inData = testData
+    # inData = testData2
+else:
+    inData = liveData
 
 ### PART 1 ###
 data = []
@@ -27,24 +30,26 @@ for i in range(len(inData)):
     data.append(a[:])
 
 pp = pprint.PrettyPrinter(width=180, compact=True)
-pp.pprint(data)
+# pp.pprint(data)
 
 def manhattan(item1, item2):
     return abs(item1[0] - item2[0]) + abs(item1[1] - item2[1])
 
-def manhattanArray(item, array):
+# Returns [ [distance, item no in items] ]
+# sorted on distance to ever
+def manhattanArray(point, items):
     a = []
-    for i in array:
-        if i != item:
-            a.append([manhattan(item, i),array.index(i)])
-    print(a)
+    for item in items:
+        if point != item:
+            a.append([manhattan(item, point),items.index(item)])
+    # print(a)
     # return sorted(a)
     return sorted(a, key=lambda t:t[0])
 
 
-savedArea = 0
 maxX = 0
 maxY = 0
+candidates = []
 for item in data:
     w = []
     n = []
@@ -66,65 +71,78 @@ for item in data:
     if maxY < item[1]: maxY = item[1]
 
     if len(w)>0 and len(n)>0 and len(e)>0 and len(s)>0:
-        west = sorted(w)[0]
-        north = sorted(n)[0]
-        east = sorted(e)[0]
-        south = sorted(s)[0]
-        area = (west+east)*(north+south)
-        if area > savedArea:
-            savedArea = area
-
-        print(item,west,north,east,south, area)
+        candidates.append(data.index(item))        
 
 #Create a virual chronal grid
-x = maxX+5
-y = maxY+2
+x = maxX+2
+y = maxY+1
 matrix = [[0] * x for i in range(y)]
 for item in data:
     matrix[item[0]][item[1]] = str(data.index(item))
 
 #Print it!
-print('Matrix:')
-for row in matrix:
-    print(' '.join([str(elem) for elem in row]))
+# print('Matrix:')
+# for row in matrix:
+#     print(' '.join([str(elem) for elem in row]))
 
 maxNum = 0
-for i in range(maxX):
-    for j in range(maxY):
-        points = manhattanArray([i,j],data)
+for col in range(x):
+    for j in range(y):
+        points = manhattanArray([col,j],data)
         point = points[0]
         # print(points)
-        if [i,j] in data:
-            print([i,j])
-            # matrix[i][j] = data.index([i,j])
-            if maxNum < data.index([i,j]):
-                maxNum = data.index([i,j])
-            matrix[i][j] = chr(ord('A')+data.index([i,j]))
+        if [col,j] in data:
+            # print([col,j])
+            if DEBUG:
+                value = chr(ord('A')+data.index([col,j]))
+            else:
+                value = data.index([col,j])
+
+            if maxNum < data.index([col,j]):
+                maxNum = data.index([col,j])
         elif (points[0][0] == points[1][0]):
-            matrix[i][j] = '.'
+            value = '.'
         else:
-            matrix[i][j] = chr(ord('a')+point[1])
+            if DEBUG:
+                value = chr(ord('a')+point[1])
+            else:
+                value = point[1]
 
-print('Matrix:')
-for row in matrix:
-    print(' '.join([str(elem) for elem in row]))
+        matrix[j][col] = value
+        # print(matrix[j])
+if DEBUG:
+    # print('Matrix:')
+    for row in matrix:
+        print(' '.join([str(elem) for elem in row]))
 
-print(maxNum)
+    print(maxNum)
 
-for num in range(maxNum+1):
+
+saveArea = 0
+for num in candidates:
     count = 0
-    for i in range(maxX):
-        for j in range(maxY):
-            if matrix[j][i] == chr(ord('a')+num):
-                count += 1
-    print('Found', count, 'occurrences of', num)
+    for col in range(x):
+        for j in range(y):
+            if DEBUG:
+                if matrix[j][col].upper() == chr(ord('A')+num):
+                    count += 1
+            else:
+                if matrix[j][col] == num:
+                    count += 1
 
-exit()
+    if saveArea < count:
+        saveArea = count
+
+    if DEBUG:
+        print('Found', count, 'occurrences of', chr(ord('A')+num))
+    else:
+        print('Found', count, 'occurrences of', num)
+
+
 
 print('\nPart 1: The largest area not infinite is', saveArea)
 
-
-print('\nPart 2:', length,'units remain after removing',savedUnit, 'through optimized reduction')
+# print('\nPart 2:', length,'units remain after removing',savedUnit, 'through optimized reduction')
 
 
 end = datetime.datetime.now()
