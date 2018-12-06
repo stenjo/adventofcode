@@ -51,4 +51,4 @@ print('\nPart 2:', length,'units remain after removing',savedUnit, 'through opti
 
 end = datetime.datetime.now()
 duration = end-start
-print('Completed in',duration.microseconds/1000,'ms')
+print('Completed in',duration.microseconds/1000,'ms\n')
