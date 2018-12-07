@@ -144,23 +144,33 @@ print('Candidates 3:', len(candidates3), candidates3)
 
 for col in [0,x-1]:
     for row in range(y):
+        value = matrix[row][col]
         if DEBUG:
-            value = ord(matrix[row][col]) - ord('a')
-        else:
-            value = matrix[row][col]
+            if value != '.':
+                value = ord(matrix[row][col]) - ord('a')
         if value in candidates3:
             candidates3.remove(value)
-        print([col,row],':',value)
+            
+        if DEBUG:
+            print([col,row],':', value)
+        else:
+            print([col,row],':',value)
 
 for row in [0,y-1]:
     for col in range(x):
+        value = matrix[row][col]
         if DEBUG:
-            value = ord(matrix[row][col]) - ord('a')
-        else:
-            value = matrix[row][col]
+            if value != '.':
+                value = ord(matrix[row][col]) - ord('a')
+
         if value in candidates3:
             candidates3.remove(value)
-        print([col,row],':',value)
+            
+        if DEBUG:
+            print([col,row],':', chr(ord('a')+value))
+        else:
+            print([col,row],':',value)
+
 
 
 print('Candidates 3:', len(candidates3), candidates3)
