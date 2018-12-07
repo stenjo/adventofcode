@@ -57,11 +57,8 @@ startchar = 'A'
 
 for c in range(ord('A'), ord(max(instr.keys()))+1):
     if chr(c) not in instr.keys():
-        startchar = chr(c)
-        break
-
-instr[startchar]=[]
-
+        instr[chr(c)]=[]
+        
 print(instr)
 
 def candidate(l):
@@ -74,165 +71,49 @@ def candidate(l):
 
 def remove(c, l):
     for key,item in l.items():
-        print(key, c, item)
+        # print(key, c, item)
         if c in item:
             item.remove(c)
 
 
 result = ''
+workers = dict()
+seconds = 0
+while len(instr) or max(workers) > 0:
+    removeKeys = []
 
-while len(instr):
-    savedlen = len(instr)
-    candidates = candidate(instr)
-    if  len(candidates) == 0:
-        break
-    c = candidates[0]
-    result += c
-    remove(c,instr)
-    del instr[c]
-
-print(result, instr)    
-
-exit()
-def manhattan(item1, item2):
-    return abs(item1[0] - item2[0]) + abs(item1[1] - item2[1])
-
-# Returns [ [distance, item no in items] ]
-# sorted on distance to ever
-def manhattanArray(point, items):
-    a = []
-    for item in items:
-        if point != item:
-            a.append([manhattan(item, point),items.index(item)])
-    # print(a)
-    # return sorted(a)
-    return sorted(a, key=lambda t:t[0])
-
-
-maxX = 0
-maxY = 0
-candidates = []
-for item in data:
-    w = []
-    n = []
-    e = []
-    s = []
-    for comp in data:
-        if comp != item:
-            dist = manhattan(item, comp)
-            if comp[0] < item[0]:
-                w.append(int(dist/2))
-            if comp[1] < item[1]:
-                n.append(int(dist/2))
-            if comp[0] > item[0]:
-                e.append(int(dist/2))
-            if comp[1] > item[1]:
-                s.append(int(dist/2))
-
-    if maxX < item[0]: maxX = item[0]
-    if maxY < item[1]: maxY = item[1]
-
-    if len(w)>0 and len(n)>0 and len(e)>0 and len(s)>0:
-        candidates.append(data.index(item))        
-
-# Alternative candidates
-candidates2 = []
-for item in data:
-    tr = False
-    tl = False
-    br = False
-    bl = False
-    for comp in data:
-        if comp != item:
-            if comp[0] < item[0] and comp[1] < item[1]: tr = True 
-            if comp[0] < item[0] and comp[1] > item[1]: br = True 
-            if comp[0] > item[0] and comp[1] < item[1]: tl = True 
-            if comp[0] > item[0] and comp[1] > item[1]: bl = True 
-
-    if tr and tl and br and bl:
-        candidates2.append(data.index(item))        
-    
-
-#Create a virual chronal grid
-x = maxX+2
-y = maxY+1
-matrix = [[0] * x for i in range(y)]
-for item in data:
-    matrix[item[0]][item[1]] = str(data.index(item))
-
-#Print it!
-# print('Matrix:')
-# for row in matrix:
-#     print(' '.join([str(elem) for elem in row]))
-
-maxNum = 0
-for col in range(x):
-    for j in range(y):
-        points = manhattanArray([col,j],data)
-        point = points[0]
-        # print(points)
-        if [col,j] in data:
-            # print([col,j])
-            if DEBUG:
-                value = chr(ord('A')+data.index([col,j]))
-            else:
-                value = data.index([col,j])
-
-            if maxNum < data.index([col,j]):
-                maxNum = data.index([col,j])
-        elif (points[0][0] == points[1][0]):
-            value = '.'
+    for key, value in workers.items():        
+        if value > 0:
+            workers[key] = value-1
         else:
-            if DEBUG:
-                value = chr(ord('a')+point[1])
-            else:
-                value = point[1]
+            removeKeys.append(key)
 
-        matrix[j][col] = value
-        # print(matrix[j])
-if DEBUG:
-    # print('Matrix:')
-    for row in matrix:
-        print(' '.join([str(elem) for elem in row]))
+    # print (removeKeys, workers)
+    for k in removeKeys:
+        result += k
+        remove(k,instr)
+        del instr[k]
+        del workers[k]
 
-    print('items in list:',maxNum)
-
-print('Candidates 1:', len(candidates))
-print('Candidates 2:', len(candidates2))
-
-
-patches = dict()
-saveArea = 0
-for num in candidates2:
-    count = 0
-    for col in range(x):
-        for j in range(y):
-            if DEBUG:
-                if matrix[j][col].upper() == chr(ord('A')+num):
-                    count += 1
-            else:
-                if matrix[j][col] == num:
-                    count += 1
-
-    if saveArea < count:
-        saveArea = count
-
-    if DEBUG:
-        print('Found', count, 'occurrences of', chr(ord('A')+num))
-    else:
-        print('Found', count, 'occurrences of', num)
     
-    patches[num] = count
+    candidates = candidate(instr)
+    # print(workers, candidates)
+    # print('Candidates:',candidates)
+    for c in candidates:
+        if len(workers) < 5 and c not in workers.keys():
+            workers[c] = ord(c) - ord('A') + 60
 
-patch = sorted(patches.items(), key = lambda t:t[1], reverse=True)[0][0]
+    # print(seconds, workers, result,'\n')
+    seconds += 1
 
-pp.pprint(sorted(patches.items(), key = lambda t:t[1], reverse=True))
+    if len(workers) == 0:
+        break
 
-print('\nPart 1: The largest area not infinite is', saveArea)
+print('\nPart 1: The correct sequence of assembly is:', result)
 
-# print('\nPart 2:', length,'units remain after removing',savedUnit, 'through optimized reduction')
+print('\nPart 2: It takes', seconds-1, ' seconds to assemble using 5 workers')
 
 
 end = datetime.datetime.now()
 duration = end-start
-print('Completed in',duration.microseconds/1000,'ms\n')
+print('Completed in',duration.seconds, 'seconds and', duration.microseconds/1000,'ms\n')

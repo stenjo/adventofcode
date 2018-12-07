@@ -5,7 +5,7 @@ import datetime, time
 from datetime import timedelta
 import pprint
 
-DEBUG = False
+DEBUG = True
 
 start = datetime.datetime.now()
 
@@ -30,7 +30,7 @@ for i in range(len(inData)):
     data.append(a[:])
 
 pp = pprint.PrettyPrinter(width=180, compact=True)
-# pp.pprint(data)
+pp.pprint(data)
 
 def manhattan(item1, item2):
     return abs(item1[0] - item2[0]) + abs(item1[1] - item2[1])
@@ -91,6 +91,9 @@ for item in data:
         candidates2.append(data.index(item))        
     
 
+# All candidates
+candidates3 = [i for i in range(len(data))]
+
 #Create a virual chronal grid
 x = maxX+2
 y = maxY+1
@@ -135,9 +138,32 @@ if DEBUG:
 
     print('items in list:',maxNum)
 
-print('Candidates 1:', len(candidates))
-print('Candidates 2:', len(candidates2))
+print('Candidates 1:', len(candidates), candidates)
+print('Candidates 2:', len(candidates2), candidates2)
+print('Candidates 3:', len(candidates3), candidates3)
 
+for col in [0,x-1]:
+    for row in range(y):
+        if DEBUG:
+            value = ord(matrix[row][col]) - ord('a')
+        else:
+            value = matrix[row][col]
+        if value in candidates3:
+            candidates3.remove(value)
+        print([col,row],':',value)
+
+for row in [0,y-1]:
+    for col in range(x):
+        if DEBUG:
+            value = ord(matrix[row][col]) - ord('a')
+        else:
+            value = matrix[row][col]
+        if value in candidates3:
+            candidates3.remove(value)
+        print([col,row],':',value)
+
+
+print('Candidates 3:', len(candidates3), candidates3)
 
 patches = dict()
 saveArea = 0
