@@ -5,7 +5,7 @@ import datetime, time
 from datetime import timedelta
 import pprint
 
-DEBUG = True
+DEBUG = False
 
 start = datetime.datetime.now()
 
@@ -47,49 +47,9 @@ def manhattanArray(point, items):
     return sorted(a, key=lambda t:t[0])
 
 
-maxX = 0
-maxY = 0
-candidates = []
-for item in data:
-    w = []
-    n = []
-    e = []
-    s = []
-    for comp in data:
-        if comp != item:
-            dist = manhattan(item, comp)
-            if comp[0] < item[0]:
-                w.append(int(dist/2))
-            if comp[1] < item[1]:
-                n.append(int(dist/2))
-            if comp[0] > item[0]:
-                e.append(int(dist/2))
-            if comp[1] > item[1]:
-                s.append(int(dist/2))
-
-    if maxX < item[0]: maxX = item[0]
-    if maxY < item[1]: maxY = item[1]
-
-    if len(w)>0 and len(n)>0 and len(e)>0 and len(s)>0:
-        candidates.append(data.index(item))        
-
-# Alternative candidates
-candidates2 = []
-for item in data:
-    tr = False
-    tl = False
-    br = False
-    bl = False
-    for comp in data:
-        if comp != item:
-            if comp[0] < item[0] and comp[1] < item[1]: tr = True 
-            if comp[0] < item[0] and comp[1] > item[1]: br = True 
-            if comp[0] > item[0] and comp[1] < item[1]: tl = True 
-            if comp[0] > item[0] and comp[1] > item[1]: bl = True 
-
-    if tr and tl and br and bl:
-        candidates2.append(data.index(item))        
-    
+        
+maxX = max([item[0] for item in data])
+maxY = max([item[1] for item in data])
 
 # All candidates
 candidates3 = [i for i in range(len(data))]
@@ -138,46 +98,34 @@ if DEBUG:
 
     print('items in list:',maxNum)
 
-print('Candidates 1:', len(candidates), candidates)
-print('Candidates 2:', len(candidates2), candidates2)
-print('Candidates 3:', len(candidates3), candidates3)
+
+# Remove edging areas
+
+def cleanCandidate(row, col, cand, matr):
+    value = matr[row][col]
+    if DEBUG:
+        print([col,row],':',value)
+        v = ord(value)-ord('a')
+        if v in cand:
+            cand.remove(v)
+    else:
+        if value in cand:
+            cand.remove(value)
+        
 
 for col in [0,x-1]:
     for row in range(y):
-        value = matrix[row][col]
-        if DEBUG:
-            if value != '.':
-                value = ord(matrix[row][col]) - ord('a')
-        if value in candidates3:
-            candidates3.remove(value)
-            
-        if DEBUG:
-            print([col,row],':', value)
-        else:
-            print([col,row],':',value)
+        cleanCandidate(row, col, candidates3, matrix)
 
 for row in [0,y-1]:
     for col in range(x):
-        value = matrix[row][col]
-        if DEBUG:
-            if value != '.':
-                value = ord(matrix[row][col]) - ord('a')
-
-        if value in candidates3:
-            candidates3.remove(value)
-            
-        if DEBUG:
-            print([col,row],':', chr(ord('a')+value))
-        else:
-            print([col,row],':',value)
-
-
+        cleanCandidate(row, col, candidates3, matrix)
 
 print('Candidates 3:', len(candidates3), candidates3)
 
 patches = dict()
 saveArea = 0
-for num in candidates2:
+for num in candidates3:
     count = 0
     for col in range(x):
         for j in range(y):
@@ -204,7 +152,30 @@ pp.pprint(sorted(patches.items(), key = lambda t:t[1], reverse=True))
 
 print('\nPart 1: The largest area not infinite is', saveArea)
 
-# print('\nPart 2:', length,'units remain after removing',savedUnit, 'through optimized reduction')
+def manahattanSum(row, col, a):
+    sum = 0
+    for item in a:
+        sum += manhattan([col, row], item)
+    return sum
+
+saveArea = 0
+count = 0
+for col in range(x):
+    for row in range(y):
+        if DEBUG:
+            if manahattanSum(row, col, data) < 32:
+                count += 1
+        else:
+            if manahattanSum(row, col, data) < 10000:
+                count += 1
+            
+
+#Print it!
+# print('Matrix:')
+# for row in matrix:
+#     print(' '.join([str(elem) for elem in row]))
+
+print('\nPart 2: The region size is', count)
 
 
 end = datetime.datetime.now()
