@@ -8,7 +8,7 @@ import pprint
 import collections
 
 
-DEBUG = True
+DEBUG = False
 
 start = datetime.datetime.now()
 pp = pprint.PrettyPrinter(width=180, compact=True)
@@ -23,7 +23,8 @@ if DEBUG:
 else:
     inData = liveData
 
-print(inData)
+if DEBUG:
+    print(inData)
 
 ### PART 1 ###
 
@@ -32,13 +33,23 @@ def getNode(count, num, arr):   # children, metadata items and the array
     nodes = []
     meta  = []
     for c in range(count):
-        nodes += getNode(arr.pop(0), arr.pop(0), arr)
+        nodes.append(getNode(arr.pop(0), arr.pop(0), arr))
     for n in range(num):
         meta.append(arr.pop(0))
-    nodes.insert(0,meta)
+    # nodes.insert(0,meta)
 
     # print(nodes)
-    return nodes
+    return [nodes, meta]
+
+def sumNode(children, meta):
+    sum = 0
+    for item in children:
+        sum += sumNode(item[0], item[1])
+
+    for d in meta:
+        sum += d
+
+    return sum
 
 data = []
 sum = 0
@@ -48,36 +59,40 @@ data = getNode(part1.pop(0), part1.pop(0), part1)
 if DEBUG:
     pp.pprint(data)
 
-for i in data:
-    for r in i:
-        sum += r
+sum = sumNode(data[0], data[1])
         
 # sum = sum([sum([i]) for i in r] for r in data)
 
-print('\nPart 1: The sum of all metadata entries:', sum)
+print('\nPart 1: The sum of all metadata entries:', sum, '\n')
 
+### PART 2 ###
 
-
-def getNodeSum(count, num, arr):   # children, metadata items and the array
-    print(count, num, arr)
+def getNodeSum(children, metadata):   # children, metadata items and the array
+    if DEBUG:
+        print('Children:',children, 'Metadata:',metadata)
     sum = 0
-    if count > 0:
-        for c in range(count):
-            sum += getNodeSum(arr.pop(0), arr.pop(0), arr)
+    if len(children) > 0:
+        for n in metadata:
+            if n-1 < len(children):
+                child = children[n-1]
+                sum += getNodeSum(child[0], child[1])
+                if DEBUG:
+                    print('Got', sum, 'from child', child)
     else:
-        for n in range(num):
-            p = arr.pop(0)
-            if p <= len(data):
-                for i in data[p-1]:
-                    sum += i
-                print(data[p-1])
+        if DEBUG:
+            print(metadata)
+        for n in metadata:
+            sum += n
 
     return sum
 
 
+
 part2 = inData[:]
 
-sum = getNodeSum(part2.pop(0), part2.pop(0), part2)
+pp.pprint(data)
+
+sum = getNodeSum(data[0], data[1])
 
 print('\nPart 2: the value of the root node is:',sum)
 
