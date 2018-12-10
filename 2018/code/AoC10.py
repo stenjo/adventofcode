@@ -3,11 +3,13 @@
 # 
 import datetime, time
 from datetime import timedelta
-import pprint
+import pprint, re
 
-DEBUG = False
+DEBUG = True
 
 start = datetime.datetime.now()
+pp = pprint.PrettyPrinter(width=180, compact=True)
+
 
 inputData = open('../data/input10.txt','r')
 testData = open('../data/test10.txt','r')
@@ -15,14 +17,71 @@ liveData = inputData.readlines()
 
 if DEBUG:
     inData = testData
-    # inData = testData2
 else:
     inData = liveData
 
 def getPosAndVelocity(line):
-    parts = line.split('<>')
-    print 
+    parts = re.split('<|>',line)
+    return [ [s.strip() for s in parts[1].split(',')], [s.strip() for s in parts[3].split(',')] ]
+
 ### PART 1 ###
+
+class Point():
+    c = []
+    v = []
+    def __init__(self, ptArr):
+        self.c.append(ptArr[0])
+        self.v.append(ptArr[1])
+
+    def x(self):
+        return self.c[0]
+
+    def y(self):
+        return self.c[1]
+
+    def dump(self):
+        pp.pprint([self.c,self.v])
+
+    def getArr(self):
+        return [self.c,self.v]
+
+    def manhattan(self, pt):
+        return abs(self.x-pt.x)+abs(self.y - pt.y)
+
+
+class SkyMap():
+    map = []
+    def load(self,data):
+        for d in data:
+            parts = re.split('<|>',d)
+            self.map.append(Point([[s.strip() for s in parts[1].split(',')], [s.strip() for s in parts[3].split(',')]]))
+
+    def dump(self):
+        pp.pprint(self.map)
+    
+    def moveOneSecond(self):
+        return map
+    
+    def getManhattanOfList(self):
+        sum = 0
+        return sum
+    
+    def getManhattanOfPoints(self, point1, point2):
+        return point1.manhattan(point2)
+    
+    def __init__(self, data):
+        self.load(data)
+
+
+sm = SkyMap(inData)
+sm.dump()
+
+exit()
+
+for i in inData:
+    print(getPosAndVelocity(i))
+
+
 data = []
 sum = 0
 for i in range(len(inData)):
