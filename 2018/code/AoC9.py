@@ -2,20 +2,39 @@
 # 
 # 
 
+import unittest
 import datetime, time
 from datetime import timedelta
 import pprint
 import collections
 
+class MarbleTest(unittest.TestCase):
+    def test1(self):
+        # arrange
+        marbles = [ Marble(4), Marble(2), Marble(37) ]
+        marbles[0].prev = marbles[2]
+        marbles[0].next = marbles[1]
+        marbles[1].prev = marbles[0]
+        marbles[1].next = marbles[2]
+        marbles[2].prev = marbles[1]
+        marbles[2].next = marbles[0]
 
-DEBUG = False
+        # act
+        result = marbles_to_list(marbles[0])
+
+        # assert
+        self.assertEqual(result, [ 4, 2, 37 ])
+if __name__ == '__main__':
+    unittest.main()
+
+DEBUG = True
 
 start = datetime.datetime.now()
 pp = pprint.PrettyPrinter(width=180, compact=True)
 
 inputData = open('../data/input9.txt','r')
 testData = [
-            '2 players; last marble is worth 75 points: high score is 112',
+            '20 players; last marble is worth 75000 points: high score is 112',
             '4 players; last marble is worth 100 points: high score is 107',
             '5 players; last marble is worth 125 points: high score is 165',
             '8 players; last marble is worth 100 points: high score is 107',
@@ -57,15 +76,14 @@ def printMarbles(player, current, circle):
 
     print(s)
 
-
-for params in inData:
+def runGame(params):
     print(params)
     balls = [i for i in range(0,int(params[1])+1)]
     players = int(params[0])
     circle = []
     current = 0
     scores = [ 0 for i in range(players)]
-    printMarbles('-', current, circle)
+    # printMarbles('-', current, circle)
     while len(balls) > 0:
         for p in range(players):
             if len(balls):
@@ -80,11 +98,13 @@ for params in inData:
                         circle.insert( (current+2) % len(circle), ball)
                         current = circle.index(ball)
                 else:
+                    # if current+2 == len(circle):
+                    #     print(p, current, len(circle))
                     circle.append(ball)
                     current = circle.index(ball)
 
-                if current == 0 and p != 0:    
-                    printMarbles(p, current, circle)
+                # if current == 0 and p != 0:    
+                #     printMarbles(p, current, circle)
 
                 # if p == 30:
                 #     exit()
@@ -92,6 +112,9 @@ for params in inData:
     # print(scores)
     print('Part 1: The winning elfs score is:', max(scores), '\n')
 
+
+for params in inData:
+    runGame(params)
 
 ### PART 2 ###
 
