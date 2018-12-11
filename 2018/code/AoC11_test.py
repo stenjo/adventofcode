@@ -1,71 +1,75 @@
-#Test file for Advent of Code Day 10
+#Test file for Advent of Code Day 11
 import unittest
-from AoC10 import Point,SkyMap
+from AoC11 import FuelCells
 
-class MessageTest(unittest.TestCase):
+class FuelcellTest(unittest.TestCase):
 
     def setUp(self):
-        self.skyMap = SkyMap()
-        self.pArra  = [ [[ 0, 0],[-1, 1]], 
-                        [[-1,-1],[-2,-2]] , 
-                        [[10,-2],[10, 2]] , 
-                        [[-0,20],[-2,-2]] , 
-                        [[ 2, 0],[20,20]]   ]
-        self.points = [Point(p) for p in self.pArra]
+        self.fuelCells = FuelCells(8)
 
-        ref     = [ [[-1, 1],[-1, 1]], 
-                    [[-3,-3],[-2,-2]] , 
-                    [[20, 0],[10, 2]] , 
-                    [[-2,18],[-2,-2]] , 
-                    [[22,20],[20,20]]  ]
-        self.reference = [Point(r) for r in ref]
-
-        self.skyMap.load(self.pArra)
-
-    def test_manhattan(self):
+    def test_calc_power_level_single(self):
         # arrange
+        test = [[3,5,8],[122,79,57],[217,196,39],[101,153,71]]
+        result=[]
+        # act
+        for t in test:
+            self.fuelCells.GridSerialNo = t[2]
+            result.append(self.fuelCells.calPowerLevel(t[0],t[1]))
+            
+
+        # assert
+        self.assertEqual(result, [4, -5, 0, 4])
+
+    def test_get_power_level_single(self):
+        # arrange
+        test = [[3,5,8,4],[122,79,57,-5],[217,196,39,0],[101,153,71,4]]
+        calc= []
+        get = []
+        ref =[]
+        # act
+        for t in test:
+            self.fuelCells.initialize(t[2])
+            calc.append(self.fuelCells.calPowerLevel(t[0],t[1]))
+            get.append(self.fuelCells.getPowerLevel(t[0],t[1]))
+            ref.append(t[3])
+
+        # assert
+        self.assertEqual(calc, get)
+        self.assertEqual(calc, ref)
+
+    def test_matrix_total_power(self):
+        # arrange
+        m = [ [
+                [4,3,1],
+                [4,3,2],
+                [4,4,4]  
+              ],[
+                [4,3,3],
+                [3,3,3],
+                [3,4,4]  
+              ]
+            ]
         result = []
-
         # act
-        for i in range(len(self.points)):
-            result.append( self.points[i].manhattan( self.points[ (i+1) % len(self.points) ] )) 
+        for g in m:
+            result.append(self.fuelCells.totalPower(1,1,g))
 
         # assert
-        self.assertEqual(result, [ 2, 12, 32, 22, 2])
+        self.assertEqual(result,[29,30])
 
-    def test_move_point_one_second(self):
+    def test_total_power_grid(self):
         # arrange
-        self.skyMap.dispose()
-        self.skyMap.load(self.pArra)
-        # act
-        #assert
-        for i in range(len(self.points)):
-            p = self.points[i]
-            p.moveOneSecond()
-            self.assertTrue(p.equals(self.reference[i]))
-
-    # @unittest.skip("not working")
-    def test_manhattan_of_list(self):
-        # arrange
-        self.skyMap.dispose()
-        self.skyMap.load(self.pArra)
-
-        # act
-        result = self.skyMap.getManhattanOfList()
-
-        #assert
-        self.assertEqual(result, 36+40+66+96+38)
-
-    def test_move_one_second(self):
-        # arrange
-        # act
-        self.skyMap.moveOneSecond()
+        test = [[33,45,18],[21,61,42]]
+        result=[]
         
+        #act
+        for t in test:
+            self.fuelCells.initialize(t[2])
+            self.fuelCells.print3x3(t[0],t[1], self.fuelCells.Map)
+            result.append(self.fuelCells.totalPower(t[0],t[1], self.fuelCells.Map))
+
         # assert
-        for i in range(len(self.points)):
-            r = self.reference[i]
-            p = self.skyMap.Map[i]
-            self.assertTrue(p.equals(r))
+        self.assertEqual(result, [29, 30])
 
 
 if __name__ == '__main__':
