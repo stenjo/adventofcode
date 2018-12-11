@@ -71,12 +71,14 @@ class FuelCells():
         return position
 
     def maxPowerSize(self):
-        savedMax =  []
+        savedMax =  [0,0,0,0]
         for size in range(1,300):
             p = self.maxPower(size)
+            # print(p,savedMax)
             if p[3] > savedMax[3]:
                 savedMax = p
-
+            if all(x == 0 for x in p) == True:
+                return savedMax
         return savedMax
 
     def print3x3(self, x, y, matrix):
