@@ -52,26 +52,46 @@ class FuelCells():
     def getPowerLevel(self,x,y):
         return self.Map[x-1][y-1]
 
-    def totalPower(self,x,y,matrix):
+    def totalPower(self,x,y,matrix,size):
         sum = 0
-        for m in range(y,y+3):
-            for n in range(x,x+3):
+        for m in range(y,y+size):
+            for n in range(x,x+size):
                 sum += matrix[n-1][m-1]
         return sum
 
+    def maxPower(self, size):
+        position = [0,0,0,0] 
+        power = 0
+        for x in range(1,301-size):
+            for y in range(1,301-size):
+                p = self.totalPower(x,y,self.Map,size)
+                if p > power:
+                    power = p
+                    position = [x,y,size,p]
+        return position
+
+    def maxPowerSize(self):
+        savedMax =  []
+        for size in range(1,300):
+            p = self.maxPower(size)
+            if p[3] > savedMax[3]:
+                savedMax = p
+
+        return savedMax
+
     def print3x3(self, x, y, matrix):
         print('\n')
-        for y in range(y-2,y+3+2):
+        for c in range(y-2,y+3+2):
             row = []
-            for x in range(x-2,x+3+2):
-                row.append(matrix[x-1][y-1])
+            for r in range(x-2,x+3+2):
+                row.append(matrix[r-1][c-1])
             print(' '.join([str(elem).rjust(2) for elem in row]))
 
 fc = FuelCells(1309)
 
-# print('\nPart 1: The largest area not infinite is', saveArea)
+print('\nPart 1: The X,Y coordinate of the top-left fuel cell of the 3x3 square with the largest total power is', fc.maxPower(3))
 
-# print('\nPart 2: The region size is', count)
+print('\nPart 2: The X,Y,size identifier of the square with the largest total power is', fc.maxPowerSize())
 
 
 end = datetime.datetime.now()
