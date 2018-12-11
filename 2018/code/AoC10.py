@@ -5,13 +5,14 @@ import datetime, time
 from datetime import timedelta
 import pprint, re
 
-DEBUG = True
+DEBUG = False
 
 start = datetime.datetime.now()
 pp = pprint.PrettyPrinter(width=180, compact=True)
 
 
 inputData = open('../data/input10.txt','r')
+outData = open('../data/output10.txt','w')
 testData = open('../data/test10.txt','r')
 liveData = inputData.readlines()
 
@@ -75,15 +76,26 @@ class SkyMap():
             parts = re.split('<|>',d)
             p = Point([[int(s.strip()) for s in parts[1].split(',')], [int(s.strip()) for s in parts[3].split(',')]])
             self.Map.append(p)
-            if p.x > self.MaxX:
-                self.MaxX = p.x
-            if p.y > self.MaxY:
-                self.MaxY = p.y
-            if p.x < self.MinX:
-                self.MinX = p.x
-            if p.y < self.MinY:
-                self.MinY = p.y
-    
+            self.updateMaxMin(p)
+
+    def updateMaxMin(self,p):
+        if p.x > self.MaxX:
+            self.MaxX = p.x
+        if p.y > self.MaxY:
+            self.MaxY = p.y
+        if p.x < self.MinX:
+            self.MinX = p.x
+        if p.y < self.MinY:
+            self.MinY = p.y
+
+    def clearMaxMin(self):
+        x = self.MaxX
+        self.MaxX = self.MinX
+        self.MinX = x
+        y = self.MaxY
+        self.MaxY = self.MinY
+        self.MinY = y
+
     def append(self,data):
         for d in data:
             self.Map.append(Point(d))
@@ -103,16 +115,18 @@ class SkyMap():
         return map
     
     def moveMinusOneSecond(self):
+        self.clearMaxMin()
         for p in self.Map:
             p.moveMinusOneSecond()
+            self.updateMaxMin(p)
         self.Seconds -= 1
         return map
     
     def getManhattanOfList(self):
         sum = 0
-        cp = self.Map[:]
+        # cp = self.Map[:]
         for p in self.Map:
-            for q in cp:
+            for q in self.Map:
                 # print(q)
                 sum += p.manhattan(q)
         return sum
@@ -140,15 +154,21 @@ class SkyMap():
                 return True
         return False
 
+
     def plot(self):
         string = ''
-        for y in range(self.MinY, self.MaxY):
-            for x in range(self.MinX, self.MaxX):
+        print('X:',self.MinX-1,'-',self.MaxX+2)
+        print('Y:',self.MinY-1,'-',self.MaxY+2)
+        print('Time:',self.Seconds)
+
+        for y in range(self.MinY-1, self.MaxY+2):
+            for x in range(self.MinX-1, self.MaxX+2):
                 if self.hasPoint(x,y):
                     string += '#'
                 else:
                     string += '.'
             print(string)
+            # outData.write(string+'\n')
             string = ''
 
 
