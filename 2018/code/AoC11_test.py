@@ -4,6 +4,8 @@ from AoC11 import FuelCells
 
 class FuelcellTest(unittest.TestCase):
 
+    fuelCells = ''
+    
     def setUp(self):
         self.fuelCells = FuelCells(8)
 
