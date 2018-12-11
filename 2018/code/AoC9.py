@@ -11,16 +11,7 @@ import collections
 class MarbleTest(unittest.TestCase):
     def test1(self):
         # arrange
-        marbles = [ Marble(4), Marble(2), Marble(37) ]
-        marbles[0].prev = marbles[2]
-        marbles[0].next = marbles[1]
-        marbles[1].prev = marbles[0]
-        marbles[1].next = marbles[2]
-        marbles[2].prev = marbles[1]
-        marbles[2].next = marbles[0]
-
         # act
-        result = marbles_to_list(marbles[0])
 
         # assert
         self.assertEqual(result, [ 4, 2, 37 ])
