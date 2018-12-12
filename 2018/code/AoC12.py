@@ -1,101 +1,60 @@
-# Advent of Code 2018: https://adventofcode.com/2018/day/10
+# Advent of Code 2018: https://adventofcode.com/2018/day/12
 # 
-# 
-import datetime, time
-from datetime import timedelta
-import pprint, re
+# Testing string handling in Python
+# well... actually solution to Day 12 but not very pretty
 
-DEBUG = True
+# Test data
+# initial = '#..#.#..##......###...###...........'
+# patternstrings = [  '...## => #','..#.. => #','.#... => #','.#.#. => #','.#.## => #','.##.. => #','.#### => #','#.#.# => #','#.### => #','##.#. => #','##.## => #','###.. => #','###.# => #','####. => #']
 
-start = datetime.datetime.now()
-pp = pprint.PrettyPrinter(width=180, compact=True)
+initial = '##.#..#.#..#.####.#########.#...#.#.#......##.#.#...##.....#...#...#.##.#...##...#.####.##..#.#..#.'
+patternstrings = ['.#.#. => #','.#... => #','##### => #','#..#. => #','#...# => #','###.# => #','...## => #','#.##. => #','.#.## => #','##.#. => #','..### => #','###.. => #','##..# => #','#..## => #']
 
-
-inputData = open('../data/input12.txt','r')
-testData = open('../data/test12.txt','r')
-liveData = inputData.readlines()
-
-if DEBUG:
-    inData = testData.readlines()
-else:
-    inData = liveData
-
-
-### PART 1 ###
-
-
-class FuelCells():
-    Map = []
-    GridSerialNo = 0
-    def __init__(self, gsn):
-        self.initialize(gsn)
-
-    def initialize(self, gsn):
-        self.Map.clear()
-        self.GridSerialNo = gsn
-        for x in range(300):
-            col = []
-            for y in range(300):
-                col.append(self.calPowerLevel(x+1, y+1))
-            self.Map.append(col)
-
-
-    def calPowerLevel(self,x,y):
-        rackId = x+10
-        # print(rackId)
-        pLevel = (rackId * y + self.GridSerialNo) * rackId
-        pLevel = int(pLevel/100)
-        if pLevel > 0:
-            return  (pLevel % 10) - 5
-        return -5
-
-    def getPowerLevel(self,x,y):
-        return self.Map[x-1][y-1]
-
-    def totalPower(self,x,y,matrix,size):
-        sum = 0
-        for m in range(y,y+size):
-            for n in range(x,x+size):
-                sum += matrix[n-1][m-1]
-        return sum
-
-    def maxPower(self, size):
-        position = [0,0,0,0] 
-        power = 0
-        for x in range(1,301-size):
-            for y in range(1,301-size):
-                p = self.totalPower(x,y,self.Map,size)
-                if p > power:
-                    power = p
-                    position = [x,y,size,p]
-        return position
-
-    def maxPowerSize(self):
-        savedMax =  [0,0,0,0]
-        for size in range(1,300):
-            p = self.maxPower(size)
-            # print(p,savedMax)
-            if p[3] > savedMax[3]:
-                savedMax = p
-            if all(x == 0 for x in p) == True:
-                return savedMax
-        return savedMax
-
-    def print3x3(self, x, y, matrix):
-        print('\n')
-        for c in range(y-2,y+3+2):
-            row = []
-            for r in range(x-2,x+3+2):
-                row.append(matrix[r-1][c-1])
-            print(' '.join([str(elem).rjust(2) for elem in row]))
-
-fc = FuelCells(1309)
-
-print('\nPart 1: The X,Y coordinate of the top-left fuel cell of the 3x3 square with the largest total power is', fc.maxPower(3))
-
-print('\nPart 2: The X,Y,size identifier of the square with the largest total power is', fc.maxPowerSize())
+patterns = [ p.split(' => ')[0] for p in patternstrings]
+print(patterns)
+offset = 12000
+generationstring = '.'*offset+initial+'.'*offset
+count = initial.count('#')
+savedSum = 0
+numPots = 0
+savedResult = 0
+# print('{0:2d}: {1:s}'.format(0,generationstring[offset:]))
+for n in range(1,1101):
+    nextGenString ="."*len(initial)
+    length = len(initial)
+    potsum = 0
+    first = length
+    maxi = 0
+    count = 0
+    for i in range(-offset,length+offset+10):
+        # print(generationstring[i-2:i+3], generationstring[i-2:i+3] in patterns)
+        if i > 1-offset and i < length + 3 + offset:
+            pattern = generationstring[i-2+offset:i+3+offset]
+            if pattern in patterns:
+                nextGenString = nextGenString[:i+offset]+'#'+nextGenString[i+1+offset:]
+                count +=1
+                potsum += i
+                if first > i: first = i
+                if maxi < i: maxi = i
+            else:
+                nextGenString = nextGenString[:i+offset]+'.'+nextGenString[i+1+offset:]
 
 
-end = datetime.datetime.now()
-duration = end-start
-print('Completed in {0:02d}:{1:02d}:{2:02.5f}\n'.format(int(duration.seconds/3600), int(duration.seconds/60),duration.seconds%60 + duration.microseconds/1000000))
+    nextGenString += '.' * (length - len(nextGenString))
+    generationstring = nextGenString[:]
+    # print('{0:3d}: {1:s} - sum {3:3d}, first: {4:2d}, index:{5:d}'.format(n,generationstring[offset:], generationstring.count('#'), potsum, first, maxi))
+    diff = potsum-savedSum
+    pots = generationstring.count('#')
+    longRangeResult = (50000000000-1-n)*diff + potsum + diff
+    resDiff = savedResult-longRangeResult
+    # if n % 10 == 0:
+    if n == 20:
+        print('Part 1: Sum of number of all pots containing plants is:', potsum)
+    if resDiff == 0:
+        print('Part 2: After fifty billion (50000000000) generations:', longRangeResult)
+        break
+    # if n > 900:
+    #     print('{0:3d}: - sum {3:3d}, sum diff: {6:3}, count: {4:2d}, index:{5:d}, pots: {2:d}, pots diff: {8:3}. Long range result: {7:d}, diff: {9:d}'.format(n,generationstring[offset:], pots, potsum, count, maxi, diff, longRangeResult, pots-numPots,resDiff))
+    savedSum = potsum
+    numPots = pots
+    savedResult = longRangeResult
