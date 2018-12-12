@@ -1,4 +1,5 @@
 # Testing string handling in Python
+# well... actually solution to Day 12 but not very pretty
 
 # initial = '#..#.#..##......###...###...........'
 initial = '##.#..#.#..#.####.#########.#...#.#.#......##.#.#...##.....#...#...#.##.#...##...#.####.##..#.#..#.'
@@ -43,8 +44,13 @@ for n in range(1,1101):
     longRangeResult = (50000000000-1-n)*diff + potsum + diff
     resDiff = savedResult-longRangeResult
     # if n % 10 == 0:
-    if n > 900:
-        print('{0:3d}: - sum {3:3d}, sum diff: {6:3}, count: {4:2d}, index:{5:d}, pots: {2:d}, pots diff: {8:3}. Long range result: {7:d}, diff: {9:d}'.format(n,generationstring[offset:], pots, potsum, count, maxi, diff, longRangeResult, pots-numPots,resDiff))
-        savedSum = potsum
-        numPots = pots
-        savedResult = longRangeResult
+    if n == 20:
+        print('Part 1: Sum of number of all pots containing plants is:', potsum)
+    if resDiff == 0:
+        print('Part 2: After fifty billion (50000000000) generations:', longRangeResult)
+        break
+    # if n > 900:
+    #     print('{0:3d}: - sum {3:3d}, sum diff: {6:3}, count: {4:2d}, index:{5:d}, pots: {2:d}, pots diff: {8:3}. Long range result: {7:d}, diff: {9:d}'.format(n,generationstring[offset:], pots, potsum, count, maxi, diff, longRangeResult, pots-numPots,resDiff))
+    savedSum = potsum
+    numPots = pots
+    savedResult = longRangeResult
