@@ -1,56 +1,26 @@
 # Testing string handling in Python
 
-initial = '#..#.#..##......###...###...........'
+# initial = '#..#.#..##......###...###...........'
 initial = '##.#..#.#..#.####.#########.#...#.#.#......##.#.#...##.....#...#...#.##.#...##...#.####.##..#.#..#.'
-patternstrings = [  '...## => #',
-                    '..#.. => #',
-                    '.#... => #',
-                    '.#.#. => #',
-                    '.#.## => #',
-                    '.##.. => #',
-                    '.#### => #',
-                    '#.#.# => #',
-                    '#.### => #',
-                    '##.#. => #',
-                    '##.## => #',
-                    '###.. => #',
-                    '###.# => #',
-                    '####. => #']
-
-patternstrings = [  '.#.#. => #',
-                    '.#... => #',
-                    '##### => #',
-                    '#..#. => #',
-                    '#...# => #',
-                    '###.# => #',
-                    '...## => #',
-                    '#.##. => #',
-                    '.#.## => #',
-                    '##.#. => #',
-                    # '...#. => .',
-                    '..### => #',
-                    '###.. => #',
-                    # '##... => .',
-                    # '..##. => .',
-                    # '.##.# => .',
-                    # '##.## => .',
-                    # '.##.. => .',
-                    '##..# => #',
-                    # '#.#.# => .',
-                    '#..## => #']
+# patternstrings = [  '...## => #','..#.. => #','.#... => #','.#.#. => #','.#.## => #','.##.. => #','.#### => #','#.#.# => #','#.### => #','##.#. => #','##.## => #','###.. => #','###.# => #','####. => #']
+patternstrings = ['.#.#. => #','.#... => #','##### => #','#..#. => #','#...# => #','###.# => #','...## => #','#.##. => #','.#.## => #','##.#. => #','..### => #','###.. => #','##..# => #','#..## => #']
 
 patterns = [ p.split(' => ')[0] for p in patternstrings]
 print(patterns)
-offset = 5
-generationstring = '.'*offset+initial+'............'
+offset = 12000
+generationstring = '.'*offset+initial+'.'*offset
 count = initial.count('#')
-print('{0:2d}: {1:s}'.format(0,generationstring))
-for n in range(1,21):
+savedSum = 0
+numPots = 0
+savedResult = 0
+# print('{0:2d}: {1:s}'.format(0,generationstring[offset:]))
+for n in range(1,1101):
     nextGenString ="."*len(initial)
     length = len(initial)
     potsum = 0
     first = length
     maxi = 0
+    count = 0
     for i in range(-offset,length+offset+10):
         # print(generationstring[i-2:i+3], generationstring[i-2:i+3] in patterns)
         if i > 1-offset and i < length + 3 + offset:
@@ -67,5 +37,14 @@ for n in range(1,21):
 
     nextGenString += '.' * (length - len(nextGenString))
     generationstring = nextGenString[:]
-    print('{0:2d}: {1:s} - {2:2d} pots, sum {3:3d}, first: {4:2d}, index:{5:d}'.format(n,generationstring, generationstring.count('#'), potsum, first, maxi))
-print(count)
+    # print('{0:3d}: {1:s} - sum {3:3d}, first: {4:2d}, index:{5:d}'.format(n,generationstring[offset:], generationstring.count('#'), potsum, first, maxi))
+    diff = potsum-savedSum
+    pots = generationstring.count('#')
+    longRangeResult = (50000000000-1-n)*diff + potsum + diff
+    resDiff = savedResult-longRangeResult
+    # if n % 10 == 0:
+    if n > 900:
+        print('{0:3d}: - sum {3:3d}, sum diff: {6:3}, count: {4:2d}, index:{5:d}, pots: {2:d}, pots diff: {8:3}. Long range result: {7:d}, diff: {9:d}'.format(n,generationstring[offset:], pots, potsum, count, maxi, diff, longRangeResult, pots-numPots,resDiff))
+        savedSum = potsum
+        numPots = pots
+        savedResult = longRangeResult
