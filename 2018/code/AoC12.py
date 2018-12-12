@@ -45,7 +45,7 @@ for n in range(1,1101):
     # print('{0:3d}: {1:s} - sum {3:3d}, first: {4:2d}, index:{5:d}'.format(n,generationstring[offset:], generationstring.count('#'), potsum, first, maxi))
     diff = potsum-savedSum
     pots = generationstring.count('#')
-    longRangeResult = (50000000000-1-n)*diff + potsum + diff
+    longRangeResult = (50000000000-n)*diff + potsum
     resDiff = savedResult-longRangeResult
     # if n % 10 == 0:
     if n == 20:
