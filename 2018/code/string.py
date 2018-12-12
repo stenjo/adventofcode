@@ -1,6 +1,6 @@
 # Testing string handling in Python
 
-initial = '...#..#.#..##......###...###...........'
+initial = '#..#.#..##......###...###...........'
 patternstrings = [  '...## => #',
                     '..#.. => #',
                     '.#... => #',
@@ -18,7 +18,8 @@ patternstrings = [  '...## => #',
 
 patterns = [ p.split(' => ')[0] for p in patternstrings]
 print(patterns)
-generationstring = '  '+initial+'..........'
+offset = 5
+generationstring = '.'*offset+initial+'.....'
 count = initial.count('#')
 print('{0:2d}: {1:s}'.format(0,generationstring))
 for n in range(1,21):
@@ -26,15 +27,22 @@ for n in range(1,21):
     length = len(generationstring)
     potsum = 0
     first = length
-    for i in range(length):
+    maxi = 0
+    for i in range(-offset,length+offset):
         # print(generationstring[i-2:i+3], generationstring[i-2:i+3] in patterns)
-        if i > 2 and i < length - 3 and generationstring[i-2:i+3] in patterns:
-            nextGenString = nextGenString[:i]+'#'+nextGenString[i+1:]
-            count +=1
-            potsum += i-5
-            if first > i: first = i
+        if i > 1-offset and i < length + 3 + offset:
+            pattern = generationstring[i-2+offset:i+3+offset]
+            if pattern in patterns:
+                nextGenString = nextGenString[:i+offset]+'#'+nextGenString[i+1+offset:]
+                count +=1
+                potsum += i
+                if first > i: first = i
+                if maxi < i: maxi = i
+            # else:
+            #     nextGenString = nextGenString[:i+offset]+' '+nextGenString[i+1+offset:]
+
 
     nextGenString += '.' * (length - len(nextGenString))
     generationstring = nextGenString[:]
-    print('{0:2d}: {1:s} - {2:d} pots, sum {3:d}, first: {4:d}'.format(n,generationstring, generationstring.count('#'), potsum, first))
+    print('{0:2d}: {1:s} - {2:d} pots, sum {3:d}, first: {4:d}, index:{5:d}'.format(n,generationstring, generationstring.count('#'), potsum, len(nextGenString), maxi))
 print(count)
