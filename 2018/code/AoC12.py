@@ -11,8 +11,8 @@ start = datetime.datetime.now()
 pp = pprint.PrettyPrinter(width=180, compact=True)
 
 
-inputData = open('../data/input10.txt','r')
-testData = open('../data/test10.txt','r')
+inputData = open('../data/input12.txt','r')
+testData = open('../data/test12.txt','r')
 liveData = inputData.readlines()
 
 if DEBUG:
