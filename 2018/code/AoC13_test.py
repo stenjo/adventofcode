@@ -3,7 +3,7 @@
 # Tests
 
 import unittest
-import AoC13_classes
+from AoC13_classes import MineCart, Cart, Track
 
 class MineCartTest(unittest.TestCase):
     def test_cart(self):
