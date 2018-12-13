@@ -1,6 +1,6 @@
 #Test file for Advent of Code Day 9
 import unittest
-from AoC9 import Circle, Ball, Game, Player
+from AoC9_classes import Circle, Ball, Game, Player
 
 class MarbleGameTest(unittest.TestCase):
     

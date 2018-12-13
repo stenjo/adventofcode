@@ -7,6 +7,7 @@ import datetime, time
 from datetime import timedelta
 import pprint
 import collections
+from AoC9_classes import Game, Circle, Ball, Player
 
 DEBUG = True
 
@@ -28,9 +29,11 @@ testData = [
             '9 players; last marble is worth 25 points: high score is 37305']
 liveData = [inputData.readline().strip()]
 
+
 def getPlayersAndWorth(line):
     parts = line.split(' ')
     return [parts[0], parts[6]]
+    
     
 if DEBUG:
     inData = [getPlayersAndWorth(d) for d in testData]
@@ -42,74 +45,6 @@ else:
 # if DEBUG:
 #     pp.pprint(inData)
 
-class Ball():
-    value = 0
-    def __init__(self, value):
-        self.value = value
-
-class Player():
-    score = 0
-    index = 0
-    def __init__(self, index):
-        self.score = 0
-        self.index = index + 1
-
-
-class Circle():
-    circle = []
-    current = 0
-
-    def insert(self, ball):
-        if ball.value % 23 == 0 and len(self.circle) > 0:
-            self.current = (self.current-7) % len(self.circle)
-            return ball.value + self.circle.pop((self.current-7) % len(self.circle)).value
-        elif len(self.circle) > 0:
-            self.circle.insert((self.current+2) % len(self.circle))
-            self.current = self.circle.index(ball)
-        return 0
-
-    def remove(self, index):
-        return self.circle.pop(index).value
-
-class Game():
-    
-    c = Circle()
-    balls = []
-    players = []
-
-    def __init__(self, data):
-        self.initialize(data)
-
-    def initialize(self, data):
-        self.balls = [Ball(i) for i in range(0,int(data[1])+1)]
-        self.players = [Player(i) for i in range(int(data[0]))]
-
-    def runGame(self):
-
-        player = self.players[0]
-        self.c.insert(self.balls.pop(0))
-        self.printCircle(Player(-1))
-        for ball in self.balls:
-            player.score += self.c.insert(ball)
-            self.printCircle(player)
-            player = self.players[player.index % len(self.players)]
-
-        return [p.score for p in self.players]
-
-    def printCircle(self, player):
-        if player.index == 0:
-            s = ('[-]').rjust(4)
-        else:
-            s = ('['+str(player.index)+']').rjust(4)
-
-        for n in self.c.circle:
-            if self.c.circle.index(n) == self.c.current:
-                s += ('(' + str(n.value) + ')').rjust(4)
-            else:
-                s += (str(n.value).rjust(3) + ' ')
-        print(s)
-
-exit(1)
 g = Game(inData[1])
 print([b.value for b in g.balls])
 print([p.index for p in g.players])
