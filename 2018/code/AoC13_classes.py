@@ -131,6 +131,9 @@ class Cart():
         c = self.direction + track
         self.direction = m[c]
 
+    def print(self):
+        return '['+self.x+','+self.y+'], dir: '+self.direction
+
 
 class MineCart():
     carts = []

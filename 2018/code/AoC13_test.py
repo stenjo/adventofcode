@@ -13,6 +13,15 @@ testTrack = [
 '\\-+-/  \\-+--/',
 '  \\------/   ']
 
+testTrack2 = [
+'/>-<\\  ',
+'|   |  ',
+'| /<+-\\',
+'| | | v',
+'\\>+</ |',
+'  |   ^',
+'  \\<->/']
+
 class MineCartTest(unittest.TestCase):
     def test_cart(self):
         # arrange
@@ -158,6 +167,17 @@ class MineCartTest(unittest.TestCase):
 
         # assert
         self.assertEqual(result, [[7,3]])
+
+    def test_find_last_cart(self):
+        # arrange
+        mc = MineCart()
+        mc.loadTracksAndCarts(testTrack2)
+
+        # act
+        result = mc.findLastCart()
+
+        # assert
+        self.assertEqual([result.x,result.y], [6,4])
 
     def test_move_one_step_minecart(self):
         # arrange
