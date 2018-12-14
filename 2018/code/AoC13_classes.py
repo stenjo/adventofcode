@@ -132,7 +132,7 @@ class Cart():
         self.direction = m[c]
 
     def print(self):
-        return '['+self.x+','+self.y+'], dir: '+self.direction
+        return '['+str(self.x)+','+str(self.y)+'], dir: '+self.direction
 
 
 class MineCart():

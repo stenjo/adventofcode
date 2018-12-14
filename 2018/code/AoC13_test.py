@@ -177,6 +177,7 @@ class MineCartTest(unittest.TestCase):
         result = mc.findLastCart()
 
         # assert
+        self.assertEqual(result.print(),True)
         self.assertEqual([result.x,result.y], [6,4])
 
     def test_move_one_step_minecart(self):
