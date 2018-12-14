@@ -58,18 +58,25 @@ class Track():
                 return t
         return None
     
-    def print(self):
+    def print(self,carts):
         columns = max([t.x for t in self.parts])+1
         rows = max([t.y for t in self.parts])+1
 
         for y in range(rows):
             output = ''
             for x in range(columns):
-                tp = self.getTrackPart(x,y)
-                if tp != None:
-                    output += tp.orientation
+                cart = None
+                for c in carts:
+                    if c.x == x and c.y == y:
+                        cart = c
+                if cart != None and cart.crashed == False:
+                    output += cart.direction
                 else:
-                    output += ' '
+                    tp = self.getTrackPart(x,y)
+                    if tp != None:
+                        output += tp.orientation
+                    else:
+                        output += ' '
             print(output)
 
 
@@ -85,6 +92,7 @@ class Track():
 class Cart():
     x = 0
     y = 0
+    crashed = False
     direction = ''
     turns = ['L','F','R']
     thisTurn = 0
@@ -96,6 +104,7 @@ class Cart():
         self.x = x
         self.y = y
         self.direction = d
+        self.crashed = False
 
     def move(self,trackPart):
         self.setNextDirection(trackPart.orientation)
@@ -153,6 +162,11 @@ class MineCart():
             if c.x == x and c.y == y:
                 self.carts.remove(c)
 
+    def removeCrashed(self):
+        for c in self.carts:
+            if c.crashed:
+                self.carts.remove(c)
+
     def findCart(self,x,y):
         for c in self.carts:
             if c.x == x and c.y == y:
@@ -170,9 +184,14 @@ class MineCart():
         c.move(tp)
         if self.hasCollided(c):
             self.collision.append([c.x,c.y])
+            c.crashed = True
 
     def numCarts(self):
-        return len(self.carts)
+        count = 0
+        for c in self.carts:
+            if c.crashed == False:
+                count += 1
+        return count
 
     def loadTracksAndCarts(self, lines):
         self.carts.clear()
@@ -201,6 +220,8 @@ class MineCart():
     def hasCollided(self, cart):
         for otherCart in self.carts:
             if cart != otherCart and cart.x == otherCart.x and cart.y == otherCart.y:
+                otherCart.crashed = True
+                cart.crashed = True
                 return True
         return False
 
@@ -208,19 +229,25 @@ class MineCart():
     def hasCollision(self):
         return len(self.collision) > 0
 
+    def findCartNotCollided(self):
+        result = []
+        for c in self.carts:
+            if c.crashed == False:
+                result.append(c)
+        return result
+
     def findFirstCollision(self):
         self.collision.clear()
         while self.hasCollision() == False:
             self.moveAllOneStep()
         return self.collision
 
-    def removeCarts(self,coordinates):
-        for c in coordinates:
-            self.removeCart(c[0],c[1])
-
     def findLastCart(self):
-        while len(self.carts) > 1:
+        # print(self.track.print(self.carts))
+        while self.numCarts() > 1:
             self.moveAllOneStep()
-            self.removeCarts(self.collision)
-            print('Remaining carts:',len(self.carts))
-        return self.carts[0]
+            self.removeCrashed()
+            # print(self.track.print(self.carts))
+            # print('Remaining carts:',self.numCarts())
+        
+        return self.findCartNotCollided()[0]

@@ -55,6 +55,7 @@ class MineCartTest(unittest.TestCase):
         self.assertFalse(mc.hasCollision())
         mc.addCart(cart)
         self.assertTrue(mc.hasCollided(cart))
+        self.assertTrue(cart.crashed)
 
     def test_remove_cart(self):
         # arrange
@@ -177,7 +178,7 @@ class MineCartTest(unittest.TestCase):
         result = mc.findLastCart()
 
         # assert
-        self.assertEqual(result.print(),True)
+        # self.assertEqual(result.print(),True)
         self.assertEqual([result.x,result.y], [6,4])
 
     def test_move_one_step_minecart(self):
