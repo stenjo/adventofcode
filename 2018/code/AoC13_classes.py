@@ -213,7 +213,7 @@ class MineCart():
 
     def removeCarts(self,coordinates):
         for c in coordinates:
-            self.removeCart(c.x,c.y)
+            self.removeCart(c[0],c[1])
 
     def findLastCart(self):
         while len(self.carts) > 1:
