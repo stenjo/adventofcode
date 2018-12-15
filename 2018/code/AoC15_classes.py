@@ -1,4 +1,4 @@
-# Advent of Code 2018: https://adventofcode.com/2018/day/14
+# Advent of Code 2018: https://adventofcode.com/2018/day/15
 #
 # Classes
 
@@ -8,7 +8,7 @@ import pprint
 import collections
 
 
-class ChocoChart():
+class BeverageBandidts():
     recipes = []
     _index = 0
     def __init__(self):

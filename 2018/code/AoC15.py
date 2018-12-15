@@ -1,15 +1,15 @@
-# Advent of Code 2018: https://adventofcode.com/2018/day/14
+# Advent of Code 2018: https://adventofcode.com/2018/day/15
 # 
 # Main file
 
-from AoC14_classes import ChocoChart
+from AoC15_classes import ChocoChart
 
 inputData = 409551
 
 
-cc = ChocoChart()
+bb = BeverageBandidts()
 
-scores = cc.getScores()
+scores = bb.getScores()
 
 print('\nPart 1: The scores of the ten recipes immediately after', inputData, 'is', scores)
 

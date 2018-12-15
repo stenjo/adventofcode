@@ -1,9 +1,9 @@
-# Advent of Code 2018: https://adventofcode.com/2018/day/13
+# Advent of Code 2018: https://adventofcode.com/2018/day/15
 #
 # Tests
 
 import unittest
-from AoC14_classes import ChocoChart
+from AoC15_classes import BeverageBandidts
 
 class ChocoChartTest(unittest.TestCase):
 
