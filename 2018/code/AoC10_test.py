@@ -1,6 +1,6 @@
 #Test file for Advent of Code Day 10
 import unittest
-from AoC10 import Point,SkyMap
+from AoC10_classes import Point,SkyMap
 
 class MessageTest(unittest.TestCase):
 

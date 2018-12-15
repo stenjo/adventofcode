@@ -1,6 +1,6 @@
 #Test file for Advent of Code Day 11
 import unittest
-from AoC11 import FuelCells
+from AoC11_classes import FuelCells
 
 class FuelcellTest(unittest.TestCase):
 
@@ -54,7 +54,7 @@ class FuelcellTest(unittest.TestCase):
         result = []
         # act
         for g in m:
-            result.append(self.fuelCells.totalPower(1,1,g))
+            result.append(self.fuelCells.totalPower(1,1,g,3))
 
         # assert
         self.assertEqual(result,[29,30])
@@ -67,8 +67,8 @@ class FuelcellTest(unittest.TestCase):
         #act
         for t in test:
             self.fuelCells.initialize(t[2])
-            self.fuelCells.print3x3(t[0],t[1], self.fuelCells.Map)
-            result.append(self.fuelCells.totalPower(t[0],t[1], self.fuelCells.Map))
+            # self.fuelCells.print3x3(t[0],t[1], self.fuelCells.Map)
+            result.append(self.fuelCells.totalPower(t[0],t[1], self.fuelCells.Map, 3))
 
         # assert
         self.assertEqual(result, [29, 30])
