@@ -5,9 +5,9 @@
 import unittest
 from AoC15_classes import BeverageBandidts
 
-class ChocoChartTest(unittest.TestCase):
+class BeverageBandidtsTest(unittest.TestCase):
 
-    def test_chocochart(self):
+    def test_beveragebandidts(self):
         # arrange
         # act
         # assert

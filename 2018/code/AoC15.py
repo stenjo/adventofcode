@@ -2,7 +2,7 @@
 # 
 # Main file
 
-from AoC15_classes import ChocoChart
+from AoC15_classes import BeverageBandidts
 
 inputData = 409551
 
