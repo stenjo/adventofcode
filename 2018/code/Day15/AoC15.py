@@ -9,7 +9,7 @@ from AoC15_classes import BeverageBandidts
 start = datetime.datetime.now()
 
 
-inputData = open('../data/input15.txt','r')
+inputData = open('../../data/input15.txt','r')
 liveData = inputData.readlines()
 
 bb = BeverageBandidts()
