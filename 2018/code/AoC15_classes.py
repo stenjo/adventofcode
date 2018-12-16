@@ -15,6 +15,7 @@ class Unit():
         self._hitpoints = 200
         self._attackPower = 3
         self._dead == False
+        self._name = 'None'
     
     # Properties
     #
@@ -37,18 +38,16 @@ class Unit():
         if self._hitpoints <= 0:
             self._dead = True
 
+    @property
+    def name(self):
+        return self._name
+
     def IsDead(self):
         return self._dead
 
     def move(self, dir):
-        if dir == 'up':
-            self._y -=1
-        elif dir == 'left':    
-            self._x +=1
-        elif dir == 'down':    
-            self._y +=1
-        elif dir == 'right':    
-            self._x -=1
+            self._y += dir.y
+            self._x += dir.x
     
     def fight(self, unit):
         unit.hitpoints -= self._attackPower
@@ -58,12 +57,14 @@ class Unit():
 
 
 class Goblin(Unit):
-    def name(self):
-        return 'Goblin'
+    def __init__(self,x,y):
+        Unit.__init__(self,x,y)
+        self._name = 'Goblin'
 
 class Elf(Unit):
-    def name(self):
-        return 'Elf'
+    def __init__(self,x,y):
+        Unit.__init__(self,x,y)
+        self._name = 'Elf'
 
 class Wall:
     def __init__(self,x,y):
@@ -78,6 +79,21 @@ class Wall:
     def y(self):
         return self._y
 
+class Direction:
+    def __init__(self,x,y):
+        self._x = x
+        self._y = y
+    
+    @property
+    def x(self):
+        return self._x
+
+    @property
+    def y(self):
+        return self._y
+    def a(self):
+        return [self._x, self._y]
+
 
 class BeverageBandidts:
 
@@ -86,6 +102,7 @@ class BeverageBandidts:
         self._elfs = []
         self._goblins = []
         self._walls = []
+        self._round = []
 
     def load(self,data):
         for y in range(len(data)):
@@ -94,11 +111,11 @@ class BeverageBandidts:
                 c = data[y][x]
                 if c == '#':
                     self._walls.append(Wall(x,y))
+                    self.putGridItem(c,x,y)
                 elif c == 'G':
                     self._goblins.append(Goblin(x,y))
                 elif c == 'E':
                     self._elfs.append(Elf(x,y))
-                self.putGridItem(c,x,y)
     
     def numGoblins(self):
         return len(self._goblins)
@@ -108,9 +125,11 @@ class BeverageBandidts:
 
     def getUnitAt(self, x, y):
         for u in self._elfs:
+            # print('Elfs:',u.x, x, u.y, y)
             if u.x == x and u.y == y:
                 return u
         for u in self._goblins:
+            # print('Goblins:',u.x, x, u.y, y)
             if u.x == x and u.y == y:
                 return u
         return None
@@ -150,35 +169,69 @@ class BeverageBandidts:
         if y != 0:
             y = -1 if y < 0 else 1
 
-        return [x,y]
+        return Direction(x,y)
     
-    def getNearest(self, source):
-        if source.name() == 'Elf':
-            return self._getNearest(source, self._goblins)
-        elif source.name() == 'Goblin':
-            return self._getNearest(source, self._elfs)
 
+    def getNearestTo(self, source):
+        if source == None:
+            return None
+        if source.name == 'Elf':
+            return self._getNearest(source, self._goblins)
+        elif source.name == 'Goblin':
+            return self._getNearest(source, self._elfs)
 
     def _getNearest(self, unit, _list):
         closer = 1000000
         nearest = None
+        # print('unit:', unit.x, unit.y, unit.name)
         for u in _list:
             distance  = self.distanceTo(unit,u)
-            if distance < closer or (u == closer and (u.y < nearest.y or (u.y < nearest.y and u.x < nearest.x))):
+            # print('u:', u.x, u.y, u.name, distance)
+            if nearest == None:
+                nearest = u
+                closer = distance
+            elif distance < closer or (u == closer and (u.y < nearest.y or (u.y < nearest.y and u.x < nearest.x))):
                 closer = distance
                 nearest = u
-        return unit
 
+        # print('unit:', nearest.x, nearest.y, nearest.name, closer)
+        return nearest
 
     def printGrid(self):
         print()
         for y in range(len(self._grid)):
             s = ''
             for x in range(len(self._grid[y])):
-                s += self._grid[y][x]
+                    unit = self.getUnitAt(x,y)
+                    if unit == None:
+                        if self.isWall(x,y) == False:
+                                s += '.'
+                        else:
+                            s += self._grid[y][x]
+                    else:
+                        if unit.name == 'Elf':
+                            s += 'E'                    
+                        elif unit.name == 'Goblin':
+                            s += 'G'                    
             print(s)
 
-            
+    def doRound(self):
+        for y in range(len(self._grid)):
+            for x in range(len(self._grid[y])):
+                if self.isWall(x,y) == False:
+                    unit = self.getUnitAt(x,y)
+                    if unit != None:
+                        self._round.append(unit)
+                        print(unit.name, ':', unit.x, unit.y)
+        for unit in self._round:
+            nearest = self.getNearestTo(unit)
+            dir = self.directionTo(unit, nearest)
+            if self.isWall(unit.x+dir.x, unit.y+dir.y) == False:
+                unit.move(dir)
+                print(unit.name, 'moved by', dir.a(), 'to', unit.x, unit.y)
+
+
+
     @property
     def index(self):
         return self._index

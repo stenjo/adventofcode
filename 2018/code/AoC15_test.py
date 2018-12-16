@@ -3,7 +3,7 @@
 # Tests
 
 import unittest
-from AoC15_classes import BeverageBandidts, Goblin, Elf
+from AoC15_classes import BeverageBandidts, Goblin, Elf, Direction
 
 test1 = [
 '#########',
@@ -11,7 +11,7 @@ test1 = [
 '#.......#',
 '#.......#',
 '#G..E..G#',
-'#.......#',
+'#...E...#',
 '#.......#',
 '#G..G..G#',
 '#########'
@@ -34,7 +34,8 @@ class BeverageBandidtsTest(unittest.TestCase):
         bb.load(test1)
 
         # assert
-        self.assertEqual(bb.numElfs(), 1)
+        self.assertEqual(bb.numGoblins(), 8)
+        self.assertEqual(bb.numElfs(), 2)
         self.assertEqual(bb.numGoblins(), 8)
 
     def test_putGridItem(self):
@@ -53,10 +54,10 @@ class BeverageBandidtsTest(unittest.TestCase):
         goblin = Goblin(2,2)
 
         # act
-        goblin.move('up')
-        goblin.move('left')
-        goblin.move('down')
-        goblin.move('right')
+        goblin.move(Direction(0,-1))    # up
+        goblin.move(Direction(-1,0))    # left
+        goblin.move(Direction(0,1))     # down
+        goblin.move(Direction(1,0))    # right
 
         # assert
         self.assertEqual(goblin.position(), [2,2])
@@ -96,11 +97,11 @@ class BeverageBandidtsTest(unittest.TestCase):
         result = []
 
         #act
-        result.append(bb.directionTo(goblin, elf00))
-        result.append(bb.directionTo(goblin, elf1010))
-        result.append(bb.directionTo(goblin, elf010))
-        result.append(bb.directionTo(goblin, elf100))
-        result.append(bb.directionTo(goblin, elf23))
+        result.append(bb.directionTo(goblin, elf00).a())
+        result.append(bb.directionTo(goblin, elf1010).a())
+        result.append(bb.directionTo(goblin, elf010).a())
+        result.append(bb.directionTo(goblin, elf100).a())
+        result.append(bb.directionTo(goblin, elf23).a())
 
         # assert
         self.assertEqual(result, [[-1,-1],[1,1],[-1,1],[1,-1],[0,1]])
@@ -109,16 +110,18 @@ class BeverageBandidtsTest(unittest.TestCase):
         # arrange
         bb=BeverageBandidts()
         bb.load(test1)
-        result = None
+        result = []
         # act
-        goblin = bb.getUnitAt(2,2)
-        result = bb.getNearest(goblin)
+        goblin11 = bb.getUnitAt(1,1)
+        result.append(bb.getNearestTo(goblin11))
+        goblin77 = bb.getUnitAt(7,7)
+        result.append(bb.getNearestTo(goblin77))
 
         # assert
-        self.assertEqual(result, bb.getUnitAt(4,4))
+        self.assertEqual(result, [bb.getUnitAt(4,4), bb.getUnitAt(4,5)])
 
 
-    @unittest.skip('Not needed')
+    # @unittest.skip('Not needed')
     def test_grid_print(self):
         # arrange
         bb = BeverageBandidts()
@@ -127,6 +130,8 @@ class BeverageBandidtsTest(unittest.TestCase):
         bb.load(test1)
 
         # assert
+        bb.printGrid()
+        bb.doRound()
         bb.printGrid()
 
         self.assertTrue(True)
