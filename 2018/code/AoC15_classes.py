@@ -223,6 +223,7 @@ class BeverageBandidts:
                     if unit != None:
                         self._round.append(unit)
                         print(unit.name, ':', unit.x, unit.y)
+                        
         for unit in self._round:
             nearest = self.getNearestTo(unit)
             dir = self.directionTo(unit, nearest)
