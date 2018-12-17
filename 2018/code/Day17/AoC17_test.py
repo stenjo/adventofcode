@@ -79,9 +79,9 @@ class WaterFountainTest(unittest.TestCase):
         wf.load(test1)
 
         # act
-        result = wf.findEdge(499,10)
+        result = wf.findEdge(500,2)
         # assert
-        self.assertEqual(result.a, [498,504])
+        self.assertEqual(result.a, [499,502])
 
     # @unittest.skip('Not working')
     def test_do_fill_with_water(self):

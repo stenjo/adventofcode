@@ -202,12 +202,12 @@ class WaterFountain:
     
     def findEdge(self, x,y):
         edges = Width(0,0)
-        for col in range(x,self._maxX+1):
+        for col in range(x+1,self._maxX+1):
             if self.getGridItem(col, y+1) == None:
                 edges.right = col 
                 break
 
-        for col in range(x,self._minX-1,-1):
+        for col in range(x-1,self._minX-1,-1):
             if self.getGridItem(col, y+1) == None:
                 edges.left = col
                 break
@@ -269,11 +269,11 @@ class WaterFountain:
                 break    
 
     def tryDown(self, x, y):
-        if y >= self._maxY: return
+        if y > self._maxY: return
         if self.isWall(x,y+1):
             width = self.findWalls(x,y)
             for col in range(width.left+1, width.right):
-                self.tryDown(col,y)
+                self.tryDown(col,y+1)
             self.fillWaterOnLine(width.left+1, width.right)
         elif self.getGridItem(x,y+1) == None:
             self.putGridItem('|',x,y)
