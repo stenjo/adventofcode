@@ -13,7 +13,7 @@ DEBUG = True
 start = datetime.datetime.now()
 pp = pprint.PrettyPrinter(width=180, compact=True)
 
-inputData = open('../data/input9.txt','r')
+inputData = open('../../data/input9.txt','r')
 testData = [
             '20 players; last marble is worth 75000 points: high score is 112',
             '4 players; last marble is worth 100 points: high score is 107',
