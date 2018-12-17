@@ -3,7 +3,7 @@
 # Tests
 
 import unittest
-from AoC17_classes import WaterFountain
+from AoC17_classes import WaterFountain, Width
 
 test1 = [
 'x=495, y=2..7',
@@ -47,20 +47,19 @@ class WaterFountainTest(unittest.TestCase):
         # assert
         self.assertEqual(wf.getGridItem(2,2), 't')
 
-    @unittest.skip('Not working')
-    def test_move_unit(self):
+    # @unittest.skip('Not working')
+    def test_tryDown(self):
         # arrange
-        # bb = BeverageBandidts()
-        goblin = Goblin(2,2)
+        wf = WaterFountain()
 
         # act
-        goblin.move(Direction(0,-1))    # up
-        goblin.move(Direction(-1,0))    # left
-        goblin.move(Direction(0,1))     # down
-        goblin.move(Direction(1,0))    # right
+        wf.load(test1)
+        wf.tryDown(500,0)
 
         # assert
-        self.assertEqual(goblin.position(), [2,2])
+        wf.printGrid()
+
+        self.assertTrue(True)
 
     # @unittest.skip('Not working')
     def test_findWalls(self):
@@ -71,30 +70,18 @@ class WaterFountainTest(unittest.TestCase):
         # act
         result = wf.findWalls(499,10)
         # assert
-        self.assertEqual(result, [498,504])
+        self.assertEqual(result.a, [498,504])
 
-    @unittest.skip('Not working')
-    def test_directionTo(self):
+    # @unittest.skip('Not working')
+    def test_findEdge(self):
         # arrange
-        bb = BeverageBandidts()
-        goblin = Goblin(2,2)
-        elf00 = Elf(0,0)
-        elf1010 = Elf(10,10)
-        elf010 = Elf(0,10)
-        elf100 = Elf(10,0)
-        elf23 = Elf(2,3)
+        wf = WaterFountain()
+        wf.load(test1)
 
-        result = []
-
-        #act
-        result.append(bb.directionTo(goblin, elf00).a())
-        result.append(bb.directionTo(goblin, elf1010).a())
-        result.append(bb.directionTo(goblin, elf010).a())
-        result.append(bb.directionTo(goblin, elf100).a())
-        result.append(bb.directionTo(goblin, elf23).a())
-
+        # act
+        result = wf.findEdge(499,10)
         # assert
-        self.assertEqual(result, [[-1,-1],[1,1],[-1,1],[1,-1],[0,1]])
+        self.assertEqual(result.a, [498,504])
 
     # @unittest.skip('Not working')
     def test_do_fill_with_water(self):

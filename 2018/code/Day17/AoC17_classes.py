@@ -66,18 +66,30 @@ class Elf(Unit):
         Unit.__init__(self,x,y)
         self._name = 'Elf'
 
-class Wall:
-    def __init__(self,x,y):
-        self._x = x
-        self._y = y
+class Width:
+    def __init__(self,l,r):
+        self._left = l
+        self._right = r
     
     @property
-    def x(self):
-        return self._x
+    def left(self):
+        return self._left
+    
+    @left.setter
+    def left(self,v):
+        self._left = v
 
     @property
-    def y(self):
-        return self._y
+    def right(self):
+        return self._right
+
+    @right.setter
+    def right(self, v):
+        self._right = v
+
+    @property
+    def a(self):
+        return [self._left, self._right]
 
 class Direction:
     def __init__(self,x,y):
@@ -145,23 +157,7 @@ class WaterFountain:
         #             self._goblins.append(Goblin(x,y))
         #         elif c == 'E':
         #             self._elfs.append(Elf(x,y))
-    
-    def numGoblins(self):
-        return len(self._goblins)
-
-    def numElfs(self):
-        return len(self._elfs)
-
-    def getUnitAt(self, x, y):
-        for u in self._elfs:
-            # print('Elfs:',u.x, x, u.y, y)
-            if u.x == x and u.y == y:
-                return u
-        for u in self._goblins:
-            # print('Goblins:',u.x, x, u.y, y)
-            if u.x == x and u.y == y:
-                return u
-        return None
+   
 
     def putGridItem(self,t,x,y):
 
@@ -186,49 +182,49 @@ class WaterFountain:
         return item
 
     def isWall(self, x, y):
-        if self._grid[y][x] == '#':
+        if self.getGridItem(x, y) == '#':
             return True
         return False
 
     def findWalls(self, x,y):
-        rightWall = None
-        leftWall = None
-        for col in range(x,self._maxX+1):
-            print(col,y)
-            if self.getGridItem(col, y) == '#':
-                rightWall = col 
-            break
+        w = Width(0,0)
+        for column in range(x,self._maxX+2):
+            if self.isWall(column, y):
+                w.right = column 
+                break
 
-        for col in range(x,-self._minX-1):
-            print(col,y)
-            if self.getGridItem(col, y) == '#':
-                leftWall = col 
-            break
+        for column in range(x,self._minX-1,-1):
+            if self.isWall(column, y):
+                w.left = column 
+                break
             
-        return [leftWall,rightWall]
+        return w
     
     def findEdge(self, x,y):
+        edges = Width(0,0)
         for col in range(x,self._maxX+1):
             if self.getGridItem(col, y+1) == None:
-                rightEdge = col 
-                break
-        for col in range(x,-self._minX-1):
-            if self.getGridItem(col, y+1) == None:
-                leftEdge = col
+                edges.right = col 
                 break
 
-        return [leftEdge,rightEdge]
+        for col in range(x,self._minX-1,-1):
+            if self.getGridItem(col, y+1) == None:
+                edges.left = col
+                break
+
+        return edges
 
     def isOverflowing(self, x,y):
         return False
 
     def fillWaterOnLine(self, x, y):
         walls = self.findWalls(x,y)
-        leftWall = walls[0]
-        rightWall = walls[1]
-        if leftWall == None or rightWall == None: return
-        for col in range(walls[0],walls[1]):
+        if walls.left == None or walls.right == None: 
+            return walls
+        for col in range(walls.left+1, walls.right):
             self.putGridItem('~',col,y)
+
+        return walls
 
     def printGrid(self):
         # print header
@@ -262,10 +258,26 @@ class WaterFountain:
                 self.putGridItem('|',x,y)
             elif self.getGridItem(x,y) == '#':
                 self.fillWaterOnLine(x,y-1)
-                if self.isOverflowing(x,y-1):
-                    x = self.findEdge(x,y-1)
+                y -=1
+                self.fillWaterOnLine(x,y-1)
+                y -=1
+                self.fillWaterOnLine(x,y-1)
+                y -=1
+                self.fillWaterOnLine(x,y-1)
+                    # if self.isOverflowing(x,y-1):
+                    #     x = self.findEdge(x,y-1)
                 break    
 
+    def tryDown(self, x, y):
+        if y >= self._maxY: return
+        if self.isWall(x,y+1):
+            width = self.findWalls(x,y)
+            for col in range(width.left+1, width.right):
+                self.tryDown(col,y)
+            self.fillWaterOnLine(width.left+1, width.right)
+        elif self.getGridItem(x,y+1) == None:
+            self.putGridItem('|',x,y)
+            self.tryDown(x,y+1)
 
     @property
     def index(self):
