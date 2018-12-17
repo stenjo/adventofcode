@@ -62,28 +62,16 @@ class WaterFountainTest(unittest.TestCase):
         # assert
         self.assertEqual(goblin.position(), [2,2])
 
-    @unittest.skip('Not working')
-    def test_distanceTo(self):
+    # @unittest.skip('Not working')
+    def test_findWalls(self):
         # arrange
-        bb = BeverageBandidts()
-        goblin = Goblin(2,2)
-        elf00 = Elf(0,0)
-        elf1010 = Elf(10,10)
-        elf010 = Elf(0,10)
-        elf100 = Elf(10,0)
-        elf23 = Elf(2,3)
+        wf = WaterFountain()
+        wf.load(test1)
 
-        result = []
-
-        #act
-        result.append(bb.distanceTo(goblin, elf00))
-        result.append(bb.distanceTo(goblin, elf1010))
-        result.append(bb.distanceTo(goblin, elf010))
-        result.append(bb.distanceTo(goblin, elf100))
-        result.append(bb.distanceTo(goblin, elf23))
-
+        # act
+        result = wf.findWalls(499,10)
         # assert
-        self.assertEqual(result, [4,16,10,10,1])
+        self.assertEqual(result, [498,504])
 
     @unittest.skip('Not working')
     def test_directionTo(self):
@@ -108,20 +96,19 @@ class WaterFountainTest(unittest.TestCase):
         # assert
         self.assertEqual(result, [[-1,-1],[1,1],[-1,1],[1,-1],[0,1]])
 
-    @unittest.skip('Not working')
-    def test_get_nearest(self):
+    # @unittest.skip('Not working')
+    def test_do_fill_with_water(self):
         # arrange
-        bb=BeverageBandidts()
-        bb.load(test1)
-        result = []
+        wf = WaterFountain()
+
         # act
-        goblin11 = bb.getUnitAt(1,1)
-        result.append(bb.getNearestTo(goblin11))
-        goblin77 = bb.getUnitAt(7,7)
-        result.append(bb.getNearestTo(goblin77))
+        wf.load(test1)
+        wf.doFillWithWater()
 
         # assert
-        self.assertEqual(result, [bb.getUnitAt(4,4), bb.getUnitAt(4,5)])
+        wf.printGrid()
+
+        self.assertTrue(True)
 
 
     # @unittest.skip('Not needed')

@@ -181,52 +181,54 @@ class WaterFountain:
     def getGridItem(self, x, y):
         if y+1 > len(self._grid): return None
         if x+1 > len(self._grid[y]): return None
-        return self._grid[y][x]
+        item = self._grid[y][x]
+        if item == None or item == '.': return None
+        return item
 
     def isWall(self, x, y):
         if self._grid[y][x] == '#':
             return True
         return False
 
-    def distanceTo(self, source, dest):
-        return abs(source.x - dest.x) + abs(source.y-dest.y)
+    def findWalls(self, x,y):
+        rightWall = None
+        leftWall = None
+        for col in range(x,self._maxX+1):
+            print(col,y)
+            if self.getGridItem(col, y) == '#':
+                rightWall = col 
+            break
+
+        for col in range(x,-self._minX-1):
+            print(col,y)
+            if self.getGridItem(col, y) == '#':
+                leftWall = col 
+            break
+            
+        return [leftWall,rightWall]
     
-    def directionTo(self, source, dest):
-        x = (dest.x - source.x)
-        if x != 0:
-            x = -1 if x < 0 else 1
+    def findEdge(self, x,y):
+        for col in range(x,self._maxX+1):
+            if self.getGridItem(col, y+1) == None:
+                rightEdge = col 
+                break
+        for col in range(x,-self._minX-1):
+            if self.getGridItem(col, y+1) == None:
+                leftEdge = col
+                break
 
-        y = (dest.y - source.y)
-        if y != 0:
-            y = -1 if y < 0 else 1
+        return [leftEdge,rightEdge]
 
-        return Direction(x,y)
-    
+    def isOverflowing(self, x,y):
+        return False
 
-    def getNearestTo(self, source):
-        if source == None:
-            return None
-        if source.name == 'Elf':
-            return self._getNearest(source, self._goblins)
-        elif source.name == 'Goblin':
-            return self._getNearest(source, self._elfs)
-
-    def _getNearest(self, unit, _list):
-        closer = 1000000
-        nearest = None
-        # print('unit:', unit.x, unit.y, unit.name)
-        for u in _list:
-            distance  = self.distanceTo(unit,u)
-            # print('u:', u.x, u.y, u.name, distance)
-            if nearest == None:
-                nearest = u
-                closer = distance
-            elif distance < closer or (u == closer and (u.y < nearest.y or (u.y < nearest.y and u.x < nearest.x))):
-                closer = distance
-                nearest = u
-
-        # print('unit:', nearest.x, nearest.y, nearest.name, closer)
-        return nearest
+    def fillWaterOnLine(self, x, y):
+        walls = self.findWalls(x,y)
+        leftWall = walls[0]
+        rightWall = walls[1]
+        if leftWall == None or rightWall == None: return
+        for col in range(walls[0],walls[1]):
+            self.putGridItem('~',col,y)
 
     def printGrid(self):
         # print header
@@ -248,27 +250,21 @@ class WaterFountain:
                 else:
                     item = self.getGridItem(x,y)
                     if item == None:
-                        s += '.'
+                        s += ' '
                     else:
                         s += item
             print('{0:2d} {1:s}'.format(y,s))
 
-    def doRound(self):
-        for y in range(len(self._grid)):
-            for x in range(len(self._grid[y])):
-                if self.isWall(x,y) == False:
-                    unit = self.getUnitAt(x,y)
-                    if unit != None:
-                        self._round.append(unit)
-                        print(unit.name, ':', unit.x, unit.y)
-                        
-        for unit in self._round:
-            nearest = self.getNearestTo(unit)
-            dir = self.directionTo(unit, nearest)
-            if self.isWall(unit.x+dir.x, unit.y+dir.y) == False:
-                unit.move(dir)
-                print(unit.name, 'moved by', dir.a(), 'to', unit.x, unit.y)
-
+    def doFillWithWater(self):
+        x = 500
+        for y in range(self._maxY):
+            if self.getGridItem(x,y) == None:
+                self.putGridItem('|',x,y)
+            elif self.getGridItem(x,y) == '#':
+                self.fillWaterOnLine(x,y-1)
+                if self.isOverflowing(x,y-1):
+                    x = self.findEdge(x,y-1)
+                break    
 
 
     @property
