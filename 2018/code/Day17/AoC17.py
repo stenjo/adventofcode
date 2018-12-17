@@ -5,19 +5,20 @@
 import datetime, time
 from datetime import timedelta
 
-from AoC17_classes import BeverageBandidts
+from AoC17_classes import WaterFountain
 start = datetime.datetime.now()
 
 
 inputData = open('../../data/input17.txt','r')
 liveData = inputData.readlines()
 
-bb = BeverageBandidts()
-bb.load(liveData)
+wf = WaterFountain()
+wf.load(liveData)
 
-scores = bb.getScores()
+wf.printGrid()
+# scores = bb.getScores()
 
-print('\nPart 1: The outcome of the combat is', inputData, 'is', scores)
+# print('\nPart 1: The outcome of the combat is', inputData, 'is', scores)
 
 # print('\nPart 2: The location of the last cart is', cart.print())
 

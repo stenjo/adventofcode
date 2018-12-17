@@ -3,7 +3,7 @@
 # Tests
 
 import unittest
-from AoC17_classes import BeverageBandidts, Goblin, Elf, Direction
+from AoC17_classes import WaterFountain
 
 test1 = [
 'x=495, y=2..7',
@@ -18,35 +18,36 @@ test1 = [
 
 class WaterFountainTest(unittest.TestCase):
 
-    def test_beveragebandidts(self):
+    def test_waterfountain(self):
         # arrange
         # act
         # assert
         self.assertTrue(True)
 
     # @unittest.skip('Not working')
-    def test_load_data(self):
+    def test_load_data_wf(self):
         # arrange
-        bb = BeverageBandidts()
+        wf = WaterFountain()
 
         # act
-        bb.load(test1)
+        wf.load(test1)
+        result = wf.getGridItem(495,7)
 
         # assert
-        self.assertEqual(bb.numGoblins(), 8)
-        self.assertEqual(bb.numElfs(), 2)
-        self.assertEqual(bb.numGoblins(), 8)
+        self.assertEqual(result, '#')
 
+    # @unittest.skip('Not working')
     def test_putGridItem(self):
         # arrange
-        bb = BeverageBandidts()
+        wf = WaterFountain()
         
         # act
-        bb.putGridItem('t', 2, 2)
+        wf.putGridItem('t', 2, 2)
 
         # assert
-        self.assertEqual(bb.getGridItem(2,2), 't')
+        self.assertEqual(wf.getGridItem(2,2), 't')
 
+    @unittest.skip('Not working')
     def test_move_unit(self):
         # arrange
         # bb = BeverageBandidts()
@@ -61,6 +62,7 @@ class WaterFountainTest(unittest.TestCase):
         # assert
         self.assertEqual(goblin.position(), [2,2])
 
+    @unittest.skip('Not working')
     def test_distanceTo(self):
         # arrange
         bb = BeverageBandidts()
@@ -83,6 +85,7 @@ class WaterFountainTest(unittest.TestCase):
         # assert
         self.assertEqual(result, [4,16,10,10,1])
 
+    @unittest.skip('Not working')
     def test_directionTo(self):
         # arrange
         bb = BeverageBandidts()
@@ -105,6 +108,7 @@ class WaterFountainTest(unittest.TestCase):
         # assert
         self.assertEqual(result, [[-1,-1],[1,1],[-1,1],[1,-1],[0,1]])
 
+    @unittest.skip('Not working')
     def test_get_nearest(self):
         # arrange
         bb=BeverageBandidts()
@@ -123,15 +127,13 @@ class WaterFountainTest(unittest.TestCase):
     # @unittest.skip('Not needed')
     def test_grid_print(self):
         # arrange
-        bb = BeverageBandidts()
+        wf = WaterFountain()
 
         # act
-        bb.load(test1)
+        wf.load(test1)
 
         # assert
-        bb.printGrid()
-        bb.doRound()
-        bb.printGrid()
+        wf.printGrid()
 
         self.assertTrue(True)
 

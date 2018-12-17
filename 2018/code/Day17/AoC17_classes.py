@@ -99,23 +99,52 @@ class WaterFountain:
 
     def __init__(self):
         self._grid = [[]]
-        self._elfs = []
-        self._goblins = []
-        self._walls = []
-        self._round = []
+        self._maxX = 0
+        self._minX = 1000000
+        self._maxY = 0
 
     def load(self,data):
-        for y in range(len(data)):
-            l = data[y]
-            for x in range(len(l)):
-                c = data[y][x]
-                if c == '#':
-                    self._walls.append(Wall(x,y))
-                    self.putGridItem(c,x,y)
-                elif c == 'G':
-                    self._goblins.append(Goblin(x,y))
-                elif c == 'E':
-                    self._elfs.append(Elf(x,y))
+        for line in data:
+            parts = line.split(',')
+            if parts[0].split('=')[0].lower() == 'x':
+                xRange = parts[0].split('=')[1].strip().replace('..',':')
+                # print('xRange:',xRange)
+                yRange = parts[1].split('=')[1].strip().replace('..',':')
+                
+            elif parts[0].split('=')[0].lower() == 'y':
+                yRange = parts[0].split('=')[1].strip().replace('..',':')
+                # print('yRange:',yRange)
+                xRange = parts[1].split('=')[1].strip().replace('..',':')
+            
+            if ':' not in xRange: xRange += ':'+str(int(xRange))
+            if ':' not in yRange: yRange += ':'+str(int(yRange))
+
+            yFrom = int(yRange.split(':')[0].strip())
+            yTo = int(yRange.split(':')[1].strip())
+            # print('yRange:',yRange, 'yFrom:', yFrom, 'yTo:', yTo)
+
+            xFrom = int(xRange.split(':')[0].strip())
+            xTo = int(xRange.split(':')[1].strip())
+            # print('xRange:',xRange)
+
+            for y in range(yFrom, yTo + 1):
+                if self._maxY < y: self._maxY = y 
+                for x in range(xFrom, xTo + 1):
+                    if self._maxX < x: self._maxX = x 
+                    if self._minX > x: self._minX = x 
+                    self.putGridItem('#',x,y)
+
+        # for y in range(len(data)):
+        #     l = data[y]
+        #     for x in range(len(l)):
+        #         c = data[y][x]
+        #         if c == '#':
+        #             self._walls.append(Wall(x,y))
+        #             self.putGridItem(c,x,y)
+        #         elif c == 'G':
+        #             self._goblins.append(Goblin(x,y))
+        #         elif c == 'E':
+        #             self._elfs.append(Elf(x,y))
     
     def numGoblins(self):
         return len(self._goblins)
@@ -150,6 +179,8 @@ class WaterFountain:
             self._grid[y].append(t)
 
     def getGridItem(self, x, y):
+        if y+1 > len(self._grid): return None
+        if x+1 > len(self._grid[y]): return None
         return self._grid[y][x]
 
     def isWall(self, x, y):
@@ -198,22 +229,29 @@ class WaterFountain:
         return nearest
 
     def printGrid(self):
+        # print header
         print()
-        for y in range(len(self._grid)):
+        s = '   '
+        for x in range(self._minX-1, self._maxX+1): s += str(int(x/100))
+        print(s)
+        s = '   '
+        for x in range(self._minX-1, self._maxX+1): s += str(int((x%100)/10))
+        print(s)
+        s = '   '
+        for x in range(self._minX-1, self._maxX+1): s += str(int(x%10))
+        print(s)
+
+        for y in range(self._maxY+2):
             s = ''
-            for x in range(len(self._grid[y])):
-                    unit = self.getUnitAt(x,y)
-                    if unit == None:
-                        if self.isWall(x,y) == False:
-                                s += '.'
-                        else:
-                            s += self._grid[y][x]
+            for x in range(self._minX-1, self._maxX+2):
+                if y == 0 and x == 500: s += '+'
+                else:
+                    item = self.getGridItem(x,y)
+                    if item == None:
+                        s += '.'
                     else:
-                        if unit.name == 'Elf':
-                            s += 'E'                    
-                        elif unit.name == 'Goblin':
-                            s += 'G'                    
-            print(s)
+                        s += item
+            print('{0:2d} {1:s}'.format(y,s))
 
     def doRound(self):
         for y in range(len(self._grid)):
