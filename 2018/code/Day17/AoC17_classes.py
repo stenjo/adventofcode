@@ -91,6 +91,10 @@ class Width:
     def a(self):
         return [self._left, self._right]
 
+    @property
+    def r(self):
+        return list(range(self._left+1, self._right))
+
 class Direction:
     def __init__(self,x,y):
         self._x = x
@@ -221,7 +225,7 @@ class WaterFountain:
         walls = self.findWalls(x,y)
         if walls.left == None or walls.right == None: 
             return walls
-        for col in range(walls.left+1, walls.right):
+        for col in walls.r:
             self.putGridItem('~',col,y)
 
         return walls
@@ -272,7 +276,7 @@ class WaterFountain:
         if y > self._maxY: return
         if self.isWall(x,y+1):
             width = self.findWalls(x,y)
-            for col in range(width.left+1, width.right):
+            for col in width.r:
                 self.tryDown(col,y+1)
             self.fillWaterOnLine(width.left+1, width.right)
         elif self.getGridItem(x,y+1) == None:
