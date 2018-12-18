@@ -9,10 +9,12 @@ import collections
 
 
 class OpCodes():
+
     def __init__(self):
-        self._before = [[]]
-        self._codes  = [[]]
-        self._after  = [[]]
+        self._register = [[],[],[],[]]
+        self._before = []
+        self._codes  = []
+        self._after  = []
 
         # Before: [3, 3, 2, 1]
         # 0 3 1 2
@@ -23,8 +25,13 @@ class OpCodes():
         # After:  [3, 1, 2, 1]
     def load(self,data):
         index = 0
-        for line in data:
-            continue
+        for i in range(len(data)):
+            line = data[i]
+            if line.strip().split(':')[0] == 'Before':
+                self._before.append(eval(line.strip().split(':')[1]))
+                self._after.append(eval(data[i+2].strip().split(':')[1]))
+                self._codes.append(eval('['+data[i+1].strip().replace(' ',',')+']'))
+                i += 2
 
     def findSamples(self):
         return 0

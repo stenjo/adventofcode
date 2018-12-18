@@ -9,7 +9,7 @@ from AoC16_classes import OpCodes
 start = datetime.datetime.now()
 
 
-inputData = open('../data/input16.txt','r')
+inputData = open('../../data/input16.txt','r')
 liveData = inputData.readlines()
 
 oc = OpCodes()

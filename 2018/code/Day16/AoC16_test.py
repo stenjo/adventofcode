@@ -9,6 +9,14 @@ test1 = [
 'Before: [3, 2, 1, 1]',
 '9 2 1 2',
 'After:  [3, 2, 2, 1]',
+'',
+'Before: [3, 3, 2, 1]',
+'0 3 1 2',
+'After:  [3, 3, 1, 1]',
+'',
+'Before: [3, 2, 2, 1]',
+'5 3 2 1',
+'After:  [3, 1, 2, 1]'
 ]
 
 class OpCodeTest(unittest.TestCase):
@@ -17,6 +25,16 @@ class OpCodeTest(unittest.TestCase):
     def test_opcodes(self):
         # arrange
         # act
+        # assert
+        self.assertTrue(True)
+
+    def test_load(self):
+        # arrange
+        oc = OpCodes()
+
+        # act
+        oc.load(test1)
+        
         # assert
         self.assertTrue(True)
 
