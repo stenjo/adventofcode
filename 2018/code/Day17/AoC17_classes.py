@@ -273,15 +273,34 @@ class WaterFountain:
                 break    
 
     def tryDown(self, x, y):
-        if y > self._maxY: return
+        if y > self._maxY : return
+        print(x,y)
         if self.isWall(x,y+1):
             width = self.findWalls(x,y)
             for col in width.r:
-                self.tryDown(col,y+1)
-            self.fillWaterOnLine(width.left+1, width.right)
+                if self.getGridItem(x,y) == None:
+                    self.putGridItem('|',col,y)
+                    self.tryDown(col,y)
+            self.fillWaterOnLine(x,y)
         elif self.getGridItem(x,y+1) == None:
             self.putGridItem('|',x,y)
             self.tryDown(x,y+1)
+            width = self.findWalls(x,y)
+            for col in width.r:
+                if self.getGridItem(x,y) == None:
+                    self.putGridItem('|',col,y)
+                    self.tryDown(col,y)
+        self.fillWaterOnLine(x,y)
+        edges = self.findEdge(x,y)
+        if edges.left != 0:
+            print ('left:',x,y,edges.left)
+            return
+            self.tryDown(edges.left,y)
+        if edges.right != 0:
+            print('right:',x,y,edges.right)
+            return
+            self.tryDown(edges.right,y)
+
 
     @property
     def index(self):
