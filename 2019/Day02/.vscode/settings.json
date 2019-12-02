@@ -1,4 +1,5 @@
 {
+    "python.autoComplete.extraPaths": ["./code"],
     "python.testing.unittestArgs": [
         "-v",
         "-s",
@@ -8,7 +9,5 @@
     ],
     "python.testing.pytestEnabled": false,
     "python.testing.nosetestsEnabled": false,
-    "python.testing.unittestEnabled": true,
-    "python.pythonPath": "C:\\Users\\sten.johnsen\\AppData\\Local\\Programs\\Python\\Python37\\python.exe",
-    "python.autoComplete.extraPaths": ["./Day02/code"]
+    "python.testing.unittestEnabled": true
 }

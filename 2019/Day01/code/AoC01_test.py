@@ -31,10 +31,6 @@ class FuelTest(unittest.TestCase):
 
             # assert
             self.assertEqual(result, testData[testMass])
-
-
-
-
     
 if __name__ == '__main__':
     unittest.main()
