@@ -47,16 +47,18 @@ class WireLine():
         self.series += 1
         moveList = self.CreateMoveList(linemap)
         cPos = (0,0)
+        steps = 0
         for move in moveList:
             cList = self.GetMoveCoordinates(cPos[0], cPos[1], move)
             # print(cList)
             for c in cList:
                 cPos = c
-                if c in self.b and self.b[c] != self.series:
+                steps += 1
+                if c in self.b and self.b[c][0] != self.series:
                     (x,y) = c
-                    self.intersections.append([x,y])
-                self.b[c]=self.series
-        print(self.b)
+                    self.intersections.append([x,y, steps])
+                self.b[c]=(self.series,steps)
+        # print(self.b)
         print(self.intersections)
     
     def AddWirelineOld(self,linemap):
@@ -142,3 +144,11 @@ class WireLine():
             if self.Manhattan(c) < distance:
                 distance = self.Manhattan(c)
         return distance
+
+    def FindFewerSteps(self):
+        steps = self.intersections[0][2]
+        for c in self.intersections[1:]:
+            if c[2] < steps:
+                steps = c[2];
+        
+        return steps

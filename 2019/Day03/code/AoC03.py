@@ -20,5 +20,5 @@ print("Part 1: ", result)
     
 # Part 2
 
-# print("Part 2: ", c.FindNounAndVerb(inputData))
+print("Part 2: ", w.FindFewerSteps())
     
