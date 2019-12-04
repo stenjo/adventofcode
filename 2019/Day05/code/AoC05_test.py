@@ -1,7 +1,7 @@
 #Test file for Advent of Code Day 3
 
 import unittest
-from AoC03_classes import WireLine
+from AoC05_classes import WireLine
 
 class WireCrossTest(unittest.TestCase):
 

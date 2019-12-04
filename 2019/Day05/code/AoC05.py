@@ -1,10 +1,10 @@
-# Advent of Code 2019: https://adventofcode.com/2019/day/3
+# Advent of Code 2019: https://adventofcode.com/2019/day/5
 # 
 # 
 
-from AoC03_classes import WireLine
+from AoC05_classes import WireLine
 
-infile = open('data/input_03.txt','r')
+infile = open('data/input_05.txt','r')
 inputData1 = infile.readline().strip().split(',')
 inputData2 = infile.readline().strip().split(',')
 
