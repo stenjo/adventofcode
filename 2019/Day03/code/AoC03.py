@@ -14,7 +14,7 @@ w.AddWireline(inputData1)
 w.AddWireline(inputData2)
     
 # act
-w.PrintIntersections()
+# w.PrintIntersections()
 result = w.FindClosest()
 print("Part 1: ", result)
     

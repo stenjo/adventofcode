@@ -12,6 +12,7 @@ class WireLine():
     intersections = []
     x = 0
     y = 0
+    series = 0
 
     def __init__(self, rows, columns):
         super().__init__()
@@ -31,26 +32,32 @@ class WireLine():
         
         if mDir in ['R','L']:   # Move horizontally - change x
             start = x + incr
-            end = x + incr * mSteps
+            end = x + incr * mSteps + incr
             for n in range(start, end, incr):
                 coords.append((n, y))
         else:
             start = y - incr
-            end = y + incr * mSteps
+            end = y + incr * mSteps + incr
             for n in range(start, end, incr):
                 coords.append((x, n))
 
         return coords
 
     def AddWireline(self, linemap):
+        self.series += 1
         moveList = self.CreateMoveList(linemap)
         cPos = (0,0)
         for move in moveList:
             cList = self.GetMoveCoordinates(cPos[0], cPos[1], move)
+            # print(cList)
             for c in cList:
                 cPos = c
-                self.b[c]=1
+                if c in self.b and self.b[c] != self.series:
+                    (x,y) = c
+                    self.intersections.append([x,y])
+                self.b[c]=self.series
         print(self.b)
+        print(self.intersections)
     
     def AddWirelineOld(self,linemap):
         # moves = linemap.split(',')

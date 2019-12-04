@@ -17,7 +17,7 @@ class WireCrossTest(unittest.TestCase):
         w.AddWireline(testInput2)
 
         # act
-        w.PrintMap()
+        # w.PrintMap()
         result = w.FindClosest()
 
         # assert
