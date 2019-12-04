@@ -6,9 +6,12 @@ import math
 class WireLine():
 
     a = []
+    b = {}
     rows = 0
     columns = 0
     intersections = []
+    x = 0
+    y = 0
 
     def __init__(self, rows, columns):
         super().__init__()
@@ -17,8 +20,39 @@ class WireLine():
         # a = [[0] * self.columns for i in range(self.rows)]
         for i in range(self.rows):
             self.a.append(['.'] * self.columns)
+
+    def GetMoveCoordinates(self, x, y, move):
+        coords = []
+        mDir = move[0]
+        mSteps = move[1]
+        incr = 1
+        if mDir in ['L','D']:
+            incr = -1
         
-    def AddWireline(self,linemap):
+        if mDir in ['R','L']:   # Move horizontally - change x
+            start = x + incr
+            end = x + incr * mSteps
+            for n in range(start, end, incr):
+                coords.append((n, y))
+        else:
+            start = y - incr
+            end = y + incr * mSteps
+            for n in range(start, end, incr):
+                coords.append((x, n))
+
+        return coords
+
+    def AddWireline(self, linemap):
+        moveList = self.CreateMoveList(linemap)
+        cPos = (0,0)
+        for move in moveList:
+            cList = self.GetMoveCoordinates(cPos[0], cPos[1], move)
+            for c in cList:
+                cPos = c
+                self.b[c]=1
+        print(self.b)
+    
+    def AddWirelineOld(self,linemap):
         # moves = linemap.split(',')
         ox = int(self.rows/2)
         posX = ox
