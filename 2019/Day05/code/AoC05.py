@@ -9,16 +9,13 @@ inputData1 = infile.readline().strip().split(',')
 inputData2 = infile.readline().strip().split(',')
 
 # Part 1
-w = WireLine(20000,20000)
+w = WireLine()
 w.AddWireline(inputData1)
 w.AddWireline(inputData2)
     
 # act
-# w.PrintIntersections()
-result = w.FindClosest()
-print("Part 1: ", result)
+print("Part 1: ", w.FindClosest())
     
 # Part 2
-
 print("Part 2: ", w.FindFewerSteps())
     
