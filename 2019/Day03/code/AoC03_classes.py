@@ -36,7 +36,7 @@ class WireLine():
             for n in range(start, end, incr):
                 coords.append((n, y))
         else:
-            start = y - incr
+            start = y + incr
             end = y + incr * mSteps + incr
             for n in range(start, end, incr):
                 coords.append((x, n))
@@ -54,12 +54,14 @@ class WireLine():
             for c in cList:
                 cPos = c
                 steps += 1
-                if c in self.b and self.b[c][0] != self.series:
-                    (x,y) = c
-                    self.intersections.append([x,y, steps])
-                self.b[c]=(self.series,steps)
-        # print(self.b)
-        print(self.intersections)
+                if c in self.b:
+                    if self.b[c][0] != self.series:
+                        (x,y) = c
+                        self.intersections.append([x,y, steps+self.b[c][1]])
+                else:
+                    self.b[c]=(self.series,steps)
+        print(self.b)
+        # print(self.intersections)
     
     def AddWirelineOld(self,linemap):
         # moves = linemap.split(',')
@@ -152,3 +154,8 @@ class WireLine():
                 steps = c[2];
         
         return steps
+
+    def FindFewerSteps2(self):
+        self.intersections.sort(key=lambda c: c[2])
+        print(self.intersections)
+        return self.intersections[0][2]
