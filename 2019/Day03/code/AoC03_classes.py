@@ -2,25 +2,18 @@
 # 
 # 
 import math
+from pprint import pprint
 
 class WireLine():
 
-    a = []
     b = {}
-    rows = 0
-    columns = 0
     intersections = []
     x = 0
     y = 0
     series = 0
 
-    def __init__(self, rows, columns):
+    def __init__(self):
         super().__init__()
-        self.rows = rows
-        self.columns = columns
-        # a = [[0] * self.columns for i in range(self.rows)]
-        for i in range(self.rows):
-            self.a.append(['.'] * self.columns)
 
     def GetMoveCoordinates(self, x, y, move):
         coords = []
@@ -50,7 +43,6 @@ class WireLine():
         steps = 0
         for move in moveList:
             cList = self.GetMoveCoordinates(cPos[0], cPos[1], move)
-            # print(cList)
             for c in cList:
                 cPos = c
                 steps += 1
@@ -60,8 +52,6 @@ class WireLine():
                         self.intersections.append([x,y, steps+self.b[c][1]])
                 else:
                     self.b[c]=(self.series,steps)
-        print(self.b)
-        # print(self.intersections)
     
     def GetMove(self, pathItem):
         direction = pathItem[0]
@@ -78,15 +68,6 @@ class WireLine():
 
         return mList 
 
-    def PrintMap(self):
-        for row in reversed(self.a):
-            print('.',' '.join([str(elem) for elem in row]), '.')
-        print('. ' * (self.columns + 2))
-        print(self.intersections)
-
-    def PrintIntersections(self):
-        print(self.intersections)
-
     def Manhattan(self, coord):
         return abs(coord[0]) + abs(coord[1])
         # return abs(int(coord[0]-int(self.columns/2))) + abs(int(coord[1])-int(self.rows/2))
@@ -101,5 +82,5 @@ class WireLine():
 
     def FindFewerSteps(self):
         self.intersections.sort(key=lambda c: c[2])
-        print(self.intersections)
+        pprint(self.intersections, depth=2, width=18)
         return self.intersections[0][2]
