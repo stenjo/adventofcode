@@ -41,17 +41,22 @@ class FindPassword():
 
     def HasAdjacentNL(self, num):
         d = 99
-        p = 98
-        double = False
         for n in self.IntToArray(num):
-            if n == d and p != n:
-                double = True
-            else:
-                double = False
-            p = d
+            if n == d:
+                if self.PartOfLargeGroup(num, n) == False:
+                    return True
             d = n
 
-        return double
+        return False
+    
+    def PartOfLargeGroup(self, num, digit):
+        number = str(num)
+        group = str(digit)*3
+
+        if number.find(group) != -1:
+            return True
+        
+        return False
 
     def Increasing(self, num):
         d = 0
