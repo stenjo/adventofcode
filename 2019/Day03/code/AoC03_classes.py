@@ -63,55 +63,6 @@ class WireLine():
         print(self.b)
         # print(self.intersections)
     
-    def AddWirelineOld(self,linemap):
-        # moves = linemap.split(',')
-        ox = int(self.rows/2)
-        posX = ox
-        oy = int(self.columns/2)
-        posY = oy
-        moveList = self.CreateMoveList(linemap)
-        self.a[posX][posY] = 'O'
-        for move in moveList:
-            if move[0] == 'R':
-                for x in range(posX+1, posX+move[1]):
-                    if self.a[posY][x] != '.':
-                        self.a[posY][x] = 'X'
-                        self.intersections.append([posY-oy,x-ox])
-                    else:
-                        self.a[posY][x] = '-'
-                posX += move[1]
-
-            if move[0] == 'U':
-                for y in range(posY+1, posY+move[1]):
-                    if self.a[y][posX] != '.':
-                        self.a[y][posX] = 'X'
-                        self.intersections.append([y-oy,posX-ox])
-                    else:
-                        self.a[y][posX] = '|'
-                posY += move[1]
-
-            if move[0] == 'L':
-                for x in range(posX-1, posX-move[1], -1):
-                    if self.a[posY][x] != '.':
-                        self.a[posY][x] = 'X'
-                        self.intersections.append([posY-oy,x-ox])
-                    else:
-                        self.a[posY][x] = '-'
-                posX -= move[1]
-
-            if move[0] == 'D':
-                for y in range(posY-1, posY - move[1], -1):
-                    if self.a[y][posX] != '.':
-                        self.a[y][posX] = 'X'
-                        self.intersections.append([y-oy,posX-ox])
-                    else:
-                        self.a[y][posX] = '|'
-                posY -= move[1]
-
-            self.a[posY][posX] = '+'
-
-
-
     def GetMove(self, pathItem):
         direction = pathItem[0]
         pathItem = str.replace(pathItem, direction, '0')
@@ -147,15 +98,8 @@ class WireLine():
                 distance = self.Manhattan(c)
         return distance
 
-    def FindFewerSteps(self):
-        steps = self.intersections[0][2]
-        for c in self.intersections[1:]:
-            if c[2] < steps:
-                steps = c[2];
-        
-        return steps
 
-    def FindFewerSteps2(self):
+    def FindFewerSteps(self):
         self.intersections.sort(key=lambda c: c[2])
         print(self.intersections)
         return self.intersections[0][2]
