@@ -207,6 +207,15 @@ class PasswordTest(unittest.TestCase):
         # assert
         self.assertTrue(result)
 
+    def test_generate(self):
+        # arrange
+        testInput1 = 111122
+        f = FindPassword('111111-666666')
+           
+        # act
+        result = f.HasAdjacentNL(testInput1)
+
+        f.PrintPasswords()
     
 if __name__ == '__main__':
     unittest.main()

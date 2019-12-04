@@ -99,6 +99,13 @@ class FindPassword():
             if self.IsValidNL(passwd) == True:
                 passWords.append(passwd)
 
-        return len(passWords)
+        return len(set(passWords))
 
+    def PrintPasswords(self):
+        passWords = []
+        for passwd in range(self.rangeLow, self.rangeHigh+1):
 
+            if self.IsValidNL(passwd) == True:
+                passWords.append(passwd)
+
+        print(set(passWords))
