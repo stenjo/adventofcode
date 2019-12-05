@@ -49,23 +49,37 @@ class Compute():
                 val2 = posval2 if mode2 == 1 else self.program[posval2]
                 dest = self.program[index+3]
                 self.program[dest] = val1 + val2
+                print(index, ':  ','Op:', opcode, '  ', mode1, ':', val1, '  ', mode2, ':', val2)
                 index += 4
-                print('Op:', opcode, '  ', mode1, ':', val1, '  ', mode2, ':', val2)
             elif opcode == 2:
                 posval2 = self.program[index+2]
                 val2 = posval2 if mode2 == 1 else self.program[posval2]
                 dest = self.program[index+3]
-                index += 4
                 self.program[dest] = val1 * val2
-                print('Op:', opcode, '  ', mode1, ':', val1, '  ', mode2, ':', val2)
+                print(index, ':  ','Op:', opcode, '  ', mode1, ':', val1, '  ', mode2, ':', val2)
+                index += 4
             elif opcode == 3:
                 self.program[posval1] = self.GetNextInput()
+                print(index, ':  ','Op:', opcode, '  ', mode1, ':', val1)
                 index += 2
-                print('Op:', opcode, '  ', mode1, ':', val1)
             elif opcode == 4:
-                self.AddToOutput(posval1)
+                self.AddToOutput(val1)
+                print(index, ':  ','Op:', opcode, '  ', mode1, ':', val1)
                 index += 2
-                print('Op:', opcode, '  ', mode1, ':', val1)
+            elif opcode == 5:
+                if val1 != 0:
+                    posval2 = self.program[index+2]
+                    val2 = posval2 if mode2 == 1 else self.program[posval2]
+                    index = val2
+                print(index, ':  ','Op:', opcode, '  ', mode1, ':', val1)
+                index += 3
+            elif opcode == 6:
+                if val1 == 0:
+                    posval2 = self.program[index+2]
+                    val2 = posval2 if mode2 == 1 else self.program[posval2]
+                    index = val2
+                print(index, ':  ','Op:', opcode, '  ', mode1, ':', val1)
+                index += 3
             else:
                 return self.program
 
