@@ -60,7 +60,7 @@ class Compute():
 
             if opcode == 1:
                 self.program[dest] = val1 + val2
-                print(index, ':  ','Op:', opcode, '  ', mode1, ':', val1, '  ', mode2, ':', val2)
+                print(index, ':  ','Op:', opcode, '  ', mode1, ':', val1, '  ', mode2, ':', val2, ' Add: ', val1, '+', val2, 'and save into', dest)
                 index += 4
 
             elif opcode == 2:
@@ -69,8 +69,8 @@ class Compute():
                 index += 4
 
             elif opcode == 3:
-                self.program[val1] = self.GetNextInput()
-                print(index, ':  ','Op:', opcode, '  ', mode1, ':', val1, '  ', ' Load input: ', self.program[val1], 'and save into', val1)
+                self.program[posval1] = self.GetNextInput()
+                print(index, ':  ','Op:', opcode, '  ', mode1, ':', posval1, '  ', ' Load input: ', self.program[posval1], 'and save into', val1)
                 index += 2
 
             elif opcode == 4:
@@ -79,8 +79,6 @@ class Compute():
                 index += 2
 
             elif opcode == 5:
-                posval2 = self.program[index+2]
-                val2 = posval2 if mode2 == 1 else self.program[posval2]
                 print(index, ':  ','Op:', opcode, '  ', mode1, ':', val1, '  ', mode2, ':', val2, ' Jump if true: ', val1, '!= 0 -> jump to', val2)
                 index = val2 if val1 != 0 else index + 3
 
