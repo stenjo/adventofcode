@@ -1,24 +1,34 @@
 #Test file for Advent of Code Day 3
 
 import unittest
-from AoC05_classes import WireLine
+from AoC05_classes import Compute
 
-class WireCrossTest(unittest.TestCase):
+class RunComputeTest(unittest.TestCase):
 
     def setUp(self):
         return super().setUp()
 
-    def test_print_map(self):
+    def test_compute_mode_1(self):
         # arrange
-        testInput = ['R8','U5','L5','D3']
-        w = WireLine(100,100)
-        w.AddWireline(testInput)
+        testInput = [1002,4,3,4,33,99]
+        w = Compute(testInput)
 
         # act
-        result = w.FindClosest()
+        result = w.RunCompute()
 
         # assert
-        self.assertEqual(result, 6)
+        self.assertEqual(result[4], 99)
     
+    def test_compute_mode_2(self):
+        # arrange
+        testInput = [1101,100,-1,4,0]
+        w = Compute(testInput)
+
+        # act
+        result = w.RunCompute()
+
+        # assert
+        self.assertEqual(result[4], 99)
+
 if __name__ == '__main__':
     unittest.main()
