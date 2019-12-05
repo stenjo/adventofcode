@@ -115,6 +115,7 @@ class RunComputeTest(unittest.TestCase):
         # act
         for v in testvalues:
             c.LoadInput([v])
+            c.LoadProgram(program)
             results.append(c.RunCompute())
 
         # assert
@@ -130,8 +131,9 @@ class RunComputeTest(unittest.TestCase):
         # act
         for v in testvalues:
             c.LoadInput([v])
+            c.LoadProgram(program)
             results.append(c.RunCompute())
-            print(c.GetOutputs())
+            # print(c.GetOutputs())
 
         # assert
         self.assertEqual(results, [0,1,1])

@@ -10,17 +10,16 @@ inputData1 = infile.readline().strip().split(',')
 
 # Part 1
 w = Compute(inputData1)
-
 w.LoadInput([1])
 result = w.RunCompute()
-pprint(w.GetOutputs())    
-# act
+# pprint(w.GetOutputs())    
+
 print("Part 1: ", result)
     
 # Part 2
 w = Compute(inputData1)
-
 w.LoadInput([5])
+w.LoadProgram(inputData1)
 result = w.RunCompute()
 print("Part 2: ", result)
     
