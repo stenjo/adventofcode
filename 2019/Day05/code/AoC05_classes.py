@@ -15,23 +15,25 @@ class Compute():
         # self.program.append('' * 4)
 
     def LoadInput(self, data):
+        self.inputList = []
+        self.inputPos = 0
         for n in data:
             self.inputList.append(n)
+        self.inputList.reverse()
     
     def AddToOutput(self, data):
         self.outputList.append(data)
 
     def GetNextInput(self):
-        if self.inputPos < len(self.inputList):
-            val = self.inputList[self.inputPos]
-            self.inputPos += 1
-            return val
+        if len(self.inputList) > 0:
+            return self.inputList.pop()
         else:
-            print('Idex input too large:', self.outputList)
+            print('Index input too large:', self.outputList)
         
 
     def RunCompute(self):
         index = 0
+        self.outputList = []
         while self.program[index] != 99:
             modes = self.program[index] // 100
             mode1 = modes % 10
@@ -39,52 +41,76 @@ class Compute():
             mode3 = modes // 100 % 10
 
             opcode = self.program[index] % 100
-            posval1 = self.program[index+1]
 
+            posval1 = self.program[index+1]
             val1 = posval1 if mode1 == 1 else self.program[posval1]
+
+            posval2 = None
+            val2 = None
+            if index+2 < len(self.program):
+                posval2 = self.program[index+2]
+                val2 = posval2 
+                if mode2 == 1 and posval2 < len(self.program):
+                    val2 = self.program[posval2]
+
+            dest = None
+            if index + 3 < len(self.program):
+                dest = self.program[index+3]
 
 
             if opcode == 1:
-                posval2 = self.program[index+2]
-                val2 = posval2 if mode2 == 1 else self.program[posval2]
-                dest = self.program[index+3]
                 self.program[dest] = val1 + val2
                 print(index, ':  ','Op:', opcode, '  ', mode1, ':', val1, '  ', mode2, ':', val2)
                 index += 4
+
             elif opcode == 2:
-                posval2 = self.program[index+2]
-                val2 = posval2 if mode2 == 1 else self.program[posval2]
-                dest = self.program[index+3]
                 self.program[dest] = val1 * val2
                 print(index, ':  ','Op:', opcode, '  ', mode1, ':', val1, '  ', mode2, ':', val2)
                 index += 4
+
             elif opcode == 3:
-                self.program[posval1] = self.GetNextInput()
-                print(index, ':  ','Op:', opcode, '  ', mode1, ':', val1)
+                self.program[val1] = self.GetNextInput()
+                print(index, ':  ','Op:', opcode, '  ', mode1, ':', val1, '  ', ' Load input: ', self.program[val1], 'and save into', val1)
                 index += 2
+
             elif opcode == 4:
                 self.AddToOutput(val1)
-                print(index, ':  ','Op:', opcode, '  ', mode1, ':', val1)
+                print(index, ':  ','Op:', opcode, '  ', mode1, ':', val1, '  ', ' Write output: ', val1)
                 index += 2
-            elif opcode == 5:
-                if val1 != 0:
-                    posval2 = self.program[index+2]
-                    val2 = posval2 if mode2 == 1 else self.program[posval2]
-                    index = val2
-                print(index, ':  ','Op:', opcode, '  ', mode1, ':', val1)
-                index += 3
-            elif opcode == 6:
-                if val1 == 0:
-                    posval2 = self.program[index+2]
-                    val2 = posval2 if mode2 == 1 else self.program[posval2]
-                    index = val2
-                print(index, ':  ','Op:', opcode, '  ', mode1, ':', val1)
-                index += 3
-            else:
-                return self.program
 
-            
-        return self.program
+            elif opcode == 5:
+                posval2 = self.program[index+2]
+                val2 = posval2 if mode2 == 1 else self.program[posval2]
+                print(index, ':  ','Op:', opcode, '  ', mode1, ':', val1, '  ', mode2, ':', val2, ' Jump if true: ', val1, '!= 0 -> jump to', val2)
+                index = val2 if val1 != 0 else index + 3
+
+            elif opcode == 6:
+                print(index, ':  ','Op:', opcode, '  ', mode1, ':', val1, '  ', mode2, ':', val2, ' Jump if false: ', val1, '== 0 -> jump to', val2)
+                index = val2 if val1 == 0 else index + 3
+
+            elif opcode == 7:
+                self.program[dest] = 1 if val1 < val2 else 0
+                print(index, ':  ','Op:', opcode, '  ', mode1, ':', val1, '  ', mode2, ':', val2, ' Less than: ', val1, '=', val2, ' wrote ', self.program[dest], ' into ', dest)
+                index += 4
+
+            elif opcode == 8:
+                self.program[dest] = 1 if val1 == val2 else  0
+                print(index, ':  ','Op:', opcode, '  ', mode1, ':', val1, '  ', mode2, ':', val2, ' Equals: ', val1, '=', val2, ' wrote ', self.program[dest], ' into ', dest)
+                index += 4
+            else:
+                print(index, ':  ','Op:', opcode, '  ', mode1, ':', val1)
+                return self.outputList
+
+            if mode3 == 1:
+                print(index, ':  ','Op:', opcode, '  ', mode1, ':', val1, '  ', mode2, ':', val2, '  ', mode3, ':', dest)
+
+            print(self.program)
+
+            # self.outputList.reverse()
+        if len(self.outputList) > 0 :
+            return self.outputList[-1] 
+        else: 
+            return self.program[index]
 
     def GetValueAt(self, index):
         return self.program[index]

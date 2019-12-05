@@ -15,8 +15,12 @@ w.LoadInput([1])
 result = w.RunCompute()
 pprint(w.GetOutputs())    
 # act
-print("Part 1: ", result[len(result)-1])
+print("Part 1: ", result)
     
 # Part 2
-# print("Part 2: ", w.FindFewerSteps())
+w = Compute(inputData1)
+
+w.LoadInput([5])
+result = w.RunCompute()
+print("Part 2: ", result)
     
