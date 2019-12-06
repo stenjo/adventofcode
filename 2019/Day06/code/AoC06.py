@@ -3,23 +3,18 @@
 # 
 
 from pprint import pprint
-from AoC06_classes import Compute
+from AoC06_classes import Orbiter
 
 infile = open('data/input_06.txt','r')
-inputData1 = infile.readline().strip().split(',')
+inputData1 = infile.readlines()
+
+w = Orbiter(inputData1)
 
 # Part 1
-w = Compute(inputData1)
-w.LoadInput([1])
-result = w.RunCompute()
-# pprint(w.GetOutputs())    
-
+result = w.FindDistances()
 print("Part 1: ", result)
-    
+
 # Part 2
-w = Compute(inputData1)
-w.LoadInput([5])
-w.LoadProgram(inputData1)
-result = w.RunCompute()
+result = w.FindSteps('YOU', 'SAN')
 print("Part 2: ", result)
     
