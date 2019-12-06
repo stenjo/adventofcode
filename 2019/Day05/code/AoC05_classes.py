@@ -28,23 +28,20 @@ class Compute():
         return self.inputList.pop() if len(self.inputList) > 0 else None
 
     def RunCompute(self):
-        index = 0
+        progPtr = 0
         self.outputList = []
-        while self.program[index] != 99:
-            modes = self.program[index] // 100
-            mode1 = modes % 10
-            mode2 = modes // 10 % 10
-            mode3 = modes // 100 % 10
+        while self.program[progPtr] != 99:
+            modes = self.program[progPtr] // 100
 
-            opcode = self.program[index] % 100
+            opcode = self.program[progPtr] % 100
 
-            arg1 = self.program[index+1]
-            val1 = arg1 if mode1 == 1 or opcode == 3 else self.program[arg1]
+            arg1 = self.program[progPtr+1]
+            val1 = arg1 if modes % 10 == 1 or opcode == 3 else self.program[arg1]
 
-            arg2 = self.program[index+2] if index+2 < len(self.program) else None
-            val2 = self.program[arg2] if mode2 == 0 and arg2 < len(self.program) else arg2
+            arg2 = self.program[progPtr+2] if progPtr+2 < len(self.program) else None
+            val2 = self.program[arg2] if modes // 10 % 10 == 0 and arg2 < len(self.program) else arg2
 
-            dest = self.program[index+3] if index + 3 < len(self.program) else None
+            dest = self.program[progPtr+3] if progPtr + 3 < len(self.program) else None
 
             dispatch = {
                 1: self.OpAdd,
@@ -57,12 +54,9 @@ class Compute():
                 8: self.OpEquals
             }
 
-            index = dispatch[opcode](val1, val2, dest, index)
+            progPtr = dispatch[opcode](val1, val2, dest, progPtr)
 
-            # if mode3 == 1:
-            #     print(index, ':  ','Op:', opcode, '  ', mode1, ':', val1, '  ', mode2, ':', val2, '  ', mode3, ':', dest)
-
-        return self.outputList[-1] if len(self.outputList) > 0 else self.program[index]
+        return self.outputList[-1] if len(self.outputList) > 0 else self.program[progPtr]
 
     def OpAdd(self, v1, v2, d, i):
         self.program[d] = v1 + v2
@@ -96,8 +90,8 @@ class Compute():
         self.program[d] = 1 if v1 == v2 else 0
         return i +4
 
-    def GetValueAt(self, index):
-        return self.program[index]
+    def GetValueAt(self, progPtr):
+        return self.program[progPtr]
 
     def GetOutputs(self):
         return self.outputList
