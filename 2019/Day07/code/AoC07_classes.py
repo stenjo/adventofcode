@@ -1,4 +1,4 @@
-# Advent of Code 2019: https://adventofcode.com/2019/day/6
+# Advent of Code 2019: https://adventofcode.com/2019/day/7
 # 
 # 
 import math
@@ -54,13 +54,16 @@ class Orbiter():
         youTree = self.GetTree(you)
         santaTree = self.GetTree(santa)
         maxDistance = 0
+        commomP = None
         # Find common
         for p in youTree:
             if p in santaTree:
                 if maxDistance < self.planets[p]['distance']:
                     maxDistance = self.planets[p]['distance']
+                    commomP = p
             
         return self.GetPlanet(you)['distance'] - maxDistance + self.GetPlanet(santa)['distance'] - maxDistance - 2
+
 
     def GetTree(self, planet):
         p = self.planets[planet]
