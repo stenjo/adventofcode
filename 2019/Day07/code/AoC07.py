@@ -1,20 +1,20 @@
-# Advent of Code 2019: https://adventofcode.com/2019/day/6
+# Advent of Code 2019: https://adventofcode.com/2019/day/7
 # 
 # 
 
 from pprint import pprint
-from AoC07_classes import Orbiter
+from AoC07_classes import AmplificationCircuit
 
 infile = open('data/input_07.txt','r')
-inputData1 = infile.readlines()
+inputData1 = infile.readline().split(',')
 
-w = Orbiter(inputData1)
+w = AmplificationCircuit(0,inputData1)
 
 # Part 1
-result = w.FindDistances()
+result = w.GetMaxAmplification()
 print("Part 1: ", result)
 
 # Part 2
-result = w.FindSteps('YOU', 'SAN')
+result = w.GetMaxLoopbackAmp()
 print("Part 2: ", result)
     
