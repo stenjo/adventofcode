@@ -80,6 +80,21 @@ class RunMapTest(unittest.TestCase):
         # assert
         self.assertEqual(result, [' ', '*', '*', ' '])
 
+    def test_layer_pixels_live(self):
+        # arrange
+        infile = open('data/input_08.txt','r')
+        testInput = infile.readline()
+        w = Mapper(testInput, '25x6')
+        answer = list(map(str, ' **   **  ****  **  **** '))
+        result = []
+
+        # act
+        for p in range(25):
+            result.append(w.GetPixelAt(p))
+
+        # assert
+        self.assertEqual(result, answer)
+
 
 if __name__ == '__main__':
     unittest.main()

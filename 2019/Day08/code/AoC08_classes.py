@@ -39,12 +39,8 @@ class Mapper():
         result = {'layer':None, 'zeros':0}
         for n in range(len(self.layers)):
             numZeros = self.layers[n].count(0)
-            if result['layer'] == None:
-                result['layer'] = n
-                result['zeros'] = numZeros
-            elif result['zeros'] > numZeros:
-                result['layer'] = n
-                result['zeros'] = numZeros
+            if result['layer'] == None or result['zeros'] > numZeros:
+                result = {'layer':n, 'zeros':numZeros}
 
         return result
 
