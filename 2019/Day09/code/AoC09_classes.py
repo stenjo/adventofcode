@@ -87,7 +87,7 @@ class Compute():
 
             dest = arg3 + self.relBase if modes // 100 % 10 == 2 else arg3
             if (opcode in [3,4]):
-                    dest = arg1 + self.relBase if modes % 10 == 2 else arg1
+                dest = arg1 + self.relBase if modes % 10 == 2 else arg1
             
             dispatch = {
                 1: self.OpAdd,

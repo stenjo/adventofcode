@@ -147,7 +147,6 @@ class RunComputeTest(unittest.TestCase):
         c.LoadInput([])
         c.RunCompute()
         results=c.GetOutputs()
-        # print(c.GetOutputs())
 
         # assert
         self.assertEqual(results, program)
@@ -161,7 +160,6 @@ class RunComputeTest(unittest.TestCase):
         # act
         c.LoadInput([])
         c.LoadProgram(program)
-
         output=c.RunCompute()
         result = len([int(d) for d in str(output)])
 
@@ -191,7 +189,6 @@ class RunComputeTest(unittest.TestCase):
         c.LoadInput([1])
         c.LoadProgram(program)
         result = c.RunCompute()
-        print(c.GetOutputs())
 
         # assert
         self.assertEqual(result, 4288078517)
@@ -206,7 +203,6 @@ class RunComputeTest(unittest.TestCase):
         c.LoadInput([2,4288078517])
         c.LoadProgram(program)
         result = c.RunCompute()
-        print(c.GetOutputs())
 
         # assert
         self.assertEqual(result, 69256)
