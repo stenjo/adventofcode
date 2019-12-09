@@ -60,37 +60,34 @@ class Compute():
         return self.outputList
 
     def GetValue(self, arg, mode):
-        val = arg
-        if mode == 0:   
-            val = self.GetValueAt(self.progPtr)
+        val = None
+        if mode == 0:           # Position mode
+            val = self.GetValueAt(arg)
+        elif mode == 1:         # Immediate mode
+            val = arg
+        elif mode == 2:         # Relative mode
+            val = self.GetValueAt(self.relBase + arg)
+
+        return val
 
     def RunOnce(self):
+            self.ExtendMemory(self.progPtr + 3)     # Make sure the program is long enough
+
             modes = self.program[self.progPtr] // 100
-
             opcode = self.program[self.progPtr] % 100
-
+            
             arg1 = self.program[self.progPtr+1]
-            val1 = arg1 
-            if modes % 10 == 0 and opcode != 3:
-                self.ExtendMemory(arg1)
-                val1 = self.program[arg1]
+            val1 = self.GetValue(arg1, modes % 10) 
 
-            val1 = self.program[arg1 + self.relBase] if modes % 10 == 2  else val1
+            arg2 = self.program[self.progPtr+2]
+            val2 = self.GetValue(arg2, modes // 10 % 10)
 
-            arg2 = self.program[self.progPtr+2] if self.progPtr+2 < len(self.program) else None
-            val2 = self.program[arg2] if modes // 10 % 10 == 0 and arg2 < len(self.program) else arg2
-            val2 = arg2 + self.relBase if modes // 10 % 10 == 2 and arg2 < len(self.program) else val2
+            arg3 = self.program[self.progPtr+3]
+            dest = self.GetValue(arg3, 1)
 
-            # Destination is third param - unless it is a read opcode - then it is  the first param.
-            # Todo
-            arg3 = self.program[self.progPtr+3] if self.progPtr + 3 < len(self.program) else None
-            dest = self.program[arg3] if modes // 100 % 10 == 0 and arg3 < len(self.program) else arg3
-            dest = arg3 + self.relBase if modes // 100 % 10 == 2 and arg3 < len(self.program) else dest
-
-            if (opcode == 3):
-                    dest = arg1
-
-            # self.ExtendMemory(dest)        
+            dest = arg3 + self.relBase if modes // 100 % 10 == 2 else arg3
+            if (opcode in [3,4]):
+                    dest = arg1 + self.relBase if modes % 10 == 2 else arg1
             
             dispatch = {
                 1: self.OpAdd,
@@ -100,7 +97,7 @@ class Compute():
                 5: self.OpJumpOnTrue,
                 6: self.OpJumpOnFalse,
                 7: self.OpLessThan,
-                8: self.OpEquals,
+                8: self.OpEquals,       # Jump to arg3 if arg1 = arg2
                 9: self.OpAdjRBase
             }
 
@@ -119,7 +116,7 @@ class Compute():
 
     def OpLoad(self, v1, v2, d, i):
         self.ExtendMemory(d)
-        self.program[v1] = self.GetNextInput()
+        self.program[d] = self.GetNextInput()
         return i + 2
 
     def OpSave(self, v1, v2, d, i):

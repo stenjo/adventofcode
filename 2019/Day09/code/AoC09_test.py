@@ -3,25 +3,6 @@
 import unittest
 from AoC09_classes import Compute
 
-class RunMapTest(unittest.TestCase):
-
-    def setUp(self):
-        return super().setUp()
-
-    def test_main(self):
-        # arrange
-        # m = Mapper(0,0)
-
-        # act
-        result = 1
-
-        # assert
-        self.assertEqual(result, 0)
-
-if __name__ == '__main__':
-    unittest.main()
-
-
 class RunComputeTest(unittest.TestCase):
 
     def setUp(self):
@@ -200,7 +181,7 @@ class RunComputeTest(unittest.TestCase):
         # assert
         self.assertEqual(result, 1125899906842624)
 
-    def test_full_program(self):
+    def test_full_program_part1(self):
         # arrange
         infile = open('data/input_09.txt','r')
         program = infile.readline().strip().split(',')
@@ -213,8 +194,22 @@ class RunComputeTest(unittest.TestCase):
         print(c.GetOutputs())
 
         # assert
-        self.assertEqual(result, 1125899906842624)
+        self.assertEqual(result, 4288078517)
 
+    def test_full_program_part2(self):
+        # arrange
+        infile = open('data/input_09.txt','r')
+        program = infile.readline().strip().split(',')
+        c = Compute(program)
+
+        # act
+        c.LoadInput([2,4288078517])
+        c.LoadProgram(program)
+        result = c.RunCompute()
+        print(c.GetOutputs())
+
+        # assert
+        self.assertEqual(result, 69256)
 
 if __name__ == '__main__':
     unittest.main()

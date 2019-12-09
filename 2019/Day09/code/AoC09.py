@@ -14,12 +14,11 @@ w = Compute(inputData1)
 w.LoadInput([1])
 w.LoadProgram(inputData1)
 result = w.RunCompute()
-pprint(w.GetOutputs())    
-# results=c.GetOutputs()
-print(w.GetOutputs())
 
 print("Part 1: ", result)
 
 # Part 2
-print("Part 2: ")
-# w.PrintImage()
+w.LoadInput([2,result])
+w.LoadProgram(inputData1)
+result = w.RunCompute()
+print("Part 2: ", result)
