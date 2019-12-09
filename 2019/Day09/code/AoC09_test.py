@@ -164,7 +164,6 @@ class RunComputeTest(unittest.TestCase):
 
         # act
         c.LoadInput([])
-        c.LoadProgram(program)
         c.RunCompute()
         results=c.GetOutputs()
         # print(c.GetOutputs())
@@ -211,6 +210,7 @@ class RunComputeTest(unittest.TestCase):
         c.LoadInput([1])
         c.LoadProgram(program)
         result = c.RunCompute()
+        print(c.GetOutputs())
 
         # assert
         self.assertEqual(result, 1125899906842624)
