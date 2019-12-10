@@ -2,6 +2,7 @@
 #
 
 import unittest
+from pprint import pprint
 from AoC10_classes import AsteroidMap
 
 class RunComputeTest(unittest.TestCase):
@@ -76,20 +77,23 @@ class RunComputeTest(unittest.TestCase):
     def test_LOS_blocking(self):
         # arrange
         a = AsteroidMap()
-        asteroids = ['#.........','...A......','...B..a...','.EDCG....a','..F.c.b...','.....c....','..efd.c.gb','.......c..','....f...c.','...e..d..c']
+        asteroids = ['#........O','...A......','...B..a...','.EDCG....a','..F.c.b...','.....c....','..efd.c.gb','.......c..','....f...c.','...e..d..c']
         a.ReadMap(asteroids)
-        check = [(3,1), (3,2), (6,2), (2,4), (2,6), (3,6), (4,6)]
+        indata  = [(3,1), (3,2), (6,2), (2,4), (2,6), (3,6), (4,6)]
+        correct = [ True,  True, False,  True, False, False, False]
         result = []
         revers = []
 
         # act
-        for ast in check:
+        for ast in indata:
             result.append(a.IsLineOfSight((0,0), ast))
             revers.append(a.IsLineOfSight(ast, (0,0)))
 
+        pprint(a.astDict)
+
         # assert
-        self.assertEqual(result, [True, True, False, True, False, False, False])
-        self.assertEqual(revers, [True, True, False, True, False, False, False])
+        self.assertEqual(result, correct)
+        self.assertEqual(revers, correct)
 
 
     def test_best_view_1(self):
@@ -97,6 +101,7 @@ class RunComputeTest(unittest.TestCase):
         a = AsteroidMap()
         asteroids = ['.#..#','.....','#####','....#','...##']
         a.ReadMap(asteroids)
+        pprint(a.astDict)
 
         # act
         c = a.count

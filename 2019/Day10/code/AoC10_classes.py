@@ -36,9 +36,11 @@ class AsteroidMap():
             a = self.asteroids[i]
             for n in range(i+1, len(self.asteroids)):
                 b = self.asteroids[n]
-                if self.IsLineOfSight(a['c'], b['c']):
+                los = self.IsLineOfSight(a['c'], b['c'])
+                if  los == True:
                     a['sees'] += 1
                     b['sees'] += 1
+                print(i,n, los)
 
     def IsLineOfSight(self, a, b):
         posInLOS = self.GetPositionsBetweenAsteroids(a,b)
@@ -58,7 +60,7 @@ class AsteroidMap():
         ax, ay = a
         bx, by = b
         if bx - ax == 0:    #horizontal
-            l = [(ax, n) for n in range(ay, by, int((by-ay)/abs(by-ay)))]
+            l = [(ax, n) for n in range(ay+1, by, int((by-ay)/abs(by-ay)))]
             if a in l: l.remove(a) 
             if b in l: l.remove(b)
             return l
