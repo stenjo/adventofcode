@@ -3,12 +3,6 @@
 # 
 import math
 
-class Mapper():
-
-    def __init__(self, data, size):
-        return
-
-
 class Compute():
 
     program = []
