@@ -57,8 +57,14 @@ class AsteroidMap():
         posBetween = []
         ax, ay = a
         bx, by = b
+        if bx - ax == 0:    #horizontal
+            l = [(ax, n) for n in range(ay, by, int((by-ay)/abs(by-ay)))]
+            if a in l: l.remove(a) 
+            if b in l: l.remove(b)
+            return l
+            
         rate = (by-ay)/(bx-ax)
-        for x in range(ax, bx):
+        for x in range(ax, bx, int((bx-ax)/abs(bx-ax))):
             if rate*x - math.floor(rate*x) < 0.001:
                 pos = (x,math.floor(rate*x))
                 if pos != a and pos != b:
@@ -66,6 +72,7 @@ class AsteroidMap():
         return posBetween
 
     def GetBestLOS(self):
+        res = list(sorted(self.asteroids, key=lambda a: a['sees']))
         return 0
 
     def RunAgain(self):

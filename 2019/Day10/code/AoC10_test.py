@@ -89,6 +89,7 @@ class RunComputeTest(unittest.TestCase):
 
         # assert
         self.assertEqual(result, [True, True, False, True, False, False, False])
+        self.assertEqual(revers, [True, True, False, True, False, False, False])
 
 
     def test_best_view_1(self):
