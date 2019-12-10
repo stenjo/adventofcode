@@ -77,10 +77,10 @@ class RunComputeTest(unittest.TestCase):
     def test_LOS_blocking(self):
         # arrange
         a = AsteroidMap()
-        asteroids = ['#........O','...A......','...B..a...','.EDCG....a','..F.c.b...','.....c....','..efd.c.gb','.......c..','....f...c.','...e..d..c']
+        asteroids = ['#........O','O..A......','O..B..a...','.EDCG....a','..F.c.b...','.....c....','..efd.c.gb','.......c..','....f...c.','...e..d..c']
         a.ReadMap(asteroids)
-        indata  = [(3,1), (3,2), (6,2), (2,4), (2,6), (3,6), (4,6)]
-        correct = [ True,  True, False,  True, False, False, False]
+        indata  = [(3,1), (3,2), (6,2), (2,4), (2,6), (3,6), (4,6), (0,2)]
+        correct = [ True,  True, False,  True, False, False, False, False]
         result = []
         revers = []
 
