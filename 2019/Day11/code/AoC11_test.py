@@ -1,7 +1,53 @@
-# Test file for Advent of Code 2019: https://adventofcode.com/2019/day/9
+# Test file for Advent of Code 2019: https://adventofcode.com/2019/day/11
+#
 
 import unittest
-from AoC09_classes import Compute
+from pprint import pprint
+from AoC11_classes import EmHullPaRob, Compute
+
+class RunEmHullPaRobotTest(unittest.TestCase):
+
+    def setUp(self):
+        return super().setUp()
+
+    def test_paint_and_move(self):
+        # arrange
+        testInput = [3,7,14,0,14,0,99]  # Reads into 7, outputs 0 and 0
+        e = EmHullPaRob(testInput)
+
+        # act
+        result = e.PaintAndMove((1,0))
+
+        # assert
+        self.assertEqual(result, 0 )
+
+    def test_paint_and_move_circle_left(self):
+        # arrange
+        testInput = [3,7,14,0,14,0,99]  # Reads into 7, outputs 0 and 0
+        e = EmHullPaRob(testInput)
+
+        # act
+        result = e.PaintAndMove((1,0))
+        result = e.PaintAndMove((1,0))
+        result = e.PaintAndMove((1,0))
+        result = e.PaintAndMove((1,0))
+
+        # assert
+        self.assertEqual(result, 1 )
+
+    def test_paint_and_move_circle_right(self):
+        # arrange
+        testInput = [3,7,14,0,14,0,99]  # Reads into 7, outputs 0 and 0
+        e = EmHullPaRob(testInput)
+
+        # act
+        result = e.PaintAndMove((1,1))
+        result = e.PaintAndMove((1,1))
+        result = e.PaintAndMove((1,1))
+        result = e.PaintAndMove((1,1))
+
+        # assert
+        self.assertEqual(result, 1 )
 
 class RunComputeTest(unittest.TestCase):
 
@@ -208,5 +254,23 @@ class RunComputeTest(unittest.TestCase):
         # assert
         self.assertEqual(result, 69256)
 
+    def test_paint_program(self):
+        # arrange
+        infile = open('data/input_11.txt','r')
+        program = infile.readline().strip().split(',')
+        c = Compute(program)
+        result = []
+
+        # act
+        c.LoadInput([0])
+        c.LoadProgram(program)
+        result = c.RunFor2Outputs()
+        output = c.GetOutputs()
+
+        # assert
+        self.assertEqual(result, (1,0))
+
+
 if __name__ == '__main__':
     unittest.main()
+
