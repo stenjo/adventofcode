@@ -145,7 +145,9 @@ class RunComputeTest(unittest.TestCase):
         w = a.width
         result = a.GetBestLOS()
 
-        a.PrintAsteroids()
+        # a.PrintAsteroids()
+
+        a.PlotAsteroids()
 
         # assert
         self.assertEqual(c, 300)

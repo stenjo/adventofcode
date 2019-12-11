@@ -3,6 +3,8 @@
 # 
 
 import math
+from matplotlib import pylab as pt, pyplot as plt
+import numpy as np
 
 class AsteroidMap():
 
@@ -20,7 +22,7 @@ class AsteroidMap():
         self.height = len(data)
         for y in range(self.height):
             x = 0
-            l = data[y]
+            l = data[y].strip()
             lst = [a for a in l]
             self.width = len(lst) if self.width == None else self.width
             for a in lst:
@@ -43,9 +45,12 @@ class AsteroidMap():
                 # print(i,n, los)
 
     def IsLineOfSight(self, a, b):
-        posInLOS = self.GetPositionsBetweenAsteroids(a,b)
-        for p in posInLOS:
-            if p in self.astDict:
+        # posInLOS = self.GetPositionsBetweenAsteroids(a,b)
+        # for p in posInLOS:
+        #     if p in self.astDict:
+        #         return False
+        for n in [d['c'] for d in a.asteroids]:
+            if self.IsLineOfSight(a,b,n):
                 return False
 
         return True
@@ -55,7 +60,40 @@ class AsteroidMap():
             di.setdefault(a['c'], a)
         return di 
 
+    def IsInLineOfSight(self, a, b, m):
+        if self.LessThan(a,b):
+            ax, ay = a
+            bx, by = b
+        else:
+            ax, ay = b
+            bx, by = a
 
+        mx, my = m
+
+        if a == b or a == m or b == m: return False
+
+        if  bx - ax == 0:   # vertical line of sight
+            if mx == ax and my in range(ay, by, 1 if ay < by else -1)
+                return True
+            else:
+                return False
+        else:
+            k = (ay-by)/(ax-bx)
+            c = ay-k*ax
+            y = k*mx+c
+            if mx in range(ax,bx) 
+                and my in range(ay, by, 1 if ay < by else -1)
+                and my == int(y)
+                and y.is_integer():
+                return True
+            
+        return False
+
+    def LessThan(self, a, b):
+        if a[0] > b[0] or (a[0] == b[0] and a[1] > b[1]):
+            return False
+        else:
+            return True
 
     def GetPositionsBetweenAsteroids(self, a, b):
         posBetween = []
@@ -109,6 +147,15 @@ class AsteroidMap():
 
             print(line)
 
+    def PlotAsteroids(self):
+        data = {
+            'x': [d['x'] for d in self.asteroids],
+            'y': [d['y'] for d in self.asteroids]
+        }
+        plt.scatter('x','y', data=data)
+        # plt.plot([1, 2, 3, 4], [1, 4, 9, 16], 'bo')
+        plt.axis([-1, self.width, self.height, -1])
+        plt.show()
 
     def GetBestLOS(self):
         res = list(sorted(self.asteroids, key=lambda a: a['sees']))

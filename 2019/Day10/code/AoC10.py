@@ -13,6 +13,8 @@ w = AsteroidMap()
 w.ReadMap(inputData1)
 result = w.GetBestLOS()
 
+w.PlotAsteroids()
+
 print("Part 1: ", result, w.astDict[result]['sees'])
 
 # Part 2
