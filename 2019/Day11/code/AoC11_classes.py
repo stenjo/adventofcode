@@ -3,6 +3,7 @@
 # 
 
 import math
+from matplotlib import pylab as pt, pyplot as plt
 
 class EmHullPaRob():
 
@@ -67,12 +68,23 @@ class EmHullPaRob():
         while self.comp.ProgramFinished() == False:
             self.comp.LoadInput([color])
             result = self.comp.RunFor2Outputs()
+            if result == None:
+                return
             color = self.PaintAndMove(result)
-
 
     def NumberOfPanelsPainted(self):
         return len(self.panels)
 
+    def PlotPanels(self):
+        data = {
+            'x': [d['pos'][0]    for d in self.panels],
+            'y': [d['pos'][1]    for d in self.panels],
+            'c': [d['color']*255 for d in self.panels],
+        }
+        plt.scatter('x','y', data=data)
+        # plt.plot([1, 2, 3, 4], [1, 4, 9, 16], 'bo')
+        # plt.axis([-1, self.width, self.height, -1])
+        plt.show()
 
 class Compute():
 
@@ -125,8 +137,18 @@ class Compute():
         return self.outputList
     
     def RunFor2Outputs(self):
-        color = self.RunForOutput()[0] 
-        direction = self.RunForOutput()[0]
+        output =self.RunForOutput()
+        if len(output):
+            color = output[0] 
+        else:
+            return None
+
+        output =self.RunForOutput()
+        if len(output):
+            direction = output[0] 
+        else:
+            return (color)
+
         return (color, direction)
 
     def GetValue(self, arg, mode):

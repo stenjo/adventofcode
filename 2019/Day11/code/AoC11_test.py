@@ -48,6 +48,24 @@ class RunEmHullPaRobotTest(unittest.TestCase):
 
         # assert
         self.assertEqual(result, 1 )
+    
+    def  test_paint_move(self):
+        # arrange
+        testInput = [3,7,14,0,14,0,99]  # Reads into 7, outputs 0 and 0
+        e = EmHullPaRob(testInput)
+        # (color,turn) tuples
+        robotData = [(1,0), (0,0), (1,0), (1,0), (0,1), (1,0), (1,0)]
+        colors = []
+        results = [0,0,0,1,0,0,0]
+        # act
+        for t in robotData:
+            colors.append(e.PaintAndMove(t))
+        panels = e.NumberOfPanelsPainted()
+        e.PlotPanels()
+        
+        # assert
+        self.assertEqual(result, 1 )
+
 
 class RunComputeTest(unittest.TestCase):
 

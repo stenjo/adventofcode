@@ -9,7 +9,7 @@ inputData1 = infile.readline().strip().split(',')
 
 # Part 1
 e = EmHullPaRob(inputData1)
-e.PaintPanels()
+e.PlotPanels()
 
 print("Part 1: ", e.NumberOfPanelsPainted())
 
