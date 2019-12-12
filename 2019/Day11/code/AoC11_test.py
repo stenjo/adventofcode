@@ -61,7 +61,7 @@ class RunEmHullPaRobotTest(unittest.TestCase):
         for t in robotData:
             colors.append(e.PaintAndMove(t))
         panels = e.NumberOfPanelsPainted()
-        # e.PlotPanels()
+        e.PlotPanels()
 
         # assert
         self.assertEqual(colors, results )

@@ -65,12 +65,12 @@ class EmHullPaRob():
 
     def PaintPanels(self):
         color = 0
+        self.comp.LoadInput([color])
+        result = self.comp.RunFor2Outputs()
         while self.comp.ProgramFinished() == False:
+            color = self.PaintAndMove(result)
             self.comp.LoadInput([color])
             result = self.comp.RunFor2Outputs()
-            if result == None:
-                return
-            color = self.PaintAndMove(result)
 
     def NumberOfPanelsPainted(self):
         return len(self.panels)
@@ -120,6 +120,9 @@ class Compute():
     def HasOutput(self):
         return len(self.outputList) > 0
 
+    def Has2Outputs(self):
+        return len(self.outputList) > 1
+
     def RunCompute(self):
         self.progPtr = 0
         self.outputList = []
@@ -137,17 +140,12 @@ class Compute():
         return self.outputList
     
     def RunFor2Outputs(self):
-        output =self.RunForOutput()
-        if len(output):
-            color = output[0] 
-        else:
-            return None
+        self.outputList = []
+        while self.Has2Outputs() == False and self.ProgramFinished() == False:
+            self.RunOnce()
 
-        output =self.RunForOutput()
-        if len(output):
-            direction = output[0] 
-        else:
-            return (color)
+        print(self.outputList)
+        color, direction = self.outputList
 
         return (color, direction)
 
