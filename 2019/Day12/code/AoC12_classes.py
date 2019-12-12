@@ -52,6 +52,9 @@ class Moon():
             xyz[ps] = int(val)
         return xyz
 
+    def GetXYSAsTuple(self, xyz):
+        return (xyz['x'],xyz['y'],xyz['z'])
+
 class MoonMap():
 
     map = []

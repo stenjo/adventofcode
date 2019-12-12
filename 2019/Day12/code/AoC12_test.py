@@ -81,14 +81,17 @@ class MoonTest(unittest.TestCase):
             '<x=4, y=-8, z=8>',
             '<x=3, y=5, z=-1>']
         shouldBe = [(0, 1, 3), (3,-9,-6), (5, -7, 9), (4, 6, 0)]
-        result = []
+        pos = []
+        vel = []
 
         w = MoonMap(testInput)
 
         # act
+        w.OneStep()
+
         for m in w.map:
-            m.Move()
-            result.append((m.pos['x'],m.pos['y'],m.pos['z']))
+            pos.append(m.GetXYZAsTuple(m.pos))
+            vel.append(m.GetXYZAsTuple(m.vel))
 
         # assert
         self.assertEqual(result, shouldBe)
