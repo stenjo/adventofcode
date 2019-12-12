@@ -9,11 +9,17 @@ class Moon():
     pos = None
     vel = None
     name = None
+    origin = None
+    passedOrigin = False
+    loopSteps = 0
+    loopStepsXYZ = {'x':0, 'y':0, 'z':0}
+    passedOriginXYZ  = {'x':False, 'y':False, 'z':False}
 
     def __init__(self, Name = None,  x=None, y=None, z=None, pos=None):
         super().__init__()
         self.pos = {'x':x, 'y':y, 'z':z}
         self.vel = {'x':0, 'y':0, 'z':0}
+        self.origin = {'x':0, 'y':0, 'z':0}
         if pos != None:
             self.LoadMoon(pos)
         name = Name
@@ -25,6 +31,10 @@ class Moon():
         for p in pstrlist:
             ps,val = p.split('=')
             self.pos[ps] = int(val)
+            self.origin[ps] = int(val)
+        self.loopSteps = 1
+        self.loopStepsXYZ = {'x':0, 'y':0, 'z':0}
+        self.passedOriginXYZ  = {'x':False, 'y':False, 'z':False}
         
     def SetVelocity(self, vel):
         sc = set('<> ')
@@ -42,11 +52,19 @@ class Moon():
     def TotalEnergy(self):
         return self.KineticEnergy() * self.PotentialEnergy()
 
+    def IsAtOriginalPos(self):
+        return self.pos == self.origin
+
     def Move(self):
         coords = 'xyz'
         for axis in coords:
-         self.pos[axis] += self.vel[axis]
+            self.pos[axis] += self.vel[axis]
+            if self.pos[axis] == self.origin[axis]: self.passedOriginXYZ[axis] = True 
+            self.loopStepsXYZ[axis] += 1 if self.passedOriginXYZ[axis] == False else 0
+        
+        self.loopSteps += 1 if self.passedOrigin == False else 0
 
+        if self.pos == self.origin: self.passedOrigin = True 
 
     def GetXYZFromString(self, pstring):
         sc = set('<> ')
@@ -134,3 +152,16 @@ class MoonMap():
         for a in self.map:
             a.Move()
 
+    def AllAtOriginalPos(self):
+        for a in self.map:
+            if a.pos != a.origin:
+                return False
+
+        return True
+
+    def AllWasAtOriginalPos(self):
+        for a in self.map:
+            if a.passedOrigin == False:
+                return False
+
+        return True

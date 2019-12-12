@@ -261,7 +261,7 @@ class MoonMapTest(unittest.TestCase):
         self.assertEqual(t, 179)
 
     def test_total_energy_2(self):
-                # arrange
+        # arrange
         testInput = [
             '<x=-8, y=-10, z=0>',
             '<x=5, y=5, z=10>',
@@ -277,6 +277,68 @@ class MoonMapTest(unittest.TestCase):
 
         # assert
         self.assertEqual(t, 1940)
+
+    def test_moves_to_origin_1(self):
+        # arrange
+        testInput = [
+            '<x=-1, y=0, z=2>',
+            '<x=2, y=-10, z=-7>',
+            '<x=4, y=-8, z=8>',
+            '<x=3, y=5, z=-1>']
+
+        w = MoonMap(testInput)
+        # act
+        moves = 1
+        w.OneStep()
+        while w.AllWasAtOriginalPos() == False:
+            w.OneStep()
+            moves += 1
+        
+        print([m.loopSteps for m in w.map])
+
+        # assert
+        self.assertEqual(moves, 2772)
+
+    def test_moves_to_origin_2(self):
+        # arrange
+        testInput = [
+            '<x=-8, y=-10, z=0>',
+            '<x=5, y=5, z=10>',
+            '<x=2, y=-7, z=3>',
+            '<x=9, y=-8, z=-3>']
+
+        w = MoonMap(testInput)
+        # act
+        moves = 1
+        w.OneStep()
+        # while w.AllAtOriginalPos() == False:
+        while w.AllWasAtOriginalPos() == False:
+            w.OneStep()
+            moves += 1
+            if moves % 100 == 0:
+                print([m.loopSteps for m in w.map])
+
+        # assert
+        self.assertEqual(moves, 4686774924)
+
+    def test_moves_to_origin_puzle(self):
+        # arrange
+        infile = open('data/input_12.txt','r')
+        testInput = infile.readlines()
+
+        w = MoonMap(testInput)
+        # act
+        moves = 1
+        w.OneStep()
+        # while w.AllAtOriginalPos() == False:
+        while w.AllWasAtOriginalPos() == False:
+            w.OneStep()
+            moves += 1
+            if moves % 1000 == 0:
+                print([m.loopStepsXYZ for m in w.map])
+
+        # assert
+        self.assertEqual(moves, 4686774924)
 
 
 if __name__ == '__main__':
