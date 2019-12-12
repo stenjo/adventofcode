@@ -1,7 +1,7 @@
 # Advent of Code 2019: https://adventofcode.com/2019/day/12
 # 
 # 
-import math
+import math, re
 
 
 class Moon():
@@ -10,10 +10,12 @@ class Moon():
     vel = None
     name = None
 
-    def __init__(self, Name = None,  x=None, y=None, z=None):
+    def __init__(self, Name = None,  x=None, y=None, z=None, pos=None):
         super().__init__()
         self.pos = {'x':x, 'y':y, 'z':z}
         self.vel = {'x':0, 'y':0, 'z':0}
+        if pos != None:
+            self.LoadMoon(pos)
         name = Name
 
     def LoadMoon(self, positionString):
@@ -37,6 +39,9 @@ class Moon():
     def KineticEnergy(self):
         return abs(self.vel['x'])+abs(self.vel['y'])+abs(self.vel['z'])
 
+    def TotalEnergy(self):
+        return self.KineticEnergy() * self.PotentialEnergy()
+
     def Move(self):
         coords = 'xyz'
         for axis in coords:
@@ -52,16 +57,31 @@ class Moon():
             xyz[ps] = int(val)
         return xyz
 
-    def GetXYSAsTuple(self, xyz):
+    def GetXYZAsTuple(self, xyz):
         return (xyz['x'],xyz['y'],xyz['z'])
+    
+    def AsTuple(self):
+        return (self.GetXYZAsTuple(self.pos),self.GetXYZAsTuple(self.vel))
+
+    def GetXYZtuple(self, pstring):
+        ps = self.GetXYZFromString(pstring)
+        return self.GetXYZAsTuple(ps)
+    
+    def GetPosAndVelFromString(self, posvelstring):
+        pos = re.search("pos=<(.*)>, ", posvelstring)
+        pos = self.GetXYZtuple(pos.group(1))
+        vel = re.search("vel=<(.*)>", posvelstring)
+        vel = self.GetXYZtuple(vel.group(1))
+        return (pos, vel)
 
 class MoonMap():
 
     map = []
 
-    def __init__(self, moonPositions):
+    def __init__(self, moonPositions = None):
         super().__init__()
-        self.LoadMoons(moonPositions)
+        if moonPositions != None:
+            self.LoadMoons(moonPositions)
 
     def LoadMoons(self, data):
         for d in data:
@@ -72,20 +92,45 @@ class MoonMap():
     def CountMoons(self):
         return len(self.map)
 
+    def TotalKinetic(self):
+        total = 0
+        for m in self.map:
+            total += m.KineticEnergy()
+
+        return total
+
+    def TotalPotential(self):
+        total = 0
+        for m in self.map:
+            total += m.PotentialEnergy()
+
+        return total
+
+    def TotalEnergy(self):
+        total = 0
+        for m in self.map:
+            total += m.TotalEnergy()
+
+        return total
+
     def Gravitate(self, a, b):
         coords = 'xyz'
+        # print(a.AsTuple(),b.AsTuple())
         for axis in coords:
             if a.pos[axis] < b.pos[axis]:
                 a.vel[axis] +=1
                 b.vel[axis] -=1
             elif a.pos[axis] > b.pos[axis]:
-                a.vel[axis] +=1
-                b.vel[axis] -=1
+                a.vel[axis] -=1
+                b.vel[axis] +=1
 
     def OneStep(self):
-        for a in self.map:
-            for b in self.map:
+        for i in range(len(self.map)):
+            a = self.map[i]
+            for n in range(i+1, len(self.map)):
+                b = self.map[n]
                 self.Gravitate(a,b)
         
         for a in self.map:
             a.Move()
+
