@@ -221,18 +221,21 @@ class RunComputeTest(unittest.TestCase):
         # arrange
         infile = open('data/input_13.txt','r')
         program = infile.readline().strip().split(',')
+        # program[0] = 2
         a = ArcadeCabinet(program)
         result = []
 
         # act
-        # a.LoadInput([0])
-        # c.LoadProgram(program)
+        a.comp.LoadInput([2,0])
         a.WriteTiles()
-        result = a.NumberOfPanelsPainted()
-
-        # a.PlotTiles()
+        result = a.NumberOfBlocks()
+        inTiles = True if (30,19) in a.ConvertToDict(a.tiles) else False
+        a.PlotTiles()
+        a.WriteTiles()
+        a.PlotTiles()
         # assert
-        self.assertEqual(result, 1034)
+        self.assertEqual(result, 329)
+        self.assertEqual(inTiles, True)
 
 
 if __name__ == '__main__':

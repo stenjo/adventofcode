@@ -11,52 +11,19 @@ class ArcadeCabinet():
     height = None
     comp = None
     panels = []
-    tiles = {}
-    pos = None
+    tiles = []
+    score = 0
     direction = 0   # 0 = up. 1 = right, 2 = down, 3 = left
+    previousBall = None
+    velocity = 0
+
 
     def __init__(self, program):
         self.count = 0
         self.width = None
         self.comp = Compute(program)
-        # self.comp.LoadInput([0])
-        self.pos = (0,0)
+        self.comp.LoadInput([0])
         self.direction = 0
-
-    def PaintAndMove(self, data):
-        color, turn = data     #tuple (color,direction)
-        panel = {'pos':self.pos, 'color':color}
-        panelDict = self.ConvertToDict(self.panels)
-        if self.pos not in panelDict:
-            self.panels.append(panel)
-        else:
-            panelDict[self.pos] = {'pos':self.pos, 'color':color}
-        
-        if turn == 0: # Turn left
-            self.direction -= 1
-        else:
-            self.direction += 1
-
-        self.direction=self.direction % 4
-
-        if self.direction == 0:  # up
-            self.pos = (self.pos[0], self.pos[1]-1)
-        elif self.direction == 1:  # right
-            self.pos = (self.pos[0]+1, self.pos[1])
-        elif self.direction == 2:  # down
-            self.pos = (self.pos[0], self.pos[1]+1)
-        elif self.direction == 3:  # left
-            self.pos = (self.pos[0]-1, self.pos[1])
-        else:
-            print('Error in direction: ', self.direction)
-
-        panelDict = self.ConvertToDict(self.panels)
-        if self.pos not in panelDict:
-            color = 0
-        else:
-            color = panelDict[self.pos]['color']
-            
-        return color
 
     def ConvertToDict(self, tup): 
         di = {}
@@ -64,42 +31,104 @@ class ArcadeCabinet():
             di.setdefault(a['pos'], a)
         return di 
 
-    def PaintPanels(self):
-        color = 0
-        self.comp.LoadInput([color])
-        result = self.comp.RunFor2Outputs()
-        while self.comp.ProgramFinished() == False:
-            color = self.PaintAndMove(result)
-            self.comp.LoadInput([color])
-            result = self.comp.RunFor2Outputs()
     
     def WriteTiles(self):
         color = 0
+        self.comp.progPtr=0
         # self.comp.LoadInput([color])
         result = self.comp.RunFor3Outputs()
-        while self.comp.ProgramFinished() == False:
+        while self.comp.ProgramFinished() == False and self.comp.WaitingForInput() == False:
             # color = self.PaintAndMove(result)
             # self.comp.LoadInput([color])
             result = self.comp.RunFor3Outputs()
             if len(result) == 3:
                 x,y,tile = result
+                if x == -1:
+                    self.score = tile
+                    continue
+
                 pos = (x,y)
                 panel = {'pos':pos, 'tile':tile}
+                tileDict = self.ConvertToDict(self.tiles)
+                # if tile in [4,3]:
+                #     self.PlotTiles()
 
-                if tile == 2:
-                    self.tiles[pos] = panel
-                    print(result)
+                if tile == 4:   # ball
+                    ball = self.GetBall()
+                    if ball != None:
+                        if self.previousBall != None:
+                            self.velocity = ball['pos'][0] - self.previousBall['pos'][0]
+                        self.previousBall = ball
+                        self.tiles.remove(ball)
+                    self.tiles.append(panel)
+                    print('  ball:', self.GetBall(), self.comp.outputList,'paddle:',self.GetPaddle(), self.comp.inputList)
+                elif tile == 3:     # paddle
+                    paddle = self.GetPaddle()
+                    ball = self.GetBall()
+                    if paddle != None:
+                        if ball != None:
+                            tilt = (ball['pos'][0] - x) - self.velocity*(y-ball['pos'][1])
+                            if tilt != 0:
+                                tilt = int(tilt/abs(tilt))
+                            self.comp.LoadInput([tilt])
+                            print('tilt:', tilt, 'bx:',ball['pos'][0], 'px:',x, 'diff:',ball['pos'][0] - x, 'vel:', self.velocity )
+                        self.tiles.remove(paddle)
+                        panel['pos'] = (ball['pos'][0],21)
+                    self.tiles.append(panel)
+                    print('  ball:', self.GetBall(), self.comp.outputList,'paddle:',self.GetPaddle(), self.velocity, self.comp.inputList)
 
-    def NumberOfPanelsPainted(self):
-        return len(self.tiles)
+                else:    
+                    if pos not in tileDict and tile > 0:
+                        self.tiles.append(panel)
+                    else:
+                        if tile == 0 and pos in tileDict:
+                            self.tiles.remove(tileDict[pos])
+                        else:
+                            tileDict[pos] = {'pos':pos, 'tile':tile}
+                
+
+                    # print(panel)
+        if self.comp.WaitingForInput():
+            self.comp.LoadInput([0])
+
+
+    def RunGame(self):
+        self.comp.LoadInput([2])
+        self.comp.program[0] = 2    # Free running
+        self.WriteTiles()
+        self.comp.LoadInput([0])
+        # while self.comp.ProgramFinished == False:
+        while len(self.comp.inputList) > 0:
+            self.WriteTiles()
+            # self.PlotTiles()
+
+
+    def GetBall(self):
+        ballPos = [d for d in self.tiles if d['tile'] in [4]]
+        if len(ballPos) == 0:
+            return None
+        else:
+            return ballPos[0]
+
+    def GetPaddle(self):
+        paddlePos = [d for d in self.tiles if d['tile'] in [3]]
+        if len(paddlePos) == 0:
+            return None
+        else:
+            return paddlePos[0]
+
+    def NumberOfBlocks(self):
+        blockTiles = [d for d in self.tiles if d['tile'] in [2]]
+        return len(blockTiles)
 
     def PlotTiles(self):
         data = {
             'x': [d['pos'][0]    for d in self.tiles],
             'y': [d['pos'][1]    for d in self.tiles],
-            'c': [d['tile']      for d in self.tiles],
+            'c': [d['tile']*10      for d in self.tiles],
+            'd': [d['tile']      for d in self.tiles]
         }
-        plt.scatter('x','y', data=data)
+        plt.scatter('x','y',30, 'c', marker='s', data=data)
         # plt.plot([1, 2, 3, 4], [1, 4, 9, 16], 'bo')
         # plt.axis([-1, self.width, self.height, -1])
         plt.show()
@@ -134,6 +163,9 @@ class Compute():
 
     def ProgramFinished(self):
         return self.program[self.progPtr] == 99
+
+    def WaitingForInput(self):
+        return True if self.program[self.progPtr] == 3 and len(self.inputList) == 0 else False
 
     def HasOutput(self):
         return len(self.outputList) > 0
@@ -172,7 +204,7 @@ class Compute():
 
     def RunFor3Outputs(self):
         self.outputList = []
-        while self.Has3Outputs() == False and self.ProgramFinished() == False:
+        while self.Has3Outputs() == False and self.ProgramFinished() == False and self.WaitingForInput() == False:
             self.RunOnce()
 
         # print(self.outputList)
@@ -210,8 +242,14 @@ class Compute():
 
             dest = arg3 + self.relBase if modes // 100 % 10 == 2 else arg3
             if (opcode in [3,4]):
+                if opcode == 3:     # Waiting for input
+                    if len(self.inputList) == 0:
+                        return
+
                 dest = arg1 + self.relBase if modes % 10 == 2 else arg1
             
+            # print(self.progPtr, ':', opcode, arg1, arg2, '(', val1, val2, ')')
+            # print(self.program[380:390])
             dispatch = {
                 1: self.OpAdd,
                 2: self.OpMul,
@@ -240,6 +278,11 @@ class Compute():
     def OpLoad(self, v1, v2, d, i):
         self.ExtendMemory(d)
         self.program[d] = self.GetNextInput()
+        if self.program[d] == None:
+            print(i, ':', 3, v1, v2, '(', d, ')')
+            print(self.outputList)
+            exit(1)
+
         return i + 2
 
     def OpSave(self, v1, v2, d, i):

@@ -9,10 +9,10 @@ inputData1 = infile.readline().strip().split(',')
 
 # Part 1
 e = ArcadeCabinet(inputData1)
-# e.PaintPanels()
+e.RunGame()
 # e.PlotPanels()
 
-print("Part 1: ", e.NumberOfTileBlocks())
+print("Part 1: ", e.NumberOfBlocks())
 
 # Part 2
 # result = w.RunAgain()
