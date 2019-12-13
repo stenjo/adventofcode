@@ -1,6 +1,7 @@
 #Test file for Advent of Code 2019: https://adventofcode.com/2019/day/12
 
 import unittest
+from functools import reduce 
 from AoC12_classes import Moon, MoonMap
 
 class MoonTest(unittest.TestCase):
@@ -288,16 +289,19 @@ class MoonMapTest(unittest.TestCase):
 
         w = MoonMap(testInput)
         # act
-        moves = 1
         w.OneStep()
-        while w.AllWasAtOriginalPos() == False:
+        while w.AllMoonsAxisLooped() == False:
             w.OneStep()
-            moves += 1
-        
-        print([m.loopSteps for m in w.map])
+
+        tupleOfTuples = [m.GetXYZAsTuple(m.loopStepsXYZ) for m in w.map]
+        print(tupleOfTuples)
+        l = [m.GetLCMSteps() for m in w.map]
+        print(l)
+
+        result = w.GetAllLCM()
 
         # assert
-        self.assertEqual(moves, 2772)
+        self.assertEqual(result, 2772)
 
     def test_moves_to_origin_2(self):
         # arrange
@@ -309,33 +313,36 @@ class MoonMapTest(unittest.TestCase):
 
         w = MoonMap(testInput)
         # act
-        moves = 1
         w.OneStep()
         # while w.AllAtOriginalPos() == False:
         while w.AllWasAtOriginalPos() == False:
             w.OneStep()
-            moves += 1
-            if moves % 100 == 0:
-                print([m.loopSteps for m in w.map])
+
+        result = w.GetAllLCM()
 
         # assert
-        self.assertEqual(moves, 4686774924)
+        self.assertEqual(result, 4686774924)
 
-    def test_moves_to_origin_puzle(self):
+    def test_moves_to_original_puzzle(self):
         # arrange
         infile = open('data/input_12.txt','r')
         testInput = infile.readlines()
 
         w = MoonMap(testInput)
         # act
-        moves = 1
         w.OneStep()
         # while w.AllAtOriginalPos() == False:
-        while w.AllWasAtOriginalPos() == False:
+        while w.AllMoonsLooped() == False:
             w.OneStep()
-            moves += 1
-            if moves % 1000 == 0:
-                print([m.loopStepsXYZ for m in w.map])
+
+        tupleOfTuples = [m.GetXYZAsTuple(m.loopStepsXYZ) for m in w.map]
+        l = [element for tupl in tupleOfTuples for element in tupl]
+        print(l)
+        prod = reduce((lambda x, y: x * y), l) 
+        print(prod)
+        l = set(l)
+        prod = reduce((lambda x, y: x * y), l) 
+        print(prod)
 
         # assert
         self.assertEqual(moves, 4686774924)

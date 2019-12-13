@@ -2,7 +2,7 @@
 # 
 # 
 import math, re
-
+import numpy as np
 
 class Moon():
 
@@ -33,7 +33,7 @@ class Moon():
             self.pos[ps] = int(val)
             self.origin[ps] = int(val)
         self.loopSteps = 1
-        self.loopStepsXYZ = {'x':0, 'y':0, 'z':0}
+        self.loopStepsXYZ = {'x':self.loopSteps, 'y':self.loopSteps, 'z':self.loopSteps}
         self.passedOriginXYZ  = {'x':False, 'y':False, 'z':False}
         
     def SetVelocity(self, vel):
@@ -55,16 +55,31 @@ class Moon():
     def IsAtOriginalPos(self):
         return self.pos == self.origin
 
+    def AllAxisLooped(self):
+        return self.passedOriginXYZ['x'] and \
+            self.passedOriginXYZ['y'] and \
+            self.passedOriginXYZ['z']
+
+    def GetLCMSteps(self):
+        loops = self.GetXYZAsTuple(self.loopStepsXYZ)
+        a = np.lcm(self.loopStepsXYZ['x'], self.loopStepsXYZ['y'])
+        b = np.lcm(self.loopStepsXYZ['y'], self.loopStepsXYZ['y'])
+        c = np.lcm.reduce(loops)
+        return c
+        
+    def lcm(self, a, b):
+        return abs(a*b) // math.gcd(a, b)
+
     def Move(self):
         coords = 'xyz'
         for axis in coords:
             self.pos[axis] += self.vel[axis]
-            if self.pos[axis] == self.origin[axis]: self.passedOriginXYZ[axis] = True 
             self.loopStepsXYZ[axis] += 1 if self.passedOriginXYZ[axis] == False else 0
+            if self.vel[axis] == 0: self.passedOriginXYZ[axis] = True 
         
         self.loopSteps += 1 if self.passedOrigin == False else 0
 
-        if self.pos == self.origin: self.passedOrigin = True 
+        if self.KineticEnergy() == 0: self.passedOrigin = True 
 
     def GetXYZFromString(self, pstring):
         sc = set('<> ')
@@ -165,3 +180,17 @@ class MoonMap():
                 return False
 
         return True
+
+    def AllMoonsAxisLooped(self):
+        for a in self.map:
+            if a.AllAxisLooped() == False:
+                return False
+
+        return True
+
+    def GetAllLCM(self):
+        tlst = [m.GetXYZAsTuple(m.loopStepsXYZ) for m in self.map]
+        l = [element for tupl in tlst for element in tupl]
+        l = np.lcm.reduce(l)
+
+        return l
