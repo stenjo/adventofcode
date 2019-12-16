@@ -34,6 +34,7 @@ class ArcadeCabinet():
     
     def WriteTiles(self):
         color = 0
+        self.tiles = []
         self.comp.progPtr=0
         # self.comp.LoadInput([color])
         result = self.comp.RunFor3Outputs()
@@ -53,43 +54,43 @@ class ArcadeCabinet():
                 # if tile in [4,3]:
                 #     self.PlotTiles()
 
-                if tile == 4:   # ball
-                    ball = self.GetBall()
-                    if ball != None:
-                        if self.previousBall != None:
-                            self.velocity = ball['pos'][0] - self.previousBall['pos'][0]
-                        self.previousBall = ball
-                        self.tiles.remove(ball)
-                    self.tiles.append(panel)
-                    print('  ball:', self.GetBall(), self.comp.outputList,'paddle:',self.GetPaddle(), self.comp.inputList)
-                elif tile == 3:     # paddle
-                    paddle = self.GetPaddle()
-                    ball = self.GetBall()
-                    if paddle != None:
-                        if ball != None:
-                            tilt = (ball['pos'][0] - x) - self.velocity*(y-ball['pos'][1])
-                            if tilt != 0:
-                                tilt = int(tilt/abs(tilt))
-                            self.comp.LoadInput([tilt])
-                            print('tilt:', tilt, 'bx:',ball['pos'][0], 'px:',x, 'diff:',ball['pos'][0] - x, 'vel:', self.velocity )
-                        self.tiles.remove(paddle)
-                        panel['pos'] = (ball['pos'][0],21)
-                    self.tiles.append(panel)
-                    print('  ball:', self.GetBall(), self.comp.outputList,'paddle:',self.GetPaddle(), self.velocity, self.comp.inputList)
+                # if tile == 4:   # ball
+                #     ball = self.GetBall()
+                #     if ball != None:
+                #         if self.previousBall != None:
+                #             self.velocity = ball['pos'][0] - self.previousBall['pos'][0]
+                #         self.previousBall = ball
+                #         self.tiles.remove(ball)
+                #     self.tiles.append(panel)
+                #     print('  ball:', self.GetBall(), self.comp.outputList,'paddle:',self.GetPaddle(), self.comp.inputList)
+                # elif tile == 3:     # paddle
+                #     paddle = self.GetPaddle()
+                #     ball = self.GetBall()
+                #     if paddle != None:
+                #         if ball != None:
+                #             tilt = (ball['pos'][0] - x) - self.velocity*(y-ball['pos'][1])
+                #             if tilt != 0:
+                #                 tilt = int(tilt/abs(tilt))
+                #             self.comp.LoadInput([tilt])
+                #             print('tilt:', tilt, 'bx:',ball['pos'][0], 'px:',x, 'diff:',ball['pos'][0] - x, 'vel:', self.velocity )
+                #         self.tiles.remove(paddle)
+                #         panel['pos'] = (ball['pos'][0],21)
+                #     self.tiles.append(panel)
+                #     print('  ball:', self.GetBall(), self.comp.outputList,'paddle:',self.GetPaddle(), self.velocity, self.comp.inputList)
 
-                else:    
-                    if pos not in tileDict and tile > 0:
-                        self.tiles.append(panel)
-                    else:
-                        if tile == 0 and pos in tileDict:
-                            self.tiles.remove(tileDict[pos])
-                        else:
-                            tileDict[pos] = {'pos':pos, 'tile':tile}
-                
+                # else:    
+            # if pos not in tileDict and tile > 0:
+                self.tiles.append(panel)
+            # else:
+            #     if tile == 0 and pos in tileDict:
+            #         self.tiles.remove(tileDict[pos])
+            #     else:
+                # tileDict[pos] = {'pos':pos, 'tile':tile}
+            
 
                     # print(panel)
-        if self.comp.WaitingForInput():
-            self.comp.LoadInput([0])
+        # if self.comp.WaitingForInput():
+        #     self.comp.LoadInput([0])
 
 
     def RunGame(self):
@@ -100,7 +101,9 @@ class ArcadeCabinet():
         # while self.comp.ProgramFinished == False:
         while len(self.comp.inputList) > 0:
             self.WriteTiles()
-            # self.PlotTiles()
+            self.PlotTiles()
+            self.comp.LoadInput([0])
+
 
 
     def GetBall(self):
