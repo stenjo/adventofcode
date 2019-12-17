@@ -56,3 +56,19 @@ class Signal(unittest.TestCase):
 
         # assert
         self.assertEqual(result, '52432133' )
+
+    def test_with_offset_1(self):
+        # arrange
+        signal = '123456781234567812345678123456781234567812345678'
+        multiplier = 6
+        pattern = [0, 1, 0, -1]
+        s = FFT(pattern, signal)
+
+        # act
+        # 1846033423791261356214140202763688249498
+        result = s.RunPhase(4,24)
+        result = s.RunPhaseWithOffset(4,8)
+
+        # assert
+        self.assertEqual(result, '35621414' )
+

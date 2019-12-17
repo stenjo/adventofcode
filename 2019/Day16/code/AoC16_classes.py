@@ -26,13 +26,15 @@ class FFT():
 
     ptrn = None
     signal = []
+    multiplier = 1
 
-    def __init__(self, pattern, signal):
+    def __init__(self, pattern, signal, multiplier = 1):
         super().__init__()
         self.ptrn = Pattern(pattern)
         self.signal = [int(n) for n in list(str(signal))]
+        self.multiplier = multiplier
         
-    def RunPhase(self, count):
+    def RunPhase(self, count, offset = 0):
         for c in range(count):
             newlist = []
             for elmntNo in range(len(self.signal)):
@@ -46,5 +48,21 @@ class FFT():
             
             self.signal = newlist
             
-        return ''.join(str(x) for x in [self.signal[i] for i in range(8)])
+        return ''.join(str(x) for x in [self.signal[i] for i in range(offset, offset+8)])
+
+    def RunPhaseWithOffset(self, count, offset=0):
+        for c in range(count):
+            newlist = []
+            for elmntNo in range(len(self.signal)):
+                sum = 0
+                pattern = self.ptrn.ExpandedPattern(elmntNo)
+                for i in range(len(self.signal)):
+                    val = self.signal[i] * pattern[(i+1) % len(pattern)]
+                    sum += val 
+
+                newlist.append(abs(sum)%10)
+            
+            self.signal = newlist
+            
+        return ''.join(str(x) for x in [self.signal[i] for i in range(len(self.signal))])
 
