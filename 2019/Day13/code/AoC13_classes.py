@@ -138,14 +138,23 @@ class ArcadeCabinet():
 
 class Compute():
 
-    program = []
+    __program = []
     inputList = []
     outputList = []
-    progPtr = 0
+    __progPtr = 0
     relBase = 0
 
     def __init__(self, data):
         self.LoadProgram(data)
+
+    @property
+    def program(self):
+        return self.__program
+
+    @program.setter
+    def program(self, Value):
+        self.__program = Value
+
 
     def LoadInput(self, data):
         self.inputList = []
