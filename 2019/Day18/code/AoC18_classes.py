@@ -3,10 +3,11 @@
 # 
 
 import inspect
+import os
 
 class Labyrinth():
 
-    map = {}
+    __map = {}
     mKeys = {}
     mDoors = {}
     pos = None
@@ -21,7 +22,7 @@ class Labyrinth():
         for l in map:
             x = 0
             for p in l.strip():
-                self.map[(x,y)] = p
+                self.__map[(x,y)] = p
                 if p.isalpha():
                     if p.isupper():
                         self.mDoors[p] = {'pos':(x,y)}
@@ -32,7 +33,12 @@ class Labyrinth():
                 x += 1
             y += 1
 
-    def PrintMap(self, current):
+    def PrintMap(self, current = None):
+        # os.system('cls')  # For Windows
+        os.system('clear')  # For Linux/OS X
+        if current == None:
+            current = self.currentPos
+
         w,h = max(self.map)
         for y in range(h+1):
             line = []
@@ -46,11 +52,18 @@ class Labyrinth():
 
             print(''.join([n for n in line]))
 
-    def GetDoors(self):
-        return self.mDoors.keys()
+    @property
+    def currentPos(self):
+        return self.pos
 
-    def GetKeys(self):
-        return self.mKeys.keys()
+    @property
+    def doors(self):
+        return {value:key for (key, value) in self.__map.items() if value.isupper()}
+
+    @property
+    def keys(self):
+        return {value:key for (key, value) in self.__map.items() if value.islower()}
+
 
     def GetSteps(self, item):
         found = False
@@ -60,6 +73,11 @@ class Labyrinth():
         x,y = pos
         track = []
         while found == False:
+            # next step
+            dx,dy = direction
+            x = x + dx
+            y = y + dy
+
             if (x,y) in track:
                 dx,dy = direction
                 x = x-dx
@@ -69,6 +87,7 @@ class Labyrinth():
                 p = self.map[(x,y)] 
                 if p == item:
                     found = True
+                    steps += 1
                 elif p == '.':
                     steps += 1
                 elif p == '#':  # Change direction
@@ -83,14 +102,15 @@ class Labyrinth():
                         direction = (0,-1)
                     else:
                         direction = (1,0)
+                else:
+                    steps += 1
+
                 track.append((x,y))
-                # next step
-                dx,dy = direction
-                x = x + dx
-                y = y + dy
+
+                self.PrintMap((x,y))
+                print(steps)
+
             
-            self.PrintMap((x,y))
-            print(steps)
 
         return steps
 
