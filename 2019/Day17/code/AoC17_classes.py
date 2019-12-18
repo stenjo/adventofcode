@@ -19,11 +19,14 @@ class VRobot():
 class Junction():
     x = 0
     y = 0
-    aparam = 0
+    __aparam = 0
     def __init__(self, x, y):
         super().__init__()
         self.x = x
         self.y = y
+
+    def aligment(self):
+        return self.x*self.y
 
 
 class Scaffold():
@@ -41,8 +44,8 @@ class Scaffold():
 
 class Scaffoliding():
 
-    width = None
-    height = None
+    width = 0
+    height = 0
     comp = None
     panels = []
     scaffoldingMap = {}
@@ -56,7 +59,7 @@ class Scaffoliding():
 
     def __init__(self, program):
         self.count = 0
-        self.width = None
+        self.width = 0
         self.comp = Compute(program)
         # self.comp.LoadInput([0])
         self.direction = 0
@@ -88,31 +91,60 @@ class Scaffoliding():
                 self.scaffoldingMap[(x,y)] = v
 
             if result == 10:
-                print(''.join([chr(n) for n in line]))
+                # print(''.join([chr(n) for n in line]))
                 line = []
                 y += 1
+                if y > self.width:
+                    self.width = y
                 x = 0
             else:
                 line.append(result)
                 x += 1
+                if x > self.height:
+                    self.height = x
 
         return len(self.scaffoldingMap)
 
     def GetJunctions(self):
+        junctions = 0
         for p in self.scaffoldingMap:
             if isinstance(self.scaffoldingMap[p], Scaffold):
                 x,y = p
                 keys = [(x-1,y),(x+1,y), (x,y-1), (x,y+1)]
                 count = 0
-                for k in self.scaffoldingMap.keys():
-                    count +=1
+                for k in keys:
+                    if k in self.scaffoldingMap.keys():
+                        count +=1
 
                 if count > 2:
                     self.scaffoldingMap[(x,y)] = Junction(x,y)
+                    junctions += 1
                 
+        self.PrintScaffolding()
 
-        return True
+        return junctions
 
+    def PrintScaffolding(self):
+
+        sumofalignments = 0
+
+        for y in range(self.width):
+            line = []
+            for x in range(self.height):
+                if (x,y) in self.scaffoldingMap:
+                    if isinstance(self.scaffoldingMap[(x,y)], Scaffold):
+                        line.append('#')
+                    elif isinstance(self.scaffoldingMap[(x,y)], Junction):
+                        line.append('O')
+                        sumofalignments += x*y
+                    else:
+                        line.append(chr(self.scaffoldingMap[(x,y)].dir))
+                else:
+                    line.append('.')
+
+            print(''.join([c for c in line]))
+
+        print(sumofalignments)
 
     def RunGame(self):
         self.comp.LoadInput([2])

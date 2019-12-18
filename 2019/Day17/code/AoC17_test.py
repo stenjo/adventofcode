@@ -49,9 +49,9 @@ class TestScaffoldingMap(unittest.TestCase):
         # act
         print()
         result = a.WriteScaff()
-        a.GetJunctions()
+        juncs = a.GetJunctions()
         # assert
-        self.assertEqual(result, 329)
+        self.assertEqual(juncs, 13)
 
 class RunComputeTest(unittest.TestCase):
 
