@@ -82,9 +82,10 @@ class TestSpaceMap(unittest.TestCase):
         print()
         result = a.WriteTractorMap()
         a.PrintSpaceMap()
+        print(a.GetAffectedCells())
 
         # assert
-        self.assertEqual(result, 100)
+        self.assertEqual(result, 2500)
 
 class RunComputeTest(unittest.TestCase):
 
