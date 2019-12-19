@@ -23,9 +23,9 @@ class TestLabyrinth(unittest.TestCase):
         # act
 
         l.PrintMap()
-        keyList = l.GetKeys()
+        keyList = l.keys
         numKeys = len(keyList)
-        doorsList = l.GetDoors()
+        doorsList = l.doors
         numDoors = len(doorsList)
 
 
@@ -74,3 +74,27 @@ class TestLabyrinth(unittest.TestCase):
         self.assertEqual(result, steps)
 
 
+    def test_get_doors(self):
+        # arrange
+        labMap = [
+            '#################',
+            '#i.G..c...e..H.p#',
+            '########.########',
+            '#j.A..b...f..D.o#',
+            '########@########',
+            '#k.E..a...g..B.n#',
+            '########.########',
+            '#l.F..d...h..C.m#',
+            '#################']
+        l = Labyrinth(labMap)
+
+        # act
+        doorsList = l.doors
+        numDoors = len(doorsList)
+        print(list(doorsList))
+        print(l.MappedDoors())
+
+        doorsNum = len(l.MappedDoors())
+
+        # assert
+        self.assertEqual(numDoors, doorsNum)
