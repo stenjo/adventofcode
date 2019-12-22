@@ -1,21 +1,29 @@
-# Advent of Code 2019: https://adventofcode.com/2019/day/17
+# Advent of Code 2019: https://adventofcode.com/2019/day/21
 # 
 # 
 
 import inspect
 from functools import reduce
 
-class Droid():
+class SpringDroid():
 
-    pos = 0
-    dir = None
-    x = 0
-    y = 0
-    def __init__(self, x, y, dir):
+    comp = None
+    def __init__(self):
         super().__init__()
-        self.x = x
-        self.y = y
-        self.dir = dir
+        infile = open('data/input_21.txt','r')
+        program = infile.readline().strip().split(',')
+        self.comp = Compute(program)
+
+    def LoadAsciiProgram(self, prog):
+        code = []
+        for l in prog:
+            code += [ord(a) for a in l]
+            code.append(10)
+            self.comp.LoadInput(code)
+
+    def RunProgram(self):
+        return self.comp.RunForNewline()
+        
 
 class SpaceMap():
 
@@ -192,6 +200,9 @@ class Compute():
     def Has3Outputs(self):
         return len(self.outputList) > 2
 
+    def HasNLInOutputs(self):
+        return 10 in self.outputList
+
     def RunCompute(self):
         self.progPtr = 0
         self.outputList = []
@@ -207,6 +218,15 @@ class Compute():
             self.RunOnce()
 
         return self.outputList
+
+    def RunForNewline(self):
+        self.outputList = []
+        while self.HasNLInOutputs() == False and self.ProgramFinished() == False:
+            self.RunOnce()
+
+        # print(self.outputList)
+        return ''.join([chr(a) for a in self.outputList])
+        
     
     def RunFor2Outputs(self):
         self.outputList = []
