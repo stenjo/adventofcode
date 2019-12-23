@@ -10,18 +10,19 @@ class SpaceDeck():
         self.deck = list(range(length))
 
     def CutN(self, n):
-        print('cut', n)
-        self.deck = self.deck[n:] + self.deck[:n]
+        # print('cut', n)
+        temp = self.deck[n:] + self.deck[:n]
+        self.deck = list(temp)
         return self.deck
 
     def DealIntoNew(self):
-        print('Deal into new stack')
+        # print('Deal into new stack')
         self.deck.reverse()
         return self.deck
 
     def DealWithIncrement(self, n):
 
-        print('Deal with increment', n)
+        # print('Deal with increment', n)
         i = 0
         l = len(self.deck)
         temp = [None for n in range(l)]
@@ -83,11 +84,26 @@ class SpaceDeck():
         return ''
 
     def RunDeal(self, instructions):
-        print(len(instructions), "instrunctions detected")
+
         for i in instructions:
             deck = self.ParseInstructions(i)
 
         return deck
+
+    def RunDealUntilSorted(self, instructions):
+        x = 0
+        done = False
+        l = [n for n in self.deck if self.deck.index(n) != n]
+        while done == False:
+            x += 1
+            for i in instructions:
+                deck = self.ParseInstructions(i)
+            l = [n for n in self.deck if self.deck.index(n) != n]
+            if len(l) == 0:
+                done = True
+
+        return x
+
     
     def comparefiles(self, file1, file2):
         infile1 = open('data/'+file1,'r')

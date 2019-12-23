@@ -8,7 +8,7 @@ inputData1 = infile.readlines()
 e = SpaceDeck(10007)
 result = e.RunDeal(inputData1)
 print(len(result))
-print("Part 1: ", result[2019])
+print("Part 1: ", result.index(2019))
 
 e.comparefiles('input_22.txt', 'output')
 

@@ -19,6 +19,26 @@ class SpaceDeckTest(unittest.TestCase):
         # assert
         self.assertEqual(result, [3,4,5,6,7,8,9,0,1,2])
 
+    def test_cut_n_1(self):
+        # arrange
+        d = SpaceDeck(10)
+
+        # act
+        result = d.CutN(7)
+
+        # assert
+        self.assertEqual(result, [7,8,9,0,1,2,3,4,5,6])
+
+    def test_cut_n_2(self):
+        # arrange
+        d = SpaceDeck(10)
+
+        # act
+        result = d.CutN(7)
+
+        # assert
+        self.assertEqual(result, [7,8,9,0,1,2,3,4,5,6])
+
     def test_cut_n_neg(self):
         # arrange
         d = SpaceDeck(6)
@@ -28,6 +48,16 @@ class SpaceDeckTest(unittest.TestCase):
 
         # assert
         self.assertEqual(result, [2,3,4,5,0,1])
+
+    def test_cut_n_neg_1(self):
+        # arrange
+        d = SpaceDeck(10)
+
+        # act
+        result = d.CutN(-4)
+
+        # assert
+        self.assertEqual(result, [6,7,8,9,0,1,2,3,4,5])
 
     def test_deal_into_new(self):
         # arrange
@@ -128,11 +158,28 @@ class SpaceDeckTest(unittest.TestCase):
         d = SpaceDeck(10007)
         infile = open('data/input_22.txt','r')
         deals = infile.readlines()
-        answer = 8005
+        answer = 5169
         result = []
 
         # act
         result = d.RunDeal(deals)
 
         # assert
-        self.assertEqual(result[2019], answer)
+        self.assertEqual(result.index(2019), answer)
+
+
+    def test_run_deal_actual_1(self):
+        # arrange
+        d = SpaceDeck(10007)
+        infile = open('data/input_22.txt','r')
+        deals = infile.readlines()
+        answer = 10006
+        result = []
+
+        # act
+        result = d.RunDealUntilSorted(deals)
+
+        # assert
+        self.assertEqual(result, answer)
+
+        
