@@ -1,128 +1,49 @@
-# Advent of Code 2019: https://adventofcode.com/2019/day/23
+# Advent of Code 2019: https://adventofcode.com/2019/day/25
 # 
 # 
 
 import inspect
 from functools import reduce
 
-class NAT():
-    x = None
-    __y = None
-    lastY = None
-    clist = None
+class Droid():
 
+    comp = None
     def __init__(self):
         super().__init__()
-        self.clist = [False for n in range(50)]
+        infile = open('data/input_25.txt','r')
+        program = infile.readline().strip().split(',')
+        self.comp = Compute(program)
 
-    def UpdateClist(self, index, value):
-        self.clist[index] = value
+    def LoadAsciiProgram(self, prog):
+        code = []
+        for l in prog:
+            code += [ord(a) for a in l]
+            code.append(10)
+            self.comp.LoadInput(code)
 
-    @property
-    def y(self):
-        return self.__y
-    
-    @y.setter
-    def y(self, y):
-        self.lastY = self.__y
-        self.__y = y
+    def RunProgram(self):
+        result = ""
+        while "Command?" not in result:
+            r = self.comp.RunForOutput()
+            if len(r):
+                result += chr(r.pop(0))
 
-    @property
-    def IsTwoInRow(self):
-        return self.__y == self.lastY and self.lastY != None
+        return result
+        
 
-    @property
-    def AllIsIdle(self):
-        return list(set(self.clist)) == [False] and self.__y != None
+class SpaceMap():
 
-    @property
-    def values(self):
-        return [self.x, self.__y]
-    
-
-class NetworkInterfaceController():
-
-    computers = []
-    numPackages = 0
+    comp = None
+    spaceMap = {}
+    program = None
 
     def __init__(self, program):
-        super().__init__()
-        for addr in range(50):
-            c = Compute(program)
-            c.LoadInput([addr])
-            self.computers.append({'address':addr, 'c':c})
-            self.nat = NAT()
-
-    def RunForNAT(self):
-        running = 0
-        while running == 0:
-            self.numPackages = 0
-            for c in self.computers:
-                index = c['address']
-                self.nat.UpdateClist(index, False)
-                computer = c['c']
-                running += self.RunNATComputer(index, computer)
-                self.nat.UpdateClist(index, self.nat.clist[index] or computer.HasInput())
-                
-            if self.nat.IsTwoInRow:
-                return self.nat.y
-
-            if self.nat.AllIsIdle:
-                computer = self.computers[0]['c']
-                computer.AddToInput(self.nat.values)
-                print('Addr:', 0, 'x:', self.nat.x, 'y:',self.nat.y)
-        
-        return running
-
-    def RunNATComputer(self, index, computer):
-        computer.RunFor3Outputs()
-        
-        if computer.Has3Outputs():
-            self.nat.UpdateClist(index, True)
-            output = computer.PopOutputs(3)
-            self.numPackages +=1
-
-            addr, x, y = output
-            if addr == 255:
-                self.nat.x = x
-                self.nat.y = y
-                # print('Comp:', index, 'Addr:', addr, 'x:', x, 'y:',y)
-                if self.nat.IsTwoInRow:
-                    return y
-            else:
-                self.computers[addr]['c'].AddToInput([x,y])
-                self.nat.UpdateClist(addr, True)
-            # print('Comp:', index, 'Addr:', addr, 'x:', x, 'y:',y)
-
-        return 0
-
-
-
-    def RunComputer(self, index, computer):
-        computer.RunFor3Outputs()
-        
-        if computer.Has3Outputs():
-            output = computer.PopOutputs(3)
-            self.numPackages +=1
-
-            addr, x, y = output
-            if addr == 255:
-                return y
-
-            self.computers[addr]['c'].AddToInput([x,y])
-            # print('Comp:', index, 'Addr:', addr, 'x:', x, 'y:',y)
-
-        return 0
-
-    def RunComputers(self):
-        running = 0
-        while running == 0:
-            self.numPackages = 0
-            for c in self.computers:
-                computer = c['c']
-                running += self.RunComputer(c['address'], computer)
-        
-        return running
+        self.count = 0
+        self.width = 0
+        self.program = program
+        self.comp = Compute(program)
+        # self.comp.LoadInput([0])
+        self.direction = 0
 
     def ConvertToDict(self, tup): 
         di = {}
@@ -130,6 +51,116 @@ class NetworkInterfaceController():
             di.setdefault(a['pos'], a)
         return di 
 
+    def LoadMap(self, m):
+        y = 0
+        for r in m:
+            x = 0
+            for p in r:
+                self.spaceMap[(x,y)] = p
+                x += 1
+            y += 1
+
+        return (x,y)
+
+    def GetAffectedCells(self, chars = '#O'):
+        l = filter(lambda x: x in chars, list(self.spaceMap.values()))
+        return len(list(l))
+
+    def WriteTractorMap(self):
+        for y in range(100):
+            self.WriteMapLine(0,y)
+
+        return len(self.spaceMap)
+
+    def WriteMapLine(self, xStart = 0, yLine = 0):
+        for x in range(xStart, yLine+1):
+            self.comp.LoadInput([x,yLine])
+            self.comp.LoadProgram(self.program)
+            traction = self.comp.RunCompute()
+            if traction == 1:
+                self.spaceMap[(x,yLine)] = '#'
+
+
+    def WriteBeamMap(self, size):
+        l = [self.spaceMap[(x,size-1)] for x in range(size)]
+        return len(self.spaceMap)
+
+    def PrintSpaceMap(self):
+        maxX,maxY = max(list(self.spaceMap))
+        lines = 0
+        print()
+        for y in range(maxY+1):
+            line = []
+            for x in range(maxX+1):
+                if (x,y) in self.spaceMap:
+                    line.append(self.spaceMap[(x,y)])
+                else:
+                    line.append(' ')
+
+            print(''.join(line))
+            lines += 1
+
+        return(lines)
+
+    def SquareWithinBeam(self, x, y, size):
+        # fits horizontally
+        positions = [(n,y) for n in range(x,x+size)]
+        fitsX = reduce((lambda acc, n: acc and self.spaceMap[n] in '#O'), positions)
+
+        # fits vertically
+        positions = [(x,n) for n in range(y,y+size)]
+        fitsY = reduce((lambda acc, n: acc and self.spaceMap[n] in '#O'), positions)
+
+        return fitsX and fitsY
+
+    def BeamPosInRow(self, y):
+        q = {k: v for k, v in self.spaceMap.items() if v in '#O' and k[1] == y}
+        return q
+
+    def FindSquareDistance(self, size = 100):
+
+        self.WriteTractorMap()
+        maxX,maxY = max(list(self.spaceMap)) 
+
+        beam = self.BeamPosInRow(maxY)
+
+        x1,y1 = min(beam)
+        k1 = x1/y1
+
+        l1 = y1/len(beam)
+        y = l1 * size
+        x = k1 * y
+        dx = k1 * size
+
+
+
+        # firstLine = int(candY[0]/len(beam)*size)
+
+
+
+        y = 309                
+        self.WriteMapLine(y)          
+        while len(self.BeamPosInRow(y)) < size:
+            y += 1
+            maxX,maxY = max(list(self.spaceMap)) 
+            if y >= maxY:
+                self.WriteMapLine(y)          
+            print(y)
+        found = False
+        while found == False:
+            points = self.BeamPosInRow(y)
+            for p in points:
+                x,n = p
+                if self.SquareWithinBeam(x,y, size):
+                    found = True
+                    return x*10000+y
+            print(y, len(points))
+            y += 1
+            maxX,maxY = max(list(self.spaceMap)) 
+            if y >= maxY:
+                self.WriteMapLine(y)          
+
+        return x*10000+y
 
 
 class Compute():
@@ -148,11 +179,6 @@ class Compute():
         for n in data:
             self.inputList.append(n)
         self.inputList.reverse()
-    
-    def AddToInput(self, data):
-        self.inputList.reverse()
-        self.inputList += data
-        self.inputList.reverse()
 
     def LoadProgram(self, data):
         self.program = list(map(int, data))
@@ -163,16 +189,13 @@ class Compute():
         self.outputList.append(data)
 
     def GetNextInput(self):
-        return self.inputList.pop() if len(self.inputList) > 0 else -1
+        return self.inputList.pop() if len(self.inputList) > 0 else None
 
     def ProgramFinished(self):
         return self.program[self.progPtr] == 99
 
     def WaitingForInput(self):
         return True if self.program[self.progPtr] == 3 and len(self.inputList) == 0 else False
-
-    def HasInput(self):
-        return len(self.inputList) > 0
 
     def HasOutput(self):
         return len(self.outputList) > 0
@@ -194,10 +217,18 @@ class Compute():
 
         return self.outputList[-1] if len(self.outputList) > 0 else self.program[self.progPtr]
 
+    def RunForInput(self):
+        # self.progPtr = 0
+        self.outputList = []
+        while self.ProgramFinished() == False and self.WaitingForInput() == False:
+            self.RunOnce()
+
+        return self.outputList
+
     def RunForOutput(self):
         # self.progPtr = 0
         self.outputList = []
-        while self.HasOutput() == False and self.ProgramFinished() == False:
+        while self.HasOutput() == False and self.ProgramFinished() == False and self.WaitingForInput() == False:
             self.RunOnce()
 
         return self.outputList
@@ -222,10 +253,7 @@ class Compute():
         return (color, direction)
 
     def RunFor3Outputs(self):
-        # self.outputList = []
-        if self.WaitingForInput():
-            self.RunOnce()
-
+        self.outputList = []
         while self.Has3Outputs() == False and self.ProgramFinished() == False and self.WaitingForInput() == False:
             self.RunOnce()
 
@@ -264,9 +292,9 @@ class Compute():
 
             dest = arg3 + self.relBase if modes // 100 % 10 == 2 else arg3
             if (opcode in [3,4]):
-                # if opcode == 3:     # Waiting for input
-                #     if len(self.inputList) == 0:
-                #         return
+                if opcode == 3:     # Waiting for input
+                    if len(self.inputList) == 0:
+                        return
 
                 dest = arg1 + self.relBase if modes % 10 == 2 else arg1
             
@@ -341,11 +369,6 @@ class Compute():
 
     def GetOutputs(self):
         return self.outputList
-    
-    def PopOutputs(self, num):
-        outputs = list(self.outputList[:num])
-        self.outputList = list(self.outputList[num:])
-        return outputs
 
     def ExtendMemory(self, ptrNeed):
         if (ptrNeed + 1) > len(self.program):

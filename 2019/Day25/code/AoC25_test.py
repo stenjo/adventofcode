@@ -1,56 +1,84 @@
-# Test file for Advent of Code 2019: https://adventofcode.com/2019/day/23
+# Test file for Advent of Code 2019: https://adventofcode.com/2019/day/25
+
 
 import unittest
 import pprint as pp
-from AoC23_classes import NetworkInterfaceController, Compute
+from AoC25_classes import Droid, Compute
 
 
 
-class NetworkInterfaceControllerTest(unittest.TestCase):
+class DroidMap(unittest.TestCase):
 
     def setUp(self):
         return super().setUp()
 
-    def test_run_code(self):
+    def test_get_prompt(self):
         # arrange
-        infile = open('data/input_23.txt','r')
+        infile = open('data/input_25.txt','r')
         program = infile.readline().strip().split(',')
-        n = NetworkInterfaceController(program)
+        c = Compute(program)
+        s = []
 
         # act
-        numOutputs = n.RunComputers()
+        s = c.RunForInput()
+        print(s)
 
         # assert
-        self.assertEqual(numOutputs, 23626 )
+        self.assertEqual(True, True)
 
-    def test_run_nat(self):
+    def test_small_program(self):
         # arrange
-        infile = open('data/input_23.txt','r')
-        program = infile.readline().strip().split(',')
-        n = NetworkInterfaceController(program)
+        instr = [
+            'inv'
+            ]
+
+        s = []
+
+        sd = Droid()
+        sd.LoadAsciiProgram(instr)
+        s = sd.RunProgram()
+        result = []
 
         # act
-        numOutputs = n.RunForNAT()
+        for i in range(len(instr)+60):
+            s = sd.RunProgram()
+            result.append(s)
+            print(s, end = '')
+            # print(''.join([chr(a) for a in s]))
+
+        # pp.pprint(result)
 
         # assert
-        self.assertEqual(numOutputs, 19021 )
+        self.assertEqual(True, True)
 
-    def test_run_computer(self):
+    def test_small_program_1(self):
         # arrange
-        infile = open('data/input_23.txt','r')
-        program = infile.readline().strip().split(',')
-        n = NetworkInterfaceController(program)
-        computer = n.computers[0]['c']
+        instr = [
+            'NOT D T',
+            'AND A T',
+            'AND B T',
+            'AND C T',
+            'OR T J',
+            'NOT C J',
+            'WALK']
+
+        s = []
+
+        sd = Droid()
+        s = sd.RunProgram()
+        sd.LoadAsciiProgram(instr)
+        result = []
 
         # act
-        n.RunComputer(0,computer)
-        result = computer.GetOutputs()
-        waiting = computer.WaitingForInput()
+        for i in range(len(instr)+60):
+            s = sd.RunProgram()
+            result.append(s)
+            print(s, end = '')
 
         # assert
-        self.assertEqual(waiting, True)
-        self.assertEqual(result, [] )
-        
+        self.assertEqual(True, True)
+
+
 
 
 class RunComputeTest(unittest.TestCase):
@@ -230,17 +258,3 @@ class RunComputeTest(unittest.TestCase):
         # assert
         self.assertEqual(result, 1125899906842624)
 
-    def test_add_to_input(self):
-        # arrange
-        program = [104,1125899906842624,99]
-        c = Compute(program)
-
-        # act
-        c.LoadInput([0])
-        c.LoadProgram(program)
-        c.AddToInput([1,2])
-        result = list(c.inputList)
-        result.reverse()
-
-        # assert
-        self.assertEqual(result, [0, 1, 2])

@@ -8,11 +8,12 @@ infile = open('data/input_23.txt','r')
 program = infile.readline().strip().split(',')
 
 # Part 1
-e = NetworkInterfaceController(program)
-
-print("Part 1: ", len(e.computers))
+e = NetworkInterfaceController(program)        
+print("Part 1: ", e.RunComputers())
 
 # Part 2
-# result = w.RunAgain()
-# result = e.FindSquareDistance(100)
-print("Part 2: ", len(e.computers))
+infile = open('data/input_23.txt','r')
+program = infile.readline().strip().split(',')
+f = NetworkInterfaceController(program)
+result = f.RunForNAT()
+print("Part 2: ", result)
