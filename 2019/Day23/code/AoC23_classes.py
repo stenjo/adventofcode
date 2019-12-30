@@ -58,9 +58,9 @@ class NetworkInterfaceController():
         while running == 0:
             self.numPackages = 0
             for c in self.computers:
-                index = c['address']
+                index = c.get('address')
                 self.nat.UpdateClist(index, False)
-                computer = c['c']
+                computer = c.get('c')
                 running += self.RunNATComputer(index, computer)
                 self.nat.UpdateClist(index, self.nat.clist[index] or computer.HasInput())
                 
@@ -68,7 +68,7 @@ class NetworkInterfaceController():
                 return self.nat.y
 
             if self.nat.AllIsIdle:
-                computer = self.computers[0]['c']
+                computer = self.computers[0].get('c')
                 computer.AddToInput(self.nat.values)
                 print('Addr:', 0, 'x:', self.nat.x, 'y:',self.nat.y)
         
@@ -90,7 +90,7 @@ class NetworkInterfaceController():
                 if self.nat.IsTwoInRow:
                     return y
             else:
-                self.computers[addr]['c'].AddToInput([x,y])
+                self.computers[addr].get('c').AddToInput([x,y])
                 self.nat.UpdateClist(addr, True)
             # print('Comp:', index, 'Addr:', addr, 'x:', x, 'y:',y)
 
@@ -109,7 +109,7 @@ class NetworkInterfaceController():
             if addr == 255:
                 return y
 
-            self.computers[addr]['c'].AddToInput([x,y])
+            self.computers[addr].get('c').AddToInput([x,y])
             # print('Comp:', index, 'Addr:', addr, 'x:', x, 'y:',y)
 
         return 0
@@ -119,15 +119,15 @@ class NetworkInterfaceController():
         while running == 0:
             self.numPackages = 0
             for c in self.computers:
-                computer = c['c']
-                running += self.RunComputer(c['address'], computer)
+                computer = c.get('c')
+                running += self.RunComputer(c.get('address'), computer)
         
         return running
 
     def ConvertToDict(self, tup): 
         di = {}
         for a in tup: 
-            di.setdefault(a['pos'], a)
+            di.setdefault(a.get('pos'), a)
         return di 
 
 

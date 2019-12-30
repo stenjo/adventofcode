@@ -1,3 +1,7 @@
+# Advent of Code classes Advent of Code 2019, Day 22
+#
+# todo: Implement solution to part 2 using https://codeforces.com/blog/entry/72593
+#
 
 import parser
 
