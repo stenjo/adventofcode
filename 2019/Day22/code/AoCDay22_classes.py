@@ -8,10 +8,11 @@ import parser
 class SpaceDeck():
 
     deck = []
+    coefficients = []
 
     def __init__(self, length):
         super().__init__()
-        self.deck = list(range(length))
+        self.deckSize = length
 
     def CutN(self, n):
         # print('cut', n)
@@ -25,7 +26,6 @@ class SpaceDeck():
         return self.deck
 
     def DealWithIncrement(self, n):
-
         # print('Deal with increment', n)
         i = 0
         l = len(self.deck)
@@ -52,7 +52,7 @@ class SpaceDeck():
             return  False
 
     def ParseInstructions(self, instruction):
-
+        # self.coefficients = []
         numbers = [int(n) for n in instruction.split() if self.is_digit(n)]
         if len(numbers) > 1:
             print("Error on number extraction at instruction:", instruction, " got:",numbers)
@@ -67,32 +67,69 @@ class SpaceDeck():
             if num == None:
                 print("Error on number extraction at instruction:", instruction, " got:",numbers)
                 exit(1)
+            self.coefficients.append((num,0))   # "deal with increment n^n ": f(x)=n⋅x  mod m f(x)=n⋅x  mod m, so a=n,b=0
             return self.DealWithIncrement(num)
         elif instruction.find('deal into new stack') > -1:
             # return 'DealIntoNew'
             if num != None:
                 print("Error on number extraction at instruction:", instruction, " got:",numbers)
                 exit(1)
+            self.coefficients.append((-1,-1))     # "deal into new stack": f(x)=−x−1  mod m, so a=−1,b=−1
             return self.DealIntoNew()
         elif instruction.find('cut') > -1:
             # return 'CutN'
             if num == None:
                 print("Error on number extraction at instruction:", instruction, " got:",numbers)
                 exit(1)
+            self.coefficients.append((1,-num))     # "cut n^n": f(x)=x−n  mod m, so a=1,b=−n
             return self.CutN(num)
         else:
             print("Error on instrunction parsing at instruction:", instruction)
             exit(1)
 
-
         return ''
 
-    def RunDeal(self, instructions):
+    def GetShuffleCoeffs(self):
+        m = self.deckSize
+        coeffs= self.coefficients.pop(0)    # removes the first one so the for-loop takes the rest
+        for s in self.coefficients:
+            a,b = coeffs
+            c,d = s
+            coeffs = (a*c % m, (b*c+d) % m)
 
+        return coeffs
+
+    def RunDeal(self, instructions):
+        self.deck = list(range(self.deckSize))
         for i in instructions:
             deck = self.ParseInstructions(i)
 
         return deck
+
+    def RunFDeal(self, instructions, x):
+        
+        for i in instructions:
+            deck = self.ParseInstructions(i)
+
+        m = self.deckSize
+        a,b = self.GetShuffleCoeffs()
+        
+        return int(a*x + b) % m
+
+    def GetCardAtPosOnDeck(self, instructions, x, k):
+
+        for i in instructions:
+            deck = self.ParseInstructions(i)
+
+        m = self.deckSize
+        a,b = self.GetShuffleCoeffs()
+        print(a,b)
+        A = pow(a,k)
+        B = (b * (1-pow(a,k)))*pow(1-a, -1)
+        print(A,B)
+
+        card = ((x-B)/A) % m
+        return int(card)
 
     def RunDealUntilSorted(self, instructions):
         x = 0

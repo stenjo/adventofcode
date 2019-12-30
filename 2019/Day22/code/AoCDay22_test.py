@@ -153,6 +153,108 @@ class SpaceDeckTest(unittest.TestCase):
         # assert
         self.assertEqual(' '.join([str(n) for n in result]), deck)
 
+    def test_get_shuffle_coeffs_1(self):
+        # arrange
+        d = SpaceDeck(10)
+        deals = [
+            'deal with increment 7',
+            'deal into new stack',
+            'deal into new stack']
+        result = []
+
+        # act
+        coeffs = d.GetShuffleCoeffs()
+
+        # assert
+        self.assertEqual(coeffs, (7,0))
+
+    def test_get_shuffle_coeffs_2(self):
+        # arrange
+        d = SpaceDeck(10)
+        deals = [
+            'cut 6',
+            'deal with increment 7',
+            'deal into new stack']
+        deck = '3 0 7 4 1 8 5 2 9 6'
+        result = []
+
+        # act
+        result = d.RunDeal(deals)
+
+        # assert
+        self.assertEqual(' '.join([str(n) for n in result]), deck)
+
+    def test_get_shuffle_coeffs_3(self):
+        # arrange
+        d = SpaceDeck(10)
+        deals = [
+            'deal with increment 7',
+            'deal with increment 9',
+            'cut -2'
+            ]
+        deck = '6 3 0 7 4 1 8 5 2 9'
+        result = []
+
+        # act
+        result = d.RunDeal(deals)
+
+        # assert
+        self.assertEqual(' '.join([str(n) for n in result]), deck)
+
+    def test_get_shuffle_coeffs_4(self):
+        # arrange
+        d = SpaceDeck(10)
+        deals = [
+            'deal into new stack',
+            'cut -2',
+            'deal with increment 7',
+            'cut 8',
+            'cut -4',
+            'deal with increment 7',
+            'cut 3',
+            'deal with increment 9',
+            'deal with increment 3',
+            'cut -1'
+            ]
+        coeffList = [(-1,-1),(1,2),(7,0),(1,-8),(1,4),(7,0),(1,-3),(9,0),(3,0),(1,1)]
+
+        # act
+        d.RunDeal(deals)
+        coeffs = list(d.coefficients)
+        result = d.GetShuffleCoeffs()
+
+
+        # assert
+        self.assertEqual(coeffs, coeffList)
+
+    def test_single_shuffle(self):
+        # arrange
+        d = SpaceDeck(10007)
+        infile = open('data/input_22.txt','r')
+        deals = infile.readlines()
+        answer = 5169
+        result = []
+
+        # act
+        result = d.RunFDeal(deals, 2019)
+
+        # assert
+        self.assertEqual(result, answer)
+
+    def test_single_shuffle_part_2(self):
+        # arrange
+        d = SpaceDeck(10007)
+        infile = open('data/input_22.txt','r')
+        deals = infile.readlines()
+        answer = 2019
+        result = []
+
+        # act
+        result = d.GetCardAtPosOnDeck(deals, 5169, 1)
+
+        # assert
+        self.assertEqual(result, answer)
+
     def test_run_deal_actual(self):
         # arrange
         d = SpaceDeck(10007)
