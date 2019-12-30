@@ -1,4 +1,4 @@
-# Tst file for Advent of Code 2019, Day 22: 
+# Test file for Advent of Code 2019, Day 22: 
 
 import unittest
 from AoCDay22_classes import SpaceDeck
