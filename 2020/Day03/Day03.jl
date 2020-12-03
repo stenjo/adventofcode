@@ -7,6 +7,7 @@
 using DelimitedFiles
 using Test
 
+# Test information from the puzzle
 testinput = [
 "..##.......",
 "#...#...#..",
@@ -19,6 +20,12 @@ testinput = [
 "#.##...#...",
 "#...##....#",
 ".#..#...#.#"]
+
+@test partOne(testinput) == 7
+@test partTwo(testinput) == 336
+
+
+# Actual personallized data
 
 inputdata = readdlm("input.txt", '\t', String, '\n')
 
@@ -41,10 +48,7 @@ end
 partOne(list) = Slope(3,1,list)
 partTwo(list) = prod([Slope(1,1,list),Slope(3,1,list),Slope(5,1,list),Slope(7,1,list),Slope(1,2,list)])
 
-@test partOne(testinput) == 7
-@test partTwo(testinput) == 336
-
-println(partOne(inputdata))
-println(partTwo(inputdata))
+println(string("Part one: ", partOne(inputdata)))
+println(string("Part two: ", partTwo(inputdata)))
 
 # end # module
