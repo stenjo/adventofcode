@@ -24,13 +24,12 @@ testinput = [
 inputdata = readdlm("input.txt", '\t', String, '\n')
 
 
+pos(x,y,l) = x*(y-1)%l+1
 
 function Slope(right::Int64, down::Int64, inputList::Array)
     trees = 0
-    pos = 1
-    for input in inputList[1:down:end]
-        trees += input[pos] == '#' ? 1 : 0
-        pos = (pos + right - 1) % length(input) + 1
+    for (i,input) in enumerate(inputList[1:down:end])
+        trees += input[pos(right, i, length(input))] == '#' ? 1 : 0
     end
     trees
 end
