@@ -5,9 +5,10 @@
 # 
 
 using DelimitedFiles
-# include("utils.jl")
+using Test
 
 testinput = ["1-3 a: abcde","1-3 b: cdefg","2-9 c: ccccccccc"]
+
 inputdata = readdlm("input.txt", '\t', String, '\n')
 
 struct PassWord 
@@ -21,39 +22,23 @@ struct PassWord
         minCnt, maxCnt, letterString, passLine = m.captures
         new(parse(Int64, minCnt), parse(Int64, maxCnt), letterString[1], passLine)
     end
-
 end
 
-function ValidPassWord(f::PassWord) 
-    f.first <= count(i->(i == f.letter), f.pass) <= f.last
-end
+# Part 1
+ValidPassWord(f::PassWord) = f.first <= count(i->(i == f.letter), f.pass) <= f.last
 
-function ValidPassWord2(f::PassWord)
-    (f.pass[f.first] == f.letter && f.pass[f.last] != f.letter) || (f.pass[f.first] != f.letter && f.pass[f.last] == f.letter)
-end
+partOne(list) = count(ValidPassWord.(PassWord.(list)))
 
-function partOne(list)
-    count = 0
-    for input in list
-        if ValidPassWord(PassWord(input))
-            count += 1
-        end
-    end
-    return count
-end
+@test partOne(testinput) == 2
 
-function partTwo(list)
-    count = 0
-    for input in list
-        if ValidPassWord2(PassWord(input))
-            count += 1
-        end
-    end
-    return count
-end
+println("Part one: ", partOne(inputdata))
 
+# Part 2
+ValidPassWord2(f::PassWord) = (f.pass[f.first] == f.letter && f.pass[f.last] != f.letter) || (f.pass[f.first] != f.letter && f.pass[f.last] == f.letter)
 
-println(partOne(inputdata))
-println(partTwo(inputdata))
+partTwo(list) = count(ValidPassWord2.(PassWord.(list)))
 
+@test partTwo(testinput) == 1
+
+println("Part two: ", partTwo(inputdata))
 # end # module
