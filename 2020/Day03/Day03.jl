@@ -5,7 +5,7 @@
 # 
 
 using DelimitedFiles
-# include("utils.jl")
+using Test
 
 testinput = [
 "..##.......",
@@ -26,7 +26,7 @@ function Slope(right::Int64, down::Int64, inputList::Array)
     trees = 0
     pos = 1
     line = 1
-    while line <= count(i->(true), inputList)
+    while line <= length(inputList)
         input = inputList[line]
         if input[pos] == '#'
             trees += 1
@@ -38,15 +38,11 @@ function Slope(right::Int64, down::Int64, inputList::Array)
     return trees
 end
 
+partOne(list) = Slope(3,1,list)
+partTwo(list) = prod([Slope(1,1,list),Slope(3,1,list),Slope(5,1,list),Slope(7,1,list),Slope(1,2,list)])
 
-function partOne(list)
-    return Slope(3,1,list)
-end
-
-function partTwo(list)
-    return prod([Slope(1,1,list),Slope(3,1,list),Slope(5,1,list),Slope(7,1,list),Slope(1,2,list)])
-end
-
+@test partOne(testinput) == 7
+@test partTwo(testinput) == 336
 
 println(partOne(inputdata))
 println(partTwo(inputdata))
