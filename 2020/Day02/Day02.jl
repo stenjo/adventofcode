@@ -16,8 +16,8 @@ struct PassWord
     letter:: Char
     pass:: String
     
-    function PassWord(password:: String)
-        m = match(r"(?<min>\d+)-(?<max>\d+) (?<letter>\D+): (?<pass>\w+)", password)
+    function PassWord(passwordline:: String)
+        m = match(r"(?<min>\d+)-(?<max>\d+) (?<letter>\D+): (?<pass>\w+)", passwordline)
         minCnt, maxCnt, letterString, passLine = m.captures
         new(parse(Int64, minCnt), parse(Int64, maxCnt), letterString[1], passLine)
     end
@@ -28,37 +28,14 @@ function ValidPassWord(f::PassWord)
     f.first <= count(i->(i == f.letter), f.pass) <= f.last
 end
 
-
-function validPass(passString)
-
-
-    # m = match(r"(?<min>\d+)-(?<max>\d+) (?<letter>\D+): (?<pass>\w+)", passString)
-    # minCnt, maxCnt, letter, pass = m.captures
-    # passWord = PassWord(parse(Int64, minCnt), parse(Int64, maxCnt), letter[1], pass)
-
-    passWord = PassWord(passString)
-    # cnt = count(i->(i == passWord.letter), passWord.pass)
-    return ValidPassWord(passWord)
-    # return passWord.min <= cnt <= passWord.max
-
-end
-
-function validPassword2(passString)
-
-    m = match(r"(?<min>\d+)-(?<max>\d+) (?<letter>\D+): (?<pass>\w+)", passString)
-    minCnt, maxCnt, letter, pass = m.captures
-    passWord = PassWord(parse(Int64, minCnt), parse(Int64, maxCnt), letter[1], pass)
-
-    cnt = count(i->(i == passWord.letter), passWord.pass)
-
-    return (passWord.pass[passWord.min] == passWord.letter && passWord.pass[passWord.max] != passWord.letter) || (passWord.pass[passWord.min] != passWord.letter && passWord.pass[passWord.max] == passWord.letter)
-
+function ValidPassWord2(f::PassWord)
+    (f.pass[f.first] == f.letter && f.pass[f.last] != f.letter) || (f.pass[f.first] != f.letter && f.pass[f.last] == f.letter)
 end
 
 function partOne(list)
     count = 0
     for input in list
-        if validPassword(input)
+        if ValidPassWord(PassWord(input))
             count += 1
         end
     end
@@ -68,7 +45,7 @@ end
 function partTwo(list)
     count = 0
     for input in list
-        if validPassword2(input)
+        if ValidPassWord2(PassWord(input))
             count += 1
         end
     end
