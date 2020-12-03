@@ -11,21 +11,35 @@ testinput = ["1-3 a: abcde","1-3 b: cdefg","2-9 c: ccccccccc"]
 inputdata = readdlm("input.txt", '\t', String, '\n')
 
 struct PassWord 
-    min::Int64
-    max::Int64
+    first::Int64
+    last::Int64
     letter:: Char
     pass:: String
+    
+    function PassWord(password:: String)
+        m = match(r"(?<min>\d+)-(?<max>\d+) (?<letter>\D+): (?<pass>\w+)", password)
+        minCnt, maxCnt, letterString, passLine = m.captures
+        new(parse(Int64, minCnt), parse(Int64, maxCnt), letterString[1], passLine)
+    end
+
 end
 
-function validPassword(passString)
+function ValidPassWord(f::PassWord) 
+    f.first <= count(i->(i == f.letter), f.pass) <= f.last
+end
 
-    m = match(r"(?<min>\d+)-(?<max>\d+) (?<letter>\D+): (?<pass>\w+)", passString)
-    minCnt, maxCnt, letter, pass = m.captures
-    passWord = PassWord(parse(Int64, minCnt), parse(Int64, maxCnt), letter[1], pass)
 
-    cnt = count(i->(i == passWord.letter), passWord.pass)
+function validPass(passString)
 
-    return passWord.min <= cnt <= passWord.max
+
+    # m = match(r"(?<min>\d+)-(?<max>\d+) (?<letter>\D+): (?<pass>\w+)", passString)
+    # minCnt, maxCnt, letter, pass = m.captures
+    # passWord = PassWord(parse(Int64, minCnt), parse(Int64, maxCnt), letter[1], pass)
+
+    passWord = PassWord(passString)
+    # cnt = count(i->(i == passWord.letter), passWord.pass)
+    return ValidPassWord(passWord)
+    # return passWord.min <= cnt <= passWord.max
 
 end
 
