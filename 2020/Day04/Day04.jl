@@ -48,20 +48,23 @@ inputdata = readdlm("input.txt", '\t', String, '\n', skipblanks=false)
 #     trees
 # end
 
-struct PassPort
-    byr # (Birth Year)
-    iyr # (Issue Year)
-    eyr # (Expiration Year)
+mutable struct PassPort
+    byr :: Int # (Birth Year)
+    iyr :: Int # (Issue Year)
+    eyr :: Int # (Expiration Year)
     hgt # (Height)
     hcl # (Hair Color)
     ecl # (Eye Color)
     pid # (Passport ID)
     cid # (Country ID)
     fields # Dict containing all fields
+    height :: Int
+    heightUnit :: String
     function PassPort(raw)
         # "ecl:gry pid:860033327 eyr:2020 hcl:#fffffd byr:1937 iyr:2017 cid:147 hgt:183cm"
         fields = split.(split(raw), ':')
         d = Dict(fields[i][1]=>fields[i][2] for i in 1:1:length(fields))
+        m = match(r"^(?<height>\d+)(?<unit>\D{2})$", get(d,"hgt", ""))
         new( 
             parse(Int, get(d,"byr", "0")), 
             parse(Int, get(d,"iyr", "0")), 
@@ -71,22 +74,26 @@ struct PassPort
             get(d,"ecl", ""), 
             get(d,"pid", ""), 
             get(d,"cid", ""), 
-            d)
+            d,
+            m !== nothing ? parse(Int, m["height"]) : 0,
+            m !== nothing ? m["unit"] : "")
     end
 end
 
-function IsValidHeight(heightString)
+function IsValidHeight(passPort::PassPort)
     # hgt (Height) - a number followed by either cm or in:
     # If cm, the number must be at least 150 and at most 193.
     # If in, the number must be at least 59 and at most 76.
-    m = match(r"^(?<height>\d+)(?<unit>\D{2})$", heightString)
-    if m != nothing
-        ( m["unit"] == "cm" && 150 <= parse(Int, m["height"]) <= 193) || 
-        ( m["unit"] == "in" &&  59 <= parse(Int, m["height"]) <=  76) 
+    if passPort.heightUnit == "cm"
+        150 <= passPort.height <= 193
+    elseif passPort.heightUnit == "in"
+        59 <= passPort.height <= 76
     else
         false
     end
+  
 end
+
 function IsFieldsPresent(pass::PassPort)
     pass.byr > 0 && 
     pass.iyr > 0  && 
@@ -109,7 +116,7 @@ function IsValid(pass::PassPort)
     # hgt (Height) - a number followed by either cm or in:
     # If cm, the number must be at least 150 and at most 193.
     # If in, the number must be at least 59 and at most 76.
-    IsValidHeight(pass.hgt) &&
+    IsValidHeight(pass) &&
     # hcl (Hair Color) - a # followed by exactly six characters 0-9 or a-f.
     occursin(r"^#[0-9,a-f]{6}$", pass.hcl) &&
     # ecl (Eye Color) - exactly one of: amb blu brn gry grn hzl oth.

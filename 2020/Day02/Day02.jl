@@ -15,8 +15,8 @@ struct PassWord
     pass :: String
     
     function PassWord(passwordline:: String)
-        m = match(r"(?<min>\d+)-(?<max>\d+) (?<letter>\D+): (?<pass>\w+)", passwordline).captures
-        new(parse(Int, m[1]), parse(Int, m[2]), m[3][1], m[4])
+        m = match(r"(?<first>\d+)-(?<last>\d+) (?<letter>\D+): (?<pass>\w+)", passwordline)
+        new(parse(Int, m["first"]), parse(Int, m["last"]), m["letter"][1], m["pass"])
     end
 end
 
