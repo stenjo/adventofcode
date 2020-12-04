@@ -49,14 +49,14 @@ inputdata = readdlm("input.txt", '\t', String, '\n', skipblanks=false)
 # end
 
 mutable struct PassPort
-    byr :: Int # (Birth Year)
-    iyr :: Int # (Issue Year)
-    eyr :: Int # (Expiration Year)
-    hgt # (Height)
-    hcl # (Hair Color)
-    ecl # (Eye Color)
-    pid # (Passport ID)
-    cid # (Country ID)
+    byr :: Int # (Birth Year)       byr:1937
+    iyr :: Int # (Issue Year)       iyr:2017
+    eyr :: Int # (Expiration Year)  eyr:2020
+    hgt # (Height)      hgt:183cm
+    hcl # (Hair Color)  hcl:#fffffd
+    ecl # (Eye Color)   ecl:gry 
+    pid # (Passport ID) pid:860033327
+    cid # (Country ID)  cid:147
     fields # Dict containing all fields
     height :: Int
     heightUnit :: String
