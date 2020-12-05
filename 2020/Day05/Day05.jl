@@ -25,9 +25,11 @@ function GetRow(spec)
     end
     row
 end
-@test GetRow("BFFFBBFRRR") == 70
-@test GetRow("FFFBBBFRRR") == 14
-@test GetRow("BBFFBBFRLL") == 102
+@testset "GetRow" begin
+    @test GetRow("BFFFBBFRRR") == 70
+    @test GetRow("FFFBBBFRRR") == 14
+    @test GetRow("BBFFBBFRLL") == 102
+end
 
 function GetColumn(spec)
     column = 7
@@ -40,9 +42,11 @@ function GetColumn(spec)
     end
     column
 end
-@test GetColumn("BFFFBBFRRR") == 7
-@test GetColumn("FFFBBBFRRR") == 7
-@test GetColumn("BBFFBBFRLL") == 4
+@testset "GetColumn"  begin
+    @test GetColumn("BFFFBBFRRR") == 7
+    @test GetColumn("FFFBBBFRRR") == 7
+    @test GetColumn("BBFFBBFRLL") == 4
+end
 
 mutable struct BoardingPass
     row :: Int
@@ -58,7 +62,7 @@ mutable struct BoardingPass
     end
 end
 
-@testset "BoardingPass initialize" begin
+@testset "BoardingPass" begin
 
     # row 70, column 7, seat ID 567
     bp = BoardingPass(testinput[1])
@@ -78,16 +82,6 @@ end
     @test bp.column == 4
     @test bp.seat == 820
 end
-
-function MaxSeatID(list)
-    seatIds = []
-    for bp in list
-        push!(seatIds, BoardingPass(bp).seat)
-    end
-    maximum(seatIds)
-end
-@test MaxSeatID(testinput) == 820
-
 
 # Part 1
 function partOne(rawList)
