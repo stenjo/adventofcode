@@ -105,24 +105,24 @@ function IsFieldsPresent(pass::PassPort)
 
 end
 
-function IsValid(pass::PassPort)
+function IsValid(passport::PassPort)
 
     # byr (Birth Year) - four digits; at least 1920 and at most 2002.
-    1920 <= pass.byr <= 2002 &&
+    1920 <= passport.byr <= 2002 &&
     # iyr (Issue Year) - four digits; at least 2010 and at most 2020.
-    2010 <= pass.iyr <= 2020 &&
+    2010 <= passport.iyr <= 2020 &&
     # eyr (Expiration Year) - four digits; at least 2020 and at most 2030.
-    2020 <= pass.eyr <= 2030 &&
+    2020 <= passport.eyr <= 2030 &&
     # hgt (Height) - a number followed by either cm or in:
     # If cm, the number must be at least 150 and at most 193.
     # If in, the number must be at least 59 and at most 76.
-    IsValidHeight(pass) &&
+    IsValidHeight(passport) &&
     # hcl (Hair Color) - a # followed by exactly six characters 0-9 or a-f.
-    occursin(r"^#[0-9,a-f]{6}$", pass.hcl) &&
+    occursin(r"^#[0-9,a-f]{6}$", passport.hcl) &&
     # ecl (Eye Color) - exactly one of: amb blu brn gry grn hzl oth.
-    pass.ecl in ["amb", "blu", "brn", "gry", "grn", "hzl", "oth"] &&
+    passport.ecl in ["amb", "blu", "brn", "gry", "grn", "hzl", "oth"] &&
     # pid (Passport ID) - a nine-digit number, including leading zeroes.
-    occursin(r"^\d{9}$", pass.pid)
+    occursin(r"^\d{9}$", passport.pid)
     # cid (Country ID) - ignored, missing or not.
 
 end
@@ -140,6 +140,18 @@ function CleanUpInput(input)
     end
     push!(output, join(chunk, ' '))
     # output
+end
+
+function CleanUp(list)
+    output = []
+    s = findfirst(v->(v == ""), list)
+    while  s !== nothing
+        push!(output, join(list[1:s-1], ' '))
+        list = list[s+1:end]
+        s = findfirst(v->(v == ""), list)
+    end
+    push!(output, join(list, ' '))
+    output
 end
 
 # Part 1
