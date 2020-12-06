@@ -39,8 +39,11 @@ function AnyOneAnswers(group)
     unique(join(group))
 end
 @testset "AnyOneAnswers" begin
+    @test length(AnyOneAnswers(CleanUpInput(testlines)[1])) == 3 #abc
+    @test length(AnyOneAnswers(CleanUpInput(testlines)[2])) == 3 #abc
     @test length(AnyOneAnswers(CleanUpInput(testlines)[3])) == 3 #abc
     @test length(AnyOneAnswers(CleanUpInput(testlines)[4])) == 1 #a
+    @test length(AnyOneAnswers(CleanUpInput(testlines)[5])) == 1 #b
     @test sum(length.(AnyOneAnswers.(CleanUpInput(testlines)))) == 11
 end
 
@@ -61,6 +64,7 @@ end
     @test length(EveryOneAnswers(CleanUpInput(testlines)[2])) == 0 #abc
     @test length(EveryOneAnswers(CleanUpInput(testlines)[3])) == 1 #abc
     @test length(EveryOneAnswers(CleanUpInput(testlines)[4])) == 1 #a
+    @test length(EveryOneAnswers(CleanUpInput(testlines)[5])) == 1 #b
     @test sum(length.(EveryOneAnswers.(CleanUpInput(testlines)))) == 6
 end
 
