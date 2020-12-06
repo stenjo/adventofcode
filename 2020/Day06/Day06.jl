@@ -81,4 +81,3 @@ end
 
 # @test partTwo(inputdata) == 739
 println(string("Part two: ", partTwo(inputdata)))
-println(string("Part two: ", partTwo(readlines("ivar.txt"))))
