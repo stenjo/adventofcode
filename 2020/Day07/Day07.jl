@@ -27,7 +27,7 @@ mutable struct BagNode
     end
 end
 
-@test BagNode(GetInput("test.txt")[4]).colour == "muted yellow"
+@test BagNode(readlines("test.txt")[4]).colour == "muted yellow"
 
 function GetBagNodesFromString(str)
     # muted yellow bags contain 2 shiny gold bags, 9 faded blue bags
@@ -42,10 +42,10 @@ function GetBagNodesFromString(str)
     bags
 end
 @testset "GetBagNodesFromString" begin
-    @test length(GetBagNodesFromString(GetInput("test.txt")[1])) == 3
-    @test length(GetBagNodesFromString(GetInput("test.txt")[3])) == 2
-    @test length(GetBagNodesFromString(GetInput("test.txt")[8])) == 1
-    @test length(GetBagNodesFromString(GetInput("test.txt")[9])) == 1
+    @test length(GetBagNodesFromString(readlines("test.txt")[1])) == 3
+    @test length(GetBagNodesFromString(readlines("test.txt")[3])) == 2
+    @test length(GetBagNodesFromString(readlines("test.txt")[8])) == 1
+    @test length(GetBagNodesFromString(readlines("test.txt")[9])) == 1
 end
 
 function CreateBagNodeTree(file = "input.txt")
@@ -98,8 +98,10 @@ function CountBags(colour, file = "input.txt")
     bag = pop!(t)[2]
     CountBagsInBagNode(bag)
 end
-
-@test CountBags("shiny gold", "test2.txt") == 126
+@testset "CountBags" begin
+    @test CountBags("shiny gold", "test.txt") == 32
+    @test CountBags("shiny gold", "test2.txt") == 126
+end
 
 function GetTopNodeBags(colour, file="input.txt")
     tree = CreateBagNodeTree(file)
@@ -117,7 +119,7 @@ function GetTopNodeBags(colour, file="input.txt")
 end
 
 
-println.(GetTopNodeBags("shiny gold","test.txt"))
+# println.(GetTopNodeBags("dark violet","test2.txt"))
 
 @testset "GetTopNodeBags" begin
     @test length(GetTopNodeBags("shiny gold", "test.txt")) == 4
@@ -127,19 +129,20 @@ println.(GetTopNodeBags("shiny gold","test.txt"))
 end
 
 # println.(GetTopNodeBags("vibrant plum", "test.txt"))
+println(sort(GetTopNodeBags("shiny gold"), by=t->length(t), rev=true)[1])
 # println.(GetTopNodeBags("dotted black", "test.txt"))
 # println.(GetTopNodeBags("faded blue", "test.txt"))
 
 # Part 1
-partOne(colour) = length(GetTopNodeBags(colour))
+partOne(colour, file="input.txt") = length(GetTopNodeBags(colour, file))
 
-# @test partOne("shiny", "gold","test.txt") == 4
+@test partOne("shiny gold","test.txt") == 4
 @test partOne("shiny gold") == 287
 println(string("Part one: ", partOne("shiny gold")))
 
 # Part 2
-partTwo(colour) = CountBags(colour)
+partTwo(colour, file="input.txt") = CountBags(colour, file)
 
-# @test partTwo(inputdata) == 3288
+@test partTwo("shiny gold") == 48160
 println(string("Part two: ", partTwo("shiny gold")))
 # println(sum(length.(map(g->join(intersect(g...)), map(split, split(read("input.txt", String), "\r\n\r\n")) ))))
