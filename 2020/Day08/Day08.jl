@@ -1,5 +1,5 @@
-# Day 7 of Advent of Code puzzle:
-# https://adventofcode.com/2020/day/7
+# Day 8 of Advent of Code puzzle:
+# https://adventofcode.com/2020/day/8
 #
 
 using DelimitedFiles
