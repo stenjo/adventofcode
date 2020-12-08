@@ -1,147 +1,138 @@
 # Day 8 of Advent of Code puzzle:
 # https://adventofcode.com/2020/day/8
 #
-
-using DelimitedFiles
+# using DelimitedFiles
 using Test
 
-# Test information from the puzzle
-testlines = readlines("test.txt")
-
-# Actual personallized data
-inputdata = readlines("input.txt")
-
-function GetInput(file="input.txt")
-    strip.(s->(s in ['.']),readlines(file))
+mutable struct Instruction
+    oper :: String
+    arg  :: Int
+    Instruction(o,a) = new(o,a)
 end
 
-@test length(GetInput("test.txt")) == 9
-# println(GetInput())
+mutable struct Cpu 
+    ptr :: Int
+    acc :: Int
+    exeLog :: Vector{Int}
+    program :: Vector{Instruction}
+    Cpu(p=1,a=0) = new(p,a,[],[])
+end
 
-mutable struct BagNode
-    colour :: String
-    children :: Vector{Tuple{Int, BagNode}}
-    function BagNode(str)
-        m=match(r"^(?<attrib>\w+) (?<colour>\w+) bag", strip(str))
-        new(join([m["attrib"],m["colour"]], ' '), [])
+function AddInst(i::Instruction,c::Cpu)
+    push!(c.program, i)
+end
+
+function LoadComputer(file="input.txt")
+    cpu = Cpu()
+    for i in readlines(file)
+        oper,arg = split(i)
+        inst = Instruction(oper,parse(Int,arg))
+        AddInst(inst, cpu)
+    end
+    cpu
+end
+@testset "LoadProgram" begin
+    cpu = LoadComputer("testdata.txt")
+    @test cpu.program[1].oper == "nop"
+    @test cpu.program[1].arg == 0
+    @test cpu.program[5].oper == "jmp"
+    @test cpu.program[5].arg == -3
+    @test cpu.program[9].oper == "acc"
+    @test cpu.program[9].arg == 6
+end
+
+function Execute(cpu :: Cpu)
+    oper = cpu.program[cpu.ptr]
+    push!(cpu.exeLog,cpu.ptr)
+    if oper.oper == "nop"
+        cpu.ptr +=1
+    elseif oper.oper == "acc"
+        cpu.acc += oper.arg
+        cpu.ptr +=1
+    elseif oper.oper == "jmp"
+        cpu.ptr += oper.arg
+    end
+    cpu
+end
+@testset "RunProgram" begin
+    cpu = LoadComputer("testdata.txt")
+    @test Execute(cpu).ptr == 2
+    @test Execute(cpu).acc == 1
+    @test Execute(cpu).ptr == 7
+end
+
+function RestartProgram(cpu::Cpu)
+    cpu.ptr = 1
+    cpu.acc = 0
+    empty!(cpu.exeLog)
+end
+
+function RunToEnd(cpu :: Cpu)
+    RestartProgram(cpu)
+    while (cpu.ptr in cpu.exeLog) == false  && 0 < cpu.ptr <= length(cpu.program)
+        lastPtr = cpu.ptr
+        Execute(cpu)
+    end
+    (cpu, cpu.ptr == length(cpu.program) + 1) 
+end
+@testset "RunToEnd" begin
+    @test RunToEnd(LoadComputer("testdata.txt"))[1].acc == 5
+    cpu = LoadComputer("testdata.txt")
+    result = RunToEnd(cpu)
+    @test result[2] == false
+    @test cpu.acc == 5
+    cpu = LoadComputer("testdata2.txt")
+    result = RunToEnd(cpu)
+    @test result[2] == true
+    @test result[1] == cpu
+    @test cpu.acc == 8
+end
+
+function SwapInst(cpu :: Cpu, ptr :: Int)
+    if cpu.program[ptr].oper == "nop"
+        cpu.program[ptr].oper = "jmp"
+    elseif cpu.program[ptr].oper == "jmp"
+        cpu.program[ptr].oper = "nop"
     end
 end
+@testset "SwapInst" begin
+    cpu = Cpu()
+    AddInst(Instruction("acc", 0), cpu)
+    AddInst(Instruction("jmp", 0), cpu)
+    AddInst(Instruction("nop", 0), cpu)
+    SwapInst(cpu, 1)
+    @test cpu.program[1].oper == "acc"
+    SwapInst(cpu, 2)
+    @test cpu.program[2].oper == "nop"
+    SwapInst(cpu, 3)
+    SwapInst(cpu, 3)
+    @test cpu.program[3].oper == "nop"
+end
 
-@test BagNode(readlines("test.txt")[4]).colour == "muted yellow"
+function FixAndRun(cpu :: Cpu)
+    result = RunToEnd(cpu)
+    backtrack = copy(cpu.exeLog)
 
-function GetBagNodesFromString(str)
-    # muted yellow bags contain 2 shiny gold bags, 9 faded blue bags
-    bags=[]
-    push!(bags, (0, BagNode(strip(split(str,"contain")[1]))))
-    contains = strip(split(str,"contain")[2])
-    if split(contains)[1] == "no" return bags end
-    for b in strip.(split(contains, ','))
-        count = parse(Int, split(b)[1])
-        push!(bags, (count, BagNode(join(split(b)[2:end], ' '))))
+    while result[2] == false && length(backtrack) > 0
+        changedInstruction = pop!(backtrack)
+        SwapInst(cpu, changedInstruction)
+        result = RunToEnd(cpu)
+        SwapInst(cpu, changedInstruction)
     end
-    bags
-end
-@testset "GetBagNodesFromString" begin
-    @test length(GetBagNodesFromString(readlines("test.txt")[1])) == 3
-    @test length(GetBagNodesFromString(readlines("test.txt")[3])) == 2
-    @test length(GetBagNodesFromString(readlines("test.txt")[8])) == 1
-    @test length(GetBagNodesFromString(readlines("test.txt")[9])) == 1
+    result[1]
 end
 
-function CreateBagNodeTree(file = "input.txt")
-    tree = BagNode("top node bag")
-    for spec in readlines(file)
-        bags = GetBagNodesFromString(spec)
-        bag = bags[1][2]
-        push!(tree.children, (1,bag))
-        for (n, b) in bags[2:end]
-            push!(bag.children,(n,b))
-        end
-    end
-
-    for (c,bag) in tree.children
-        for (n, child) in bag.children
-            t = filter(c->c[2].colour == child.colour, tree.children)
-            child.children = pop!(t)[2].children
-        end
-    end
-
-    tree
-end
-
-function FindBagNode(colour, bag)
-    for (n,b) in bag.children
-        if b.colour == colour
-            return colour
-        elseif FindBagNode(colour, b) != ""
-            return join([b.colour, FindBagNode(colour, b)], " -> ")
-        end
-    end
-    return ""
-end
-
-function CountBagsInBagNode(bag)
-    if length(bag.children) > 0
-        sum = 0
-        for (n,b) in bag.children
-            sum += n + n * CountBagsInBagNode(b)
-        end
-        return sum
-    else
-        return 0
-    end
-end
-
-function CountBags(colour, file = "input.txt")
-    tree = CreateBagNodeTree(file)
-    t = filter(c->c[2].colour == colour, tree.children)
-    bag = pop!(t)[2]
-    CountBagsInBagNode(bag)
-end
-@testset "CountBags" begin
-    @test CountBags("shiny gold", "test.txt") == 32
-    @test CountBags("shiny gold", "test2.txt") == 126
-end
-
-function GetTopNodeBags(colour, file="input.txt")
-    tree = CreateBagNodeTree(file)
-    paths = []
-    for (n,topNode) in tree.children
-        if topNode.colour != colour
-            p = FindBagNode(colour, topNode)
-            if p != ""
-                p = join([topNode.colour, p], " : ")
-                push!(paths, p)
-            end
-        end
-    end
-    paths
-end
-
-
-# println.(GetTopNodeBags("dark violet","test2.txt"))
-
-@testset "GetTopNodeBags" begin
-    @test length(GetTopNodeBags("shiny gold", "test.txt")) == 4
-    @test length(GetTopNodeBags("vibrant plum", "test.txt")) == 5
-    @test length(GetTopNodeBags("faded blue", "test.txt")) == 7
-    @test length(GetTopNodeBags("dotted black", "test.txt")) == 7
-end
-
-# println.(GetTopNodeBags("vibrant plum", "test.txt"))
-println(sort(GetTopNodeBags("shiny gold"), by=t->length(t), rev=true)[1])
-# println.(GetTopNodeBags("dotted black", "test.txt"))
-# println.(GetTopNodeBags("faded blue", "test.txt"))
+@test FixAndRun(LoadComputer("testdata.txt")).acc == 8
 
 # Part 1
-partOne(colour, file="input.txt") = length(GetTopNodeBags(colour, file))
+partOne(file="input.txt") = RunToEnd(LoadComputer(file))[1].acc
 
-@test partOne("shiny gold","test.txt") == 4
-@test partOne("shiny gold") == 287
-println(string("Part one: ", partOne("shiny gold")))
+@test partOne("testdata.txt") == 5
+@test partOne() == 1262
+println(string("Part one: ", partOne()))
 
 # Part 2
-partTwo(colour, file="input.txt") = CountBags(colour, file)
+partTwo(file="input.txt") = FixAndRun(LoadComputer(file)).acc
 
-@test partTwo("shiny gold") == 48160
-println(string("Part two: ", partTwo("shiny gold")))
+@test partTwo() == 1643
+println(string("Part two: ", partTwo()))
