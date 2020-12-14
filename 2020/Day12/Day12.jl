@@ -88,8 +88,8 @@ function RotateWayPoint(lr :: Char, deg :: Int, f :: Ferry)
     ew = f.wp.ew
     # R90, L270, R180
     deg = lr == 'L' ? 360 - deg : deg
-    f.wp.ew = trunc(Int, cosd(deg) * ew - sind(deg) * ns)
-    f.wp.ns = trunc(Int, sind(deg) * ew + cosd(deg) * ns)
+    f.wp.ew = round(Int, cosd(deg) * ew - sind(deg) * ns)
+    f.wp.ns = round(Int, sind(deg) * ew + cosd(deg) * ns)
 end
 @testset "RotateWayPoint" begin
     f = Ferry() # ns = 0, ew = 0
@@ -270,5 +270,5 @@ function partTwo(file="input.txt")
 end
 
 @test partTwo("testdata.txt") == 286
-# @test partTwo() == 1643
+@test partTwo() == 42495
 println(string("Part two: ", partTwo()))
