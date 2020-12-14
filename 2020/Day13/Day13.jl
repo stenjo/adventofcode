@@ -17,7 +17,7 @@ mutable struct BusTimes
     end
 end
 
-# @test BusTimes("test.txt").depTime == 939
+@test BusTimes("test.txt").depTime == 939
 
 
 function WaitTime(bus::Int, b :: BusTimes)
@@ -41,17 +41,9 @@ function GetWaitTimes(bt::BusTimes)
     bus * shortest
 end
 
-# @testset "WaitTime" begin
-#     bt = BusTimes("test.txt")
-#     @test WaitTime(59,bt) == 5
-# end
-
-function FactorizeBus(v::Vector)
-    factors = Set{Int}()
-    for (i,c) in v
-        union!(factors, factor(Set, bus))
-    end
-    factors
+@testset "WaitTime" begin
+    bt = BusTimes("test.txt")
+    @test WaitTime(59,bt) == 5
 end
 
 function Valid(t, schedule)
@@ -63,11 +55,11 @@ function Valid(t, schedule)
     true
 end
 
-# @test Valid(0,[(1,2),(2,3)]) == false
-# @test Valid(2,[(1,2),(2,3)]) == true
-# @test Valid(3,[(1,2),(2,3)]) == false
-# @test Valid(4,[(1,2),(2,3)]) == false
-# @test Valid(2,[(1,2),(2,3),(3,4)]) == true
+@test Valid(0,[(1,2),(2,3)]) == false
+@test Valid(2,[(1,2),(2,3)]) == true
+@test Valid(3,[(1,2),(2,3)]) == false
+@test Valid(4,[(1,2),(2,3)]) == false
+@test Valid(2,[(1,2),(2,3),(3,4)]) == true
 
 function ParseSchedule(s::Vector)
     v = Vector()
@@ -79,13 +71,13 @@ function ParseSchedule(s::Vector)
     end
     v
 end
-# @testset "ParseSchedule" begin
-#     @test ParseSchedule(["17","x","13","19"]) == [(1,17),(3,13),(4,19)]
-#     @test ParseSchedule(BusTimes("test.txt").schedule) == [(1, 7), (2, 13), (5, 59), (7, 31), (8, 19)]
-#     @test ParseSchedule(["1789","37","47","1889"]) == [(1, 1789), (2, 37), (3,47), (4,1889)]
-# end
+@testset "ParseSchedule" begin
+    @test ParseSchedule(["17","x","13","19"]) == [(1,17),(3,13),(4,19)]
+    @test ParseSchedule(BusTimes("test.txt").schedule) == [(1, 7), (2, 13), (5, 59), (7, 31), (8, 19)]
+    @test ParseSchedule(["1789","37","47","1889"]) == [(1, 1789), (2, 37), (3,47), (4,1889)]
+end
 
-function GetEarliest(s::Vector)
+function FindDeparture(s::Vector)
     firstBus = s[1][2]
     t=firstBus
     while !Valid(t,s)
@@ -94,68 +86,42 @@ function GetEarliest(s::Vector)
     t
 end
 
-# @testset "GetEarliest" begin
-#     @test GetEarliest([(1,2),(2,3)]) == 2
-#     @test GetEarliest(ParseSchedule(["17","x","13","19"])) == 3417
-#     @test GetEarliest(ParseSchedule(copy(split("67,7,59,61", ",")))) == 754018
-#     @test GetEarliest(ParseSchedule(split("67,x,7,59,61", ","))) == 779210
-#     @test GetEarliest(ParseSchedule(split("67,7,x,59,61", ","))) == 1261476
-#     @test GetEarliest(ParseSchedule(split("1789,37,47,1889", ","))) == 1202161486
-# end
+@testset "FindDeparture" begin
+    @test FindDeparture([(1,2),(2,3)]) == 2
+    @test FindDeparture(ParseSchedule(["17","x","13","19"])) == 3417
+    @test FindDeparture(ParseSchedule(copy(split("67,7,59,61", ",")))) == 754018
+    @test FindDeparture(ParseSchedule(split("67,x,7,59,61", ","))) == 779210
+    @test FindDeparture(ParseSchedule(split("67,7,x,59,61", ","))) == 1261476
+    @test FindDeparture(ParseSchedule(split("1789,37,47,1889", ","))) == 1202161486
+end
 
 # Chinese remainder solves this apparently
 # https://rosettacode.org/wiki/Chinese_remainder_theorem
-
-function chineseremainder(n::Array, a::Array)
-    Π = prod(n)
-    mod(sum(ai * invmod(Π ÷ ni, ni) * (Π ÷ ni) for (ni, ai) in zip(n, a)), Π)
-end
- 
-@test chineseremainder([3, 5, 7], [2, 3, 2]) == 23
-@test chineseremainder([1, 3], [0, 2]) == 2
-
-
-function CommonInterval(a,b)
-    ptr = a[2]
-    offset = b[1] - a[1]
-    while (ptr + offset) % b[2] != 0
-        ptr += a[2]
+# Part 2 (from https://julialang.zulipchat.com/#narrow/stream/265470-advent-of-code/topic/Solutions.20day.2013/near/219750527)
+########################################
+function FindPattern(s::Vector)
+    # chineseremainder(buses, times)
+    x = s[1][2]
+    offset = x
+    for i in 2:length(s)
+        d, y = s[i]
+        r = mod(1-d - offset, y)
+        offset = mod(invmod(x, y)*r, y) * x + offset
+        x = lcm(x, y)
     end
-    ptr
+    offset
 end
 
-function solve2((offs, ids))
-    res = ids[1]-offs[1] # we can save the first iteration by just directly calculating it
-    step = 1
-
-    for (num, off) in zip(ids, offs)
-        while !iszero((res + off) % num)
-            res += step
-        end
-        step *= num
-    end
-
-    res
-end
-
-function GetEarliest2(s::Vector)
-    buses = [i[2] for i in s]
-    times = [i[1]-1 for i in s]
-    chineseremainder(buses, times)
-end
-
-@testset "GetEarliest2" begin
-    # @test GetEarliest2([(1,2),(2,3)]) == 2
-    # @test GetEarliest2([(1,2),(2,3),(3,4)]) == 2
-    # @test GetEarliest2([(1,2),(2,3),(3,4),(4,5)]) == 2
-    # @test GetEarliest2([(1,3),(2,5)]) == 9
-    # @test GetEarliest2([(1,2),(2,5)]) == 4
-    # @test GetEarliest2([(1,3),(2,4),(4,5)]) == 27
-    # @test GetEarliest2(ParseSchedule(["17","x","13","19"])) == 3417
-    # @test GetEarliest2(ParseSchedule(copy(split("67,7,59,61", ",")))) == 754018
-    # @test GetEarliest2(ParseSchedule(split("67,x,7,59,61", ","))) == 779210
-    # @test GetEarliest2(ParseSchedule(split("67,7,x,59,61", ","))) == 1261476
-    # @test GetEarliest2(ParseSchedule(split("1789,37,47,1889", ","))) == 1202161486
+@testset "FindPattern" begin
+    @test FindPattern([(1,2),(2,3)]) == 2
+    @test FindPattern([(1,3),(2,5)]) == 9
+    @test FindPattern([(1,2),(2,5)]) == 4
+    @test FindPattern([(1,3),(2,4),(4,5)]) == 27
+    @test FindPattern(ParseSchedule(["17","x","13","19"])) == 3417
+    @test FindPattern(ParseSchedule(copy(split("67,7,59,61", ",")))) == 754018
+    @test FindPattern(ParseSchedule(split("67,x,7,59,61", ","))) == 779210
+    @test FindPattern(ParseSchedule(split("67,7,x,59,61", ","))) == 1261476
+    @test FindPattern(ParseSchedule(split("1789,37,47,1889", ","))) == 1202161486
 end
 
 # Part 1
@@ -167,45 +133,15 @@ end
 @test partOne("test.txt") == 295
 @test partOne() == 207
 println(string("Part one: ", partOne()))
-@btime partOne()
-
-# println(GetWaitTimes(BusTimes()))
+@time partOne()
 
 # Part 2
 function partTwo(file="input.txt")
     bt = BusTimes(file)
-    GetEarliest2(ParseSchedule(bt.schedule))
+    FindPattern(ParseSchedule(bt.schedule))
 end
 
-# @test partTwo("test.txt") == 286
-# @test partTwo() == 530015546283687
-# println()
-# println(string("Part two: ", partTwo()))
-
-########################################
-# Part 2 (from https://julialang.zulipchat.com/#narrow/stream/265470-advent-of-code/topic/Solutions.20day.2013/near/219750527)
-########################################
-function solve(v)
-    x = v[1][1]
-    offset = x
-    for i in 2:length(v)
-        y, d = v[i]
-        r = mod(-d - offset, y)
-        offset = mod(invmod(x, y)*r, y) * x + offset
-        x = lcm(x, y)
-    end
-
-    return offset
-end
-
-function solve(v::T) where {T <: AbstractString}
-    res = []
-    for (i, x) in enumerate(split(v, ","))
-        x == "x" && continue
-        push!(res, (parse(Int, x), i - 1))
-    end
-
-    return solve(identity.(res))
-end
-
-println("Part 2: ", solve(readlines("input.txt")[2]))
+@test partTwo("test.txt") == 1068781
+@test partTwo() == 530015546283687
+println(string("Part two: ", partTwo()))
+@time partTwo()
