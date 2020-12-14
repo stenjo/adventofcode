@@ -3,7 +3,8 @@
 #
 # using DelimitedFiles
 using Test
-using Primes
+using BenchmarkTools
+# using Primes
 
 mutable struct BusTimes
     depTime :: Int64
@@ -102,6 +103,17 @@ end
 #     @test GetEarliest(ParseSchedule(split("1789,37,47,1889", ","))) == 1202161486
 # end
 
+# Chinese remainder solves this apparently
+# https://rosettacode.org/wiki/Chinese_remainder_theorem
+
+function chineseremainder(n::Array, a::Array)
+    Π = prod(n)
+    mod(sum(ai * invmod(Π ÷ ni, ni) * (Π ÷ ni) for (ni, ai) in zip(n, a)), Π)
+end
+ 
+@test chineseremainder([3, 5, 7], [2, 3, 2]) == 23
+@test chineseremainder([1, 3], [0, 2]) == 2
+
 
 function CommonInterval(a,b)
     ptr = a[2]
@@ -127,25 +139,20 @@ function solve2((offs, ids))
 end
 
 function GetEarliest2(s::Vector)
-    t = s[1][2] - s[1][1]
-    step = 1
-    for (i,n) in s
-        while !iszero((t + i) % n)
-            t += step
-        end
-        step += i
-    end
-    t
+    buses = [i[2] for i in s]
+    times = [i[1]-1 for i in s]
+    chineseremainder(buses, times)
 end
+
 @testset "GetEarliest2" begin
-    @test GetEarliest2([(1,2),(2,3)]) == 2
-    @test GetEarliest2([(1,2),(2,3),(3,4)]) == 2
-    @test GetEarliest2([(1,2),(2,3),(3,4),(4,5)]) == 2
-    @test GetEarliest2([(1,3),(2,5)]) == 9
-    @test GetEarliest2([(1,2),(2,5)]) == 4
-    @test GetEarliest2([(1,3),(2,4),(4,5)]) == 27
-    @test GetEarliest2(ParseSchedule(["17","x","13","19"])) == 3417
-    @test GetEarliest2(ParseSchedule(copy(split("67,7,59,61", ",")))) == 754018
+    # @test GetEarliest2([(1,2),(2,3)]) == 2
+    # @test GetEarliest2([(1,2),(2,3),(3,4)]) == 2
+    # @test GetEarliest2([(1,2),(2,3),(3,4),(4,5)]) == 2
+    # @test GetEarliest2([(1,3),(2,5)]) == 9
+    # @test GetEarliest2([(1,2),(2,5)]) == 4
+    # @test GetEarliest2([(1,3),(2,4),(4,5)]) == 27
+    # @test GetEarliest2(ParseSchedule(["17","x","13","19"])) == 3417
+    # @test GetEarliest2(ParseSchedule(copy(split("67,7,59,61", ",")))) == 754018
     # @test GetEarliest2(ParseSchedule(split("67,x,7,59,61", ","))) == 779210
     # @test GetEarliest2(ParseSchedule(split("67,7,x,59,61", ","))) == 1261476
     # @test GetEarliest2(ParseSchedule(split("1789,37,47,1889", ","))) == 1202161486
@@ -157,9 +164,10 @@ function partOne(file="input.txt")
     GetWaitTimes(bt)
 end
 
-# @test partOne("test.txt") == 295
-# @test partOne() == 207
-# println(string("Part one: ", partOne()))
+@test partOne("test.txt") == 295
+@test partOne() == 207
+println(string("Part one: ", partOne()))
+@btime partOne()
 
 # println(GetWaitTimes(BusTimes()))
 
@@ -170,6 +178,34 @@ function partTwo(file="input.txt")
 end
 
 # @test partTwo("test.txt") == 286
-# @test partTwo() == 42495
+# @test partTwo() == 530015546283687
 # println()
 # println(string("Part two: ", partTwo()))
+
+########################################
+# Part 2 (from https://julialang.zulipchat.com/#narrow/stream/265470-advent-of-code/topic/Solutions.20day.2013/near/219750527)
+########################################
+function solve(v)
+    x = v[1][1]
+    offset = x
+    for i in 2:length(v)
+        y, d = v[i]
+        r = mod(-d - offset, y)
+        offset = mod(invmod(x, y)*r, y) * x + offset
+        x = lcm(x, y)
+    end
+
+    return offset
+end
+
+function solve(v::T) where {T <: AbstractString}
+    res = []
+    for (i, x) in enumerate(split(v, ","))
+        x == "x" && continue
+        push!(res, (parse(Int, x), i - 1))
+    end
+
+    return solve(identity.(res))
+end
+
+println("Part 2: ", solve(readlines("input.txt")[2]))
