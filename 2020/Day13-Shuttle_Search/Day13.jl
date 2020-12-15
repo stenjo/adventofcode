@@ -103,8 +103,7 @@ function FindPattern(s::Vector)
     # chineseremainder(buses, times)
     x = s[1][2]
     offset = x
-    for i in 2:length(s)
-        d, y = s[i]
+    for (d,y) in s[2:end]
         r = mod(1-d - offset, y)
         offset = mod(invmod(x, y)*r, y) * x + offset
         x = lcm(x, y)
