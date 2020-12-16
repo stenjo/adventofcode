@@ -1,5 +1,5 @@
-# Day 8 of Advent of Code puzzle:
-# https://adventofcode.com/2020/day/8
+# Day 9 of Advent of Code puzzle:
+# https://adventofcode.com/2020/day/9
 #
 # using DelimitedFiles
 using BenchmarkTools
@@ -65,10 +65,7 @@ partOne(preamble = 25, file="input.txt") = FindFirstNonValid(preamble, file)
 @test partOne(5, "test.txt") == 127
 @test partOne() == 36845998
 println(string("Part one: ", partOne()))
-
-# stats = Dict()
-# jbench = @benchmark partOne()
-# stats["partOne"] = minimum(jbench.times)/1e3
+@time partOne()
 
 # Part 2
 function partTwo(num = 25, file="input.txt")
@@ -77,11 +74,4 @@ function partTwo(num = 25, file="input.txt")
 end
 @test partTwo(36845998) == 4830226
 println(string("Part two: ", partTwo(36845998)))
-
-# jbench = @benchmark partTwo()
-# stats["partTwo"] = minimum(jbench.times)/1e3
-
-
-# for (key, value) in sort(collect(stats), by=last)
-#     println(rpad(key, 10, " "), lpad(round(value; digits=1), 6, " "), " ms")
-# end
+@time partTwo()

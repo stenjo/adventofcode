@@ -1,13 +1,8 @@
 # Day 15 of Advent of Code puzzle:
 # https://adventofcode.com/2020/day/15
 #
-# using DelimitedFiles
 using Test
 using BenchmarkTools
-# using Primes
-
-test = [0,3,6]
-input = [1,20,8,12,0,14]
 
 
 function NthNumSpoken(num::Int, list::Vector{Int})
@@ -37,17 +32,19 @@ end
     @test NthNumSpoken(2020, [3,1,2]) == 1836
 end
 
+############################################################
 # Part 1
-partOne(num = 2020, list = input) = NthNumSpoken(num, list)
+partOne(num = 2020, list = [1,20,8,12,0,14]) = NthNumSpoken(num, list)
 
-@test partOne(2020, test) == 436
+@test partOne(2020, [0,3,6]) == 436
 @test partOne() == 492
 
 @time println(string("Part one: ", partOne()))
 # @time partOne()
 
+############################################################
 # Part 2
-partTwo(num = 30000000, list = input) = NthNumSpoken(num, list)
+partTwo(num = 30000000, list = [1,20,8,12,0,14]) = NthNumSpoken(num, list)
 
 @test partTwo(30000000, [0,3,6]) == 175594
 @test partTwo() == 63644
