@@ -18,67 +18,67 @@ function LoadInitial(file="input.txt")
 end
 
 function Cycle(a)
-    dimY = length(view(a, :, 1, 1))
-    dimX = length(view(a, 1, :, 1))
+    dimX = length(view(a, :, 1, 1))
+    dimY = length(view(a, 1, :, 1))
     dimZ = length(view(a, 1, 1, :))
-    A = falses(dimY+2, dimX+2, dimZ+2)
-    b = falses(dimY+2, dimX+2, dimZ+2)
 
-    for y in 1:dimY, x in 1:dimX, z in 1:dimZ
-        A[y+1, x+1, z+1] = a[y,x,z]
+    A = falses(dimX+2, dimY+2, dimZ+2)
+    for x in 1:dimX, y in 1:dimY, z in 1:dimZ
+        A[x+1, y+1, z+1] = a[x,y,z]
     end
-    for y in 1:dimY+2, x in 1:dimX+2, z in 1:dimZ+2
-        dy = (y-1 <= 1 ? 1 : y-1):(y+1 >= dimY+2 ? dimY+2 : y+1)
+
+    b = falses(dimX+2, dimY+2, dimZ+2)
+
+    for x in 1:dimX+2, y in 1:dimY+2, z in 1:dimZ+2
         dx = (x-1 <= 1 ? 1 : x-1):(x+1 >= dimX+2 ? dimX+2 : x+1)
-        dz = (z-1 <= 1 ? 1 : z-1 ):(z+1 >= dimZ+2 ? dimZ+2 : z+1)
-        cnt = count(view(A,dy,dx,dz))
-        active = A[y,x,z]
+        dy = (y-1 <= 1 ? 1 : y-1):(y+1 >= dimY+2 ? dimY+2 : y+1)
+        dz = (z-1 <= 1 ? 1 : z-1):(z+1 >= dimZ+2 ? dimZ+2 : z+1)
+        cnt = count(view(A,dx,dy,dz))
+        active = A[x,y,z]
         # If a cube is active and exactly 2 or 3 of its neighbors are also active, the cube remains active. Otherwise, the cube becomes inactive.
         if active == true && cnt-1 in [2,3]
-            b[y, x, z] = true
+            b[x, y, z] = true
         else
-            b[y, x, z] = false
+            b[x, y, z] = false
         end
 
         # If a cube is inactive but exactly 3 of its neighbors are active, the cube becomes active. Otherwise, the cube remains inactive.
         if active == false && cnt == 3
-            b[y, x, z] = true
+            b[x, y, z] = true
         end
     end
     b
 end
 
 function Cycle4Dim(a)
-    dimY = length(view(a, :, 1, 1, 1))
-    dimX = length(view(a, 1, :, 1, 1))
+    dimX = length(view(a, :, 1, 1, 1))
+    dimY = length(view(a, 1, :, 1, 1))
     dimZ = length(view(a, 1, 1, :, 1))
     dimW = length(view(a, 1, 1, 1, :))
-    A = falses(dimY+2, dimX+2, dimZ+2, dimW+2)
-    b = falses(dimY+2, dimX+2, dimZ+2, dimW+2)
-
+    
+    A = falses(dimX+2, dimY+2, dimZ+2, dimW+2)
     for y in 1:dimY, x in 1:dimX, z in 1:dimZ, w in 1:dimW
-        A[y+1, x+1, z+1, w+1] = a[y,x,z,w]
+        A[x+1, y+1, z+1, w+1] = a[x,y,z,w]
     end
 
-    for y in 1:dimY+2, x in 1:dimX+2, z in 1:dimZ+2
-        dy = (y-1 <= 1 ? 1 : y-1):(y+1 >= dimY+2 ? dimY+2 : y+1)
-        dx = (x-1 <= 1 ? 1 : x-1):(x+1 >= dimX+2 ? dimX+2 : x+1)
-        dz = (z-1 <= 1 ? 1 : z-1):(z+1 >= dimZ+2 ? dimZ+2 : z+1)
-        for w in 1:dimW+2
-            dw = (w-1 <= 1 ? 1 : w-1 ):(w+1 >= dimW+2 ? dimW+2 : w+1)
-            cnt = count(view(A,dy,dx,dz,dw))
-            active = A[y,x,z,w]
-            # If a cube is active and exactly 2 or 3 of its neighbors are also active, the cube remains active. Otherwise, the cube becomes inactive.
-            if active == true && cnt-1 in [2,3]
-                b[y, x, z, w] = true
-            else
-                b[y, x, z, w] = false
-            end
+    b = falses(dimX+2, dimY+2, dimZ+2, dimW+2)
 
-            # If a cube is inactive but exactly 3 of its neighbors are active, the cube becomes active. Otherwise, the cube remains inactive.
-            if active == false && cnt == 3
-                b[y, x, z, w] = true
-            end
+    for x in 1:dimX+2, y in 1:dimY+2, z in 1:dimZ+2, w in 1:dimW+2
+        dx = (x-1 <= 1 ? 1 : x-1):(x+1 >= dimX+2 ? dimX+2 : x+1)
+        dy = (y-1 <= 1 ? 1 : y-1):(y+1 >= dimY+2 ? dimY+2 : y+1)
+        dz = (z-1 <= 1 ? 1 : z-1):(z+1 >= dimZ+2 ? dimZ+2 : z+1)
+        dw = (w-1 <= 1 ? 1 : w-1):(w+1 >= dimW+2 ? dimW+2 : w+1)
+        cnt = count(view(A,dx,dy,dz,dw))
+        active = A[x,y,z,w]
+        # If a cube is active and exactly 2 or 3 of its neighbors are also active, the cube remains active. Otherwise, the cube becomes inactive.
+        if active == true && cnt-1 in [2,3]
+            b[x, y, z, w] = true
+        else
+            b[x, y, z, w] = false
+        end
+        # If a cube is inactive but exactly 3 of its neighbors are active, the cube becomes active. Otherwise, the cube remains inactive.
+        if active == false && cnt == 3
+            b[x, y, z, w] = true
         end
     end
     b
