@@ -2,9 +2,9 @@ name: Run tests
 
 on:
   push:
-    branches:
-      - master
-    tags: '*'
+    branches: master
+    paths: '2020/*'
+
   pull_request:
 
 jobs:
