@@ -1,10 +1,8 @@
 # Day 17 of Advent of Code puzzle:
 # https://adventofcode.com/2020/day/17
 #
-# using DelimitedFiles
 using Test
 using BenchmarkTools
-# using Primes
 
 function LoadInitial(file="input.txt")
     lines=readlines(file)
