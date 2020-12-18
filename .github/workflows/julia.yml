@@ -20,7 +20,7 @@ jobs:
     strategy:
       matrix:
         julia-version: ['1']
-        os: [ubuntu-latest, windows-latest, macOS-latest]
+        os: [ubuntu-latest, macOS-latest]
     
     steps:
       - uses: actions/checkout@v1.0.0
@@ -30,6 +30,5 @@ jobs:
           version: ${{ matrix.julia-version }}
       - run: julia -e 'println("Hello, World!")'
         shell: bash
-      # - run: julia ../2002/Day18-Operation_Order/Day18.jl
       - run: julia ~/2020/Day18-Operation_Order/Day18.jl
         shell: bash
