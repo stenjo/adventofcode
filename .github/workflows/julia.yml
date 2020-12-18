@@ -31,5 +31,5 @@ jobs:
       - run: julia -e 'println("Hello, World!")'
         shell: bash
       # - run: julia ../2002/Day18-Operation_Order/Day18.jl
-      - run: julia ..\2020\Day18-Operation_Order\Day18.jl
+      - run: julia ~/2020/Day18-Operation_Order/Day18.jl
         shell: bash
