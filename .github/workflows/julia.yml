@@ -8,7 +8,7 @@ on:
   push:
     branches: [ master ]
     paths:
-      - 'adventofcode/2020/*'
+      - '**.jl'
   pull_request:
     branches: [ master ]
     paths:
