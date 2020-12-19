@@ -30,7 +30,7 @@ jobs:
       - uses: actions/checkout@v1.0.0
       - name: "Set up Julia"
         uses: julia-actions/setup-julia@v1
-        working-directory: 2020
+        working-directory: '2020'
         with:
           version: ${{ matrix.julia-version }}
       - run: julia -e 'import Pkg; Pkg.add("Match")'
