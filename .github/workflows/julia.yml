@@ -21,6 +21,10 @@ on:
 jobs:
   test:
     runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+        working-directory: 2020
     strategy:
       matrix:
         julia-version: ['1']
@@ -30,11 +34,10 @@ jobs:
       - uses: actions/checkout@v1.0.0
       - name: "Set up Julia"
         uses: julia-actions/setup-julia@v1
-        working-directory: '2020'
         with:
           version: ${{ matrix.julia-version }}
       - run: julia -e 'import Pkg; Pkg.add("Match")'
       - run: julia -e 'import Pkg; Pkg.add("Test")'
       - run: julia -e 'import Pkg; Pkg.add("BenchmarkTools")'
       - run: julia -e 'println("Hello, World!")'
-        shell: bash
+ 
