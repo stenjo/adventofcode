@@ -32,5 +32,8 @@ jobs:
         uses: julia-actions/setup-julia@v1
         with:
           version: ${{ matrix.julia-version }}
+      - run: julia -e 'import Pkg; Pkg.add("Match")'
+      - run: julia -e 'import Pkg; Pkg.add("Test")'
+      - run: julia -e 'import Pkg; Pkg.add("BenchmarkTools")'
       - run: julia -e 'println("Hello, World!")'
         shell: bash

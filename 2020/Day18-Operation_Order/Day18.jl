@@ -68,47 +68,6 @@ end
     @test Evaluate("((2 + 4 * 9) * (6 + 9 * 8 + 6) + 6) + 2 + 4 * 2") == 13632
 end
 
-function Advanced(line)
-    statements = strip(filter(c->c!=' ',line))
-    result = 0
-    while length(statements) > 0
-        if statements[1] == '('
-            sub = GetSubStatement(statements[2:end])
-            result += Advanced(sub)
-            statements = statements[length(sub)+3:end]
-        elseif statements[1] == '*'
-            result = DoOperation('*', result, Advanced(statements[2:end]))
-            return result
-        elseif statements[1] == '+'
-            if statements[2] == '('
-                sub = GetSubStatement(statements[3:end])
-                # result = Advanced(sub)
-                result = DoOperation('+', result, Advanced(sub))
-                statements = statements[length(sub)+5:end]
-            elseif statements[2] in join(string.(Array(0:9)))
-                result = DoOperation('+', result, parse(Int, statements[2]))
-                statements = statements[3:end]
-            end
-        elseif statements[1] in join(string.(Array(0:9)))
-            result = parse(Int, statements[1])
-            statements = statements[2:end]
-        # elseif statements[1] in "+*-" && parse(Int, statements[2]) in 1:9
-        #     result = DoOperation(statements[1], result, parse(Int, statements[2]))
-        #     statements = statements[3:end]
-        end
-    end
-    result
-end
-
-@testset "Advanced" begin
-    @test Advanced("(1 + 2) * (3 + 4) * 5 + 6") == 231
-    @test Advanced("1 + (2 * 3) + (4 * (5 + 6))") == 51
-    @test Advanced("5 + (8 * 3 + 9 + 3 * 4 * 3)") == 1445
-    @test Advanced("(2 * 3 + (4 * 5))") == 46
-    @test Advanced("5 * 9 * (7 * 3 * 3 + 9 * 3 + (8 + 6 * 4))") == 669060
-    @test Advanced("((2 + 4 * 9) * (6 + 9 * 8 + 6) + 6) + 2 + 4 * 2") == 23340
-end
-
 function HasPrecedence(op, rel)
     if op == '+' && rel == '*'
         return true
@@ -162,8 +121,14 @@ end
 
 @testset "SolveReversePolish" begin
     @test ShuntingYard("5 * 9 * (7 * 3 * 3 + 9 * 3 + (8 + 6 * 4))") == [5, 9, 7, 3, 3, 9, '+', 3, 8, 6, '+', 4, '*', '+', '*', '*', '*', '*', '*']
+    @test SolveReversePolish("(1 + 2) * (3 + 4) * 5 + 6") == 231
+    @test SolveReversePolish("1 + (2 * 3) + (4 * (5 + 6))") == 51
+    @test SolveReversePolish("5 + (8 * 3 + 9 + 3 * 4 * 3)") == 1445
+    @test SolveReversePolish("(2 * 3 + (4 * 5))") == 46
     @test SolveReversePolish("5 * 9 * (7 * 3 * 3 + 9 * 3 + (8 + 6 * 4))") == 669060
+    @test SolveReversePolish("((2 + 4 * 9) * (6 + 9 * 8 + 6) + 6) + 2 + 4 * 2") == 23340
 end
+
 
 # Part 1
 partOne(file="input.txt") = sum(map(v->Evaluate(v), readlines(file)))
