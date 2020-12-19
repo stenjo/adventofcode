@@ -8,11 +8,11 @@ on:
   push:
     branches: [ master ]
     paths:
-      - '2020/*'
+      - 'adventofcode/2020/*'
   pull_request:
     branches: [ master ]
     paths:
-      - '2020/*'
+      - '**.jl'
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -30,6 +30,7 @@ jobs:
       - uses: actions/checkout@v1.0.0
       - name: "Set up Julia"
         uses: julia-actions/setup-julia@v1
+        working-directory: 2020
         with:
           version: ${{ matrix.julia-version }}
       - run: julia -e 'import Pkg; Pkg.add("Match")'
