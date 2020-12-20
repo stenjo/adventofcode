@@ -24,7 +24,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: 2020/Day18-Operation_Order
+        working-directory: 2020/Day20-Jurassic_Jigsaw
     strategy:
       matrix:
         julia-version: ['1']
@@ -40,5 +40,5 @@ jobs:
       - run: julia -e 'import Pkg; Pkg.add("Test")'
       - run: julia -e 'import Pkg; Pkg.add("BenchmarkTools")'
       - run: julia -e 'println("Hello, World!")'
-      - run: julia Day18.jl
+      - run: julia Day20.jl
  
