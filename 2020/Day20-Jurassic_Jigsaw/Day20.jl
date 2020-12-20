@@ -126,6 +126,11 @@ function BuildImage(tiles)
             d = Bordering(left=>allImgs[left], corners)
             refs[x,y] = pop!(d)[1]
             corners = filter(t->t[1] != refs[x,y], corners)
+        elseif x == dimX               # Last column edge
+            above = refs[x,y-1]
+            c = Bordering(above=>allImgs[above], edges)
+            refs[x,y] = pop!(c)[1]
+            edges = filter(t->t[1] != refs[x,y], edges)
         elseif y == 1               # First row edge
             left = refs[x-1,y]
             d = Bordering(left=>allImgs[left], edges)
@@ -133,7 +138,7 @@ function BuildImage(tiles)
             edges = filter(t->t[1] != refs[x,y], edges)
         elseif y == dimY               # Last row edge
             left = refs[x-1,y]
-            d = Bordering(left=>allImgs[left], centres)
+            d = Bordering(left=>allImgs[left], edges)
             refs[x,y] = pop!(d)[1]
             edges = filter(t->t[1] != refs[x,y], edges)
         else
@@ -141,7 +146,7 @@ function BuildImage(tiles)
             c = Bordering(above=>allImgs[above], centres)
             left = refs[x-1,y]
             d = Bordering(left=>allImgs[left], centres)
-            id = intersect(keys(c), keys(d))
+            id = collect(intersect(keys(c), keys(d)))[1]
             refs[x,y] = id
             centres = filter(t->t[1] != id, centres)
         end
@@ -160,7 +165,7 @@ end
     corners = filter(x->length(x[2]) == 2, map(t->(t[1]=>CommonEdges(t[1], tiles)), collect(keys(tiles))))
     edges   = filter(x->length(x[2]) == 3, map(t->(t[1]=>CommonEdges(t[1], tiles)), collect(keys(tiles))))
     @test length(Bordering(corners[1], edges)) == 2
-    @test BuildImage(tiles) == []
+    @test BuildImage(tiles) == [3079 2473 1171; 2311 1427 1489; 1951 2729 2971]
     @test count(v->v !== undef, BuildImage(tiles)) == 9
 end
 
