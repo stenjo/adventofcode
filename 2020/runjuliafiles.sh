@@ -6,6 +6,8 @@ function runjulia {
     if [[ "$SUBSTRING" =~ ^Day.* ]]; then
         cp $1* .
         julia $SUBSTRING.jl
+        rm *.jl
+        rm *.txt
         # /c/Users/sten.johnsen/AppData/Local/Programs/Julia\ 1.5.3/bin/julia.exe Day21.jl
     fi
 }
