@@ -81,9 +81,7 @@ function IsMatch(str, rules)
 end
 
 @testset "IsMatch" begin
-
 end
-
 
 # Part 1
 # partOne(file="input.txt") = sum(map(v->Evaluate(v), readlines(file)))
