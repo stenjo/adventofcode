@@ -53,6 +53,12 @@ function CommonEdges(tileNo, tiles)
     result
 end
 
+function EdgeIsIn(t, side, tile)
+    # right edge
+    join(map(s->s==true ? '1' : '0', view(t, :, 10)))
+    edge in Edges(tile[2]) ? true : false
+end
+
 monster = [
 "                  # ",
 "#    ##    ##    ###",
@@ -152,6 +158,25 @@ function BuildImage(tiles)
         end
     end
     refs
+    # Rotate cw -> transpose(m)[1:1:end, end:-1:1]
+    # Flip y -> transpose(transpose(m)[1:1:end, end:-1:1])
+    # Flip x -> transpose(transpose(m)[end:-1:1,1:1:end])
+    # Rotate ccw -> transpose(m)[end:-1:1,1:1:end]
+
+end
+
+RotateCW(m)  = transpose(m)[1:1:end, end:-1:1]
+RotateCCW(m) = transpose(m)[end:-1:1,1:1:end]
+FlipX(m) = transpose(transpose(m)[end:-1:1,1:1:end])
+FlipY(m) = transpose(transpose(m)[1:1:end, end:-1:1])
+
+function PatchImage(refs, tiles)
+    A = []
+    (dimX,dimY) = size(refs)
+    for x in 1:dimX, y in 1:dimY
+        # right edge
+        join(map(s->s==true ? '1' : '0', view(tiles[refs[x,y]], :, 10)))
+    end
 end
 
 @testset "Tiles" begin
