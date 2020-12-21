@@ -24,7 +24,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: 2020/Day21-Allergen_Assessment
+        working-directory: '2020'
     strategy:
       matrix:
         julia-version: ['1']
@@ -40,5 +40,5 @@ jobs:
       - run: julia -e 'import Pkg; Pkg.add("Test")'
       - run: julia -e 'import Pkg; Pkg.add("BenchmarkTools")'
       - run: julia -e 'println("Hello, World!")'
-      - run: ./runjuliafiles.sh
+      - run: runjuliafiles.sh
  
