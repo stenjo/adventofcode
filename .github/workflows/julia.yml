@@ -40,5 +40,5 @@ jobs:
       - run: julia -e 'import Pkg; Pkg.add("Test")'
       - run: julia -e 'import Pkg; Pkg.add("BenchmarkTools")'
       - run: julia -e 'println("Hello, World!")'
-      - run: julia Day21.jl
+      - run: ./runjuliafiles.sh
  
