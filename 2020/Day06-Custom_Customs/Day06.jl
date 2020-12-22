@@ -29,7 +29,7 @@ end
 end
 
 function GetInput(str=read("input.txt", String))
-    map(split, split(str, "\r\n\r\n"))
+    map(split, split(str, "\n\n"))
 end
 @testset "GetInput" begin
     @test length(GetInput(read("testinput.txt", String))) == 5
