@@ -4,6 +4,7 @@
 
 using DelimitedFiles
 using Test
+using BenchmarkTools
 
 # Test information from the puzzle
 testinput = [
@@ -35,14 +36,16 @@ function Slope(inputList::Array, right::Int64, down::Int64 = 1)
 end
 
 # Part 1
-partOne(list) = Slope(list,3,1)
+partOne(list=inputdata) = Slope(list,3,1)
 @test partOne(testinput) == 7
-@test partOne(inputdata) == 232
+@test partOne() == 232
 println(string("Part one: ", partOne(inputdata)))
+@time partOne()
 
 # Part 2
-partTwo(list) = prod(s -> Slope(list, s...), [1,3,5,7,[1,2]])
+partTwo(list=inputdata) = prod(s -> Slope(list, s...), [1,3,5,7,[1,2]])
 
 @test partTwo(testinput) == 336
-@test partTwo(inputdata) == 3952291680
+@test partTwo() == 3952291680
 println(string("Part two: ", partTwo(inputdata)))
+@time partTwo()
