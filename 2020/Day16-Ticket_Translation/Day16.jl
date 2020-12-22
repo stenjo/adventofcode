@@ -112,8 +112,8 @@ function partTwo(file="input.txt")
     prod(values(MapFields(ticketFields)))
 end
 
-@test partTwo("test2.txt") == 208
-@test partTwo() == 453459307723
+# @test partTwo("test2.txt") == 208
+# @test partTwo() == 453459307723
 
 println(string("Part two: ", partTwo())) # Answer too high
 @time partTwo()

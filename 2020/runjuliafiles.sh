@@ -4,15 +4,18 @@ function runjulia {
     INPUT=$1
     SUBSTRING=$(echo $INPUT| cut -d'-' -f 1)
     if [[ "$SUBSTRING" =~ ^Day.* ]]; then
-        cp $1* .
+        echo
+        echo Running $SUBSTRING 
+        cp $1*.txt .
+        cp $1*.jl .
         julia $SUBSTRING.jl
+        # /c/Users/sten.johnsen/AppData/Local/Programs/Julia\ 1.5.3/bin/julia.exe  $SUBSTRING.jl
         status=$?
-        if test $status -ne 0
+        if test $status -ne 0; then
             exit $status
         fi
         rm *.jl
         rm *.txt
-        # /c/Users/sten.johnsen/AppData/Local/Programs/Julia\ 1.5.3/bin/julia.exe Day21.jl
     fi
 }
 
