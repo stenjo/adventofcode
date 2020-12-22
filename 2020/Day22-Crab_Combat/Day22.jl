@@ -39,17 +39,7 @@ end
 
 GetIncrSum(decks) = sum(p->length(p) > 0 ? sum(map(x -> x[2]*(length(p)-x[1]+1), enumerate(p))) : 0, [s for s in decks if !all(isempty.(s))])
 
-function GetIncrSum1(decks)
-    sum = 0
-    for d in decks
-        for (i,n) in enumerate(reverse(d))
-            sum += i*n
-        end
-    end
-    sum
-end
-
-GetHash(decks) = hash(Pair(sum(map(x -> x[2]*x[1], enumerate(decks[1]))),sum(diff(map(x -> x[2]*x[1], enumerate(reverse(decks[2])))))))
+GetHash(decks) = (decks[1],decks[2])
 
 function PlayRound2(decks, checksums, game, round)
     round +=1
@@ -63,7 +53,7 @@ function PlayRound2(decks, checksums, game, round)
         winner = 1
         # println("Game ", game, " won by Player 1 on been here before")
     else
-        push!(checksums, GetHash(decks))
+        push!(checksums, GetHash(deepcopy(decks)))
         p1 = popfirst!(decks[1])
         p2 = popfirst!(decks[2])
         # println("Player 1 plays: ",p1, " (cards left: ", length(decks[1]), ")")
@@ -155,7 +145,7 @@ function partTwo(file="input.txt")
 end
 
 @test partTwo("test.txt") == 291
-# @test partTwo() == 33369
+@test partTwo() == 33369
 
-println(string("Part two: ", partTwo())) # Answer too low
+@time println(string("Part two: ", partTwo())) # Answer too low
 # @time partTwo()
