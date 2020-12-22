@@ -38,7 +38,7 @@ end
 
 function GetDefaultInput()
     # map(split, split(read("input.txt", String), "\r\n\r\n"))
-    map(split, split(read("testinput.txt", String), "\r\n\r\n"))
+    map(split, split(read("testinput.txt", String), "\n\n"))
 end
 @testset "GetDefaultInput" begin
     @test length(GetDefaultInput()) == 5
