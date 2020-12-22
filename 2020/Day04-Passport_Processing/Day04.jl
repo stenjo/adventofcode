@@ -4,6 +4,7 @@
 
 using DelimitedFiles
 using Test
+using BenchmarkTools
 
 # Test information from the puzzle
 testinput = ["pid:087499704 hgt:74in ecl:grn iyr:2012 eyr:2030 byr:1980
@@ -155,23 +156,24 @@ function CleanUp(list)
 end
 
 # Part 1
-function partOne(rawList)
+function partOne(rawList=inputdata)
     list = CleanUpInput(rawList)
     passports = [PassPort(list[i]) for i in 1:length(list)]
     count(p->IsFieldsPresent(p), passports)
 end
 
 @test partOne(testinput) == 8
-@test partOne(inputdata) == 202
+@test partOne() == 202
 println(string("Part one: ", partOne(inputdata)))
-
+@time partOne()
 # Part 2
-function partTwo(rawList)
+function partTwo(rawList=inputdata)
     list = CleanUpInput(rawList)
     passports = [PassPort(list[i]) for i in 1:length(list)]
     count(p->(IsValid(p) && IsFieldsPresent(p)), passports)
 end
 
 @test partTwo(testinput) == 4
-@test partTwo(inputdata) == 137
+@test partTwo() == 137
 println(string("Part two: ", partTwo(inputdata)))
+@time partTwo()
