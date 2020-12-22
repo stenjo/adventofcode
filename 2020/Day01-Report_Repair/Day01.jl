@@ -1,17 +1,21 @@
-module Day01
-export part1, part2
 # Day 1 of Advent of Code puzzle: 
 # https://adventofcode.com/2020/day/1
 # 
 # Out of the list : [1721,979,366,299,675,1456] find the two entries that sum to 2020
 # and multiply these. Should result in 514579
 using DelimitedFiles
+using Test
+using BenchmarkTools
+
 include("utils.jl")
 
 test = [1721,979,366,299,675,1456]
 inputdata = readdlm("input.txt", '\t', Int, '\n')
 
-function partOne(list)
+
+
+# Part 1
+function partOne(list=parse.(Int, readlines("input.txt")))
     numSum = 2020
     numbers = []
     for i in list 
@@ -23,7 +27,14 @@ function partOne(list)
     product = multiplyArray(numbers)
 end
 
-function partTwo(list)
+@test partOne(test) == 514579
+@test partOne() == 1007331
+
+println(string("Part one: ", partOne()))
+@time partOne()
+
+# Part 2
+function partTwo(list=parse.(Int, readlines("input.txt")))
     numSum = 2020
     numbers = []
     for i in list 
@@ -37,10 +48,9 @@ function partTwo(list)
     product = multiplyArray(numbers)
 end
 
-part1(inputdata)  = partOne(inputdata)
-part2(inputdata) = partTwo(inputdata)
+@test partTwo(test) == 241861950
+@test partTwo() == 48914340
 
-# println(partOne(inputdata))
-# println(partTwo(inputdata))
+println(string("Part two: ", partTwo())) # Answer too low
+@time partTwo()
 
-end # module
