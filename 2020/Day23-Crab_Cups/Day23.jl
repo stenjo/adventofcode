@@ -62,13 +62,14 @@ end
 function Move(g::Dict, current::Int)
 
     stack = []
+    max = maximum(collect(keys(g)))
+    wrap(n) = n == 1 ? max : n - 1
+    
     for _ in 1:3
         push!(stack,g[current])
         g[current] = g[g[current]]
     end
 
-    max = maximum(collect(keys(g)))
-    wrap(n) = n == 1 ? max : n - 1
     dest = wrap(current)
     while dest in stack
         dest = wrap(dest)
@@ -84,28 +85,38 @@ function Move(g::Dict, current::Int)
     current = g[current]
 end
 
-# Try making a list of dict label->next
-function RunGame(moves :: Int, game :: Dict, current)
-    for i in 1:moves
-        current = Move(game, current)
-    end
-
+function GetList(l::Dict)
     seq = []
-    cup = game[1]
-    while cup != 1
+    cup = l[1]
+    while cup != 1 && !(cup  in seq)
         push!(seq,cup)
-        cup = game[cup]
+        cup = l[cup]
     end
+    parse(Int,join(seq))
+
+end
+
+function GetList2(l::Dict)
+    seq = [l[1],l[l[1]]]
     parse(Int,join(seq))
 end
 
-function SetUpGame(init::String)
+# Try making a list of dict label->next
+function RunGame(moves :: Int, game :: Dict, current)
+    for _ in 1:moves
+        current = Move(game, current)
+    end
+
+    parse(Int,join(GetList(game)))
+end
+
+function SetUpGame(list::Vector{Int})
     game = Dict{Int,Int}()
 
     # Initialise dict bakwards to get next pointers
-    list = parse.(Int,[string(c) for c in init])
+    # list = parse.(Int,[string(c) for c in init])
     current = list[1]   # Point to start of list
-    for n in reverse(parse.(Int,[string(c) for c in init]))
+    for n in reverse(list)
         push!(game, n=>current)
         current = n
     end
@@ -115,17 +126,26 @@ end
 
 @testset "CupsGameDict" begin
     # game = CupsGame("389125467") 
-    (current, game) = SetUpGame("389125467")
+    list = parse.(Int,[string(c) for c in "389125467"])
+    (current, game) = SetUpGame(list)
     # @test game.cups[5] == 2
     @test RunGame(1, game, current) == 54673289
-    # @test RunGame(9, game, current) == 92658374
-    # @test RunGame(100, CupsGame("389125467")) == 67384529
+    (current, game) = SetUpGame(list)
+    @test RunGame(10, game, current) == 92658374
+    (current, game) = SetUpGame(list)
+    @test RunGame(100, game, current) == 67384529
 
 end
 
 
 # Part 1
-partOne(labling = input) = RunGame(100, CupsGame(labling))
+# partOne(labling = input) = RunGame(100, CupsGame(labling))
+function partOne(labling = input)
+    list = parse.(Int,[string(c) for c in labling])
+    (current, game) = SetUpGame(list)
+    RunGame(100, game, current)
+end
+
 
 @test partOne("389125467") == 67384529
 @test partOne() == 45798623
@@ -135,12 +155,16 @@ println(string("Part one: ", partOne()))
 
 # Part 2
 function partTwo(initial = input)
-    cups = MutableLinkedList{Int}(parse.(Int,[string(c) for c in initial])...)
-    circ = CircularBuffer{Int}(length(initial))
-    append!(circ,parse.(Int,[string(c) for c in initial]))
-    game = CupsGame(initial)
-    game.cups = cat(game.cups,Array{Int}(maximum(game.cups)+1:1000000-length(game.cups)); dims=1)
-    RunGame(10000000, game)
+    # cups = cat(game.cups,Array{Int}(maximum(game.cups)+1:1000000-length(game.cups)); dims=1)
+    list = parse.(Int,[string(c) for c in initial])
+    cups = cat(list,Array{Int}(maximum(list)+1:1000000-length(list)); dims=1)
+    (current, game) = SetUpGame(cups)
+
+    for _ in 1:10^6
+        current = Move(game, current)
+    end
+
+    game[1] * game[game[1]]
 
 end
 
