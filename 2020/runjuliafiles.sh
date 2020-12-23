@@ -8,7 +8,7 @@ function runjulia {
         echo Running $SUBSTRING 
         cp $1*.txt .
         cp $1*.jl .
-        julia $SUBSTRING.jl
+        julia --color=yes --check-bounds=yes $SUBSTRING.jl
         # /c/Users/sten.johnsen/AppData/Local/Programs/Julia\ 1.5.3/bin/julia.exe  $SUBSTRING.jl
         status=$?
         if test $status -ne 0; then
