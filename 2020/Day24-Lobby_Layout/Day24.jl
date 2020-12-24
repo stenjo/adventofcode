@@ -44,20 +44,13 @@ function TilePos(inst::Vector{String}, tile = Pair{Int,Int}(0,0))
     tile
 end
 
-function NearByTiles(tiles::Dict, tile::Pair{Int,Int})
+SurroundingTiles(tile::Pair{Int,Int}) = TilePos.(map(v->[v], SplitInstructions("nenwewsesw")), tile)
+
+function CountNearByTiles(tiles::Dict, tile::Pair{Int,Int})
     count = 0
-    x,y = tile
-    for i in x-2:x+2, j in y-1:y+1 
-        if  (i == x-2 && j == y-1) || 
-            (i == x-2 && j == y+1) || 
-            (i == x+2 && j == y-1) || 
-            (i == x+2 && j == y+1)
-            continue
-        end
-        if Pair(i,j) in keys(tiles)
-            if !(i == x && j == y) 
-                count += 1
-            end
+    for s in SurroundingTiles(tile)
+        if s in keys(tiles)
+            count += 1
         end
     end
     count
@@ -65,23 +58,22 @@ end
 
 function RunDay(tiles)
     tiles2 = deepcopy(tiles)
-    (minX,maxX) = extrema(map(k->k[1], collect(keys(tiles))))
-    (minY,maxY) = extrema(map(k->k[2], collect(keys(tiles))))
+    keysToCheck = copy(collect(keys(tiles)))
 
-    # for tile in tiles
-    for x in minX-2:maxX+2, y in minY-1:maxY+1
-        if  (x == minX-2 && y == minY-1) || 
-            (x == maxX+2 && y == minY-1) ||
-            (x == minX-2 && y == maxY+1) ||
-            (x == maxX+2 && y == maxY+1)
-            continue
+    for tile in collect(keys(tiles))
+        for s in SurroundingTiles(tile)
+            if !(s in keysToCheck)
+                push!(keysToCheck, s)
+            end
         end
-        check = Pair(x,y)
-        nearby = NearByTiles(tiles, check)
-        if check in tiles && (nearby > 2 || nearby == 0)
-            delete!(tiles2, check)
-        elseif !(check in tiles) && nearby == 2
-            push!(tiles2, check=>"Black")
+    end
+    for tile in keysToCheck
+        nearby = CountNearByTiles(tiles, tile)
+        # println(nearby, " : ", tile, " In tiles: ", tile in tiles)
+        if tile in collect(keys(tiles)) && (nearby > 2 || nearby == 0)
+            delete!(tiles2, tile)
+        elseif !(tile in collect(keys(tiles))) && nearby == 2
+            push!(tiles2, tile=>"Black")
         end
     end
     tiles2
@@ -95,9 +87,9 @@ end
     @test Move(Pair(0,0), "w") == Pair(-2,0)
     @test Move(Pair(0,0), "se") == Pair(1,1)
     @test TilePos(SplitInstructions("nwwswee")) == Pair(0,0)
-    @test NearByTiles(Dict(Pair(1,-1)=>"Black", Pair(-2,0)=>"Black"), Pair(0,0)) == 2
-    @test NearByTiles(Dict(Pair(1,-1)=>"Black", Pair(-2,0)=>"Black", Pair(-2,1)=>"Black"), Pair(0,0)) == 2
-    # @test count(TilePos()
+    @test CountNearByTiles(Dict(Pair(1,-1)=>"Black", Pair(-2,0)=>"Black"), Pair(0,0)) == 2
+    @test CountNearByTiles(Dict(Pair(1,-1)=>"Black", Pair(-2,0)=>"Black", Pair(-2,1)=>"Black"), Pair(0,0)) == 2
+    @test length(TilePos.(map(v->[v], SplitInstructions("nenwewsesw")))) == 6
 end
 
 # Part 1
@@ -125,14 +117,15 @@ function partTwo(input="input.txt")
         t = TilePos(tile)
         t in keys(tiles) ? delete!(tiles, t) : push!(tiles, t=>"Black")
     end
-    for n in 1:1
+    for n in 1:100
+        # print("\r",n)
         tiles = RunDay(tiles)
     end
     length(tiles)
 end
 
-# @test partTwo("test.txt") == 2208
-# @test partTwo() == 33369
+@test partTwo("test.txt") == 2208
+# @test partTwo() == 3531
 
-# @time println(string("Part two: ", partTwo())) # Answer too low
+@time println(string("Part two: ", partTwo()))
 # @time partTwo()
