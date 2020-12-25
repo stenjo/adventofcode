@@ -40,7 +40,6 @@ jobs:
       - run: julia -e 'import Pkg; Pkg.add("Test")'
       - run: julia -e 'import Pkg; Pkg.add("BenchmarkTools")'
       - run: julia -e 'import Pkg; Pkg.add("DataStructures")'
-      - run: julia -e 'import Pkg; Pkg.add("Primes")'
       - run: chmod +x runjuliafiles.sh
       - run: ./runjuliafiles.sh
  

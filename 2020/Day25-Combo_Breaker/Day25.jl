@@ -4,7 +4,6 @@
 using Test
 using Match
 using BenchmarkTools
-using Primes
 
 function GetLoopSize(pub::Int)
     loopSize = 1

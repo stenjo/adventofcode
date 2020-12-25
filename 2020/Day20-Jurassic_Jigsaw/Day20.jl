@@ -98,9 +98,10 @@ function BuildImage(tiles)
     #   3
     # 1   2
     #   4
-    corners = filter(x->length(x[2]) == 2, map(t->(t[1]=>CommonEdges(t[1], tiles)), collect(keys(tiles))))
-    edges   = filter(x->length(x[2]) == 3, map(t->(t[1]=>CommonEdges(t[1], tiles)), collect(keys(tiles))))
-    centres = filter(x->length(x[2]) == 4, map(t->(t[1]=>CommonEdges(t[1], tiles)), collect(keys(tiles))))
+    GetPiezes(edges::Int) = filter(x->length(x[2]) == edges, map(t->(t[1]=>CommonEdges(t[1], tiles)), collect(keys(tiles))))
+    corners = GetPiezes(2) # filter(x->length(x[2]) == 2, map(t->(t[1]=>CommonEdges(t[1], tiles)), collect(keys(tiles))))
+    edges   = GetPiezes(3) # filter(x->length(x[2]) == 3, map(t->(t[1]=>CommonEdges(t[1], tiles)), collect(keys(tiles))))
+    centres = GetPiezes(4) # filter(x->length(x[2]) == 4, map(t->(t[1]=>CommonEdges(t[1], tiles)), collect(keys(tiles))))
     allImgs = ArrayToDict(map(t->(t[1]=>CommonEdges(t[1], tiles)), collect(keys(tiles))))
 
     # refs = zeros(Int, 2+length(edges)÷4, 2+length(edges)÷4)
