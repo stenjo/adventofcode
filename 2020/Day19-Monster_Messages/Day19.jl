@@ -67,30 +67,63 @@ end
     @test length(messages) == 5
 end
 
-function CompileRules(rules)
-    cRules = Dict()
-    for rule in rules  ## Find strings
-        println(rule[2].patterns)
-        # findall(v->( 4 in collect(Iterators.flatten(vcat.(v.ref)))), rules)
+function GetPattern(ruleNo, rules)
+    patterns = Vector{String}()
+    rule = rules[ruleNo]
+    if length(rule.str) > 0
+        return [rule.str]
+    elseif length(rule.ref) > 0
+        for rSet in rule.ref
+            pattern = Vector{String}()
+            for r in rSet
+                p = GetPattern(r,rules)
+                list = []
+                for (i,n) in enumerate(p)
+                    if length(pattern) > 0
+                        for (j,m) in enumerate(pattern)
+                            push!(list,string(m, n))
+                        end
+                    else
+                        push!(list,n)
+                    end
+                end
+                pattern = list
+            end
+            for p in pattern
+                push!(patterns,p)
+            end
+        end
     end
+    return patterns
 end
 
 
-function IsMatch(str, rules)
-
+function BuildPatterns(rules)
+    patterns = []
 end
 
-@testset "IsMatch" begin
+
+@testset "Patterns" begin
+    rules,messages = LoadRulesAndMessages("test.txt")
+    @test GetPattern(4,rules) == ["a"]
+    @test GetPattern(5,rules) == ["b"]
+    @test GetPattern(2,rules) == ["aa", "bb"]
+    @test GetPattern(1,rules) == ["aaab", "bbab", "aaba", "bbba", "abaa", "baaa", "abbb", "babb"]
+    @test GetPattern(0,rules) == ["aaaabb", "abbabb", "aaabab", "abbbab", "aabaab", "abaaab", "aabbbb", "ababbb"]
 end
 
 # Part 1
-# partOne(file="input.txt") = sum(map(v->Evaluate(v), readlines(file)))
+function partOne(file="input.txt")
+    rules,messages = LoadRulesAndMessages(file)
+    patterns = GetPattern(0, rules)
+    count(m->(m in patterns), messages)
+end
 
-# @test partOne("test.txt") == 26335
-# @test partOne() == 18213007238947
+@test partOne("test.txt") == 2
+@test partOne() == 118
 
-# println(string("Part one: ", partOne()))
-# @time partOne()
+println(string("Part one: ", partOne()))
+@time partOne()
 
 # # Part 2
 # partTwo(file="input.txt") = sum(map(v->SolveReversePolish(v), readlines(file)))
