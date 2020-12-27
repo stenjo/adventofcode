@@ -97,12 +97,6 @@ function GetPattern(ruleNo, rules)
     return patterns
 end
 
-
-function BuildPatterns(rules)
-    patterns = []
-end
-
-
 @testset "Patterns" begin
     rules,messages = LoadRulesAndMessages("test.txt")
     @test GetPattern(4,rules) == ["a"]
@@ -110,6 +104,12 @@ end
     @test GetPattern(2,rules) == ["aa", "bb"]
     @test GetPattern(1,rules) == ["aaab", "bbab", "aaba", "bbba", "abaa", "baaa", "abbb", "babb"]
     @test GetPattern(0,rules) == ["aaaabb", "abbabb", "aaabab", "abbbab", "aabaab", "abaaab", "aabbbb", "ababbb"]
+end
+
+@testset "Part2" begin
+    rules,messages = LoadRulesAndMessages("test2.txt")
+    patterns = GetPattern(0, rules)
+    @test count(m->(m in patterns), messages) == 3
 end
 
 # Part 1
@@ -122,8 +122,7 @@ end
 @test partOne("test.txt") == 2
 @test partOne() == 118
 
-println(string("Part one: ", partOne()))
-@time partOne()
+@time println(string("Part one: ", partOne()))
 
 # # Part 2
 # partTwo(file="input.txt") = sum(map(v->SolveReversePolish(v), readlines(file)))
