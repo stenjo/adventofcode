@@ -11,9 +11,32 @@ func TestDay01(t *testing.T) {
 		t.Fatal("Failed")
 	}
 
-	if day01.FindFloor("(()(()(") != 3 {
+	if day01.FindFloor("(())") != 0 {
 		t.Fatal("Failed")
 	}
 
+	if day01.FindFloor("(((") != 3 {
+		t.Fatal("Failed")
+	}
+	if day01.FindFloor("(()(()(") != 3 {
+		t.Fatal("Failed")
+	}
+	if day01.FindFloor("))(((((") != 3 {
+		t.Fatal("Failed")
+	}
+
+	if day01.FindFloor("())") != -1 {
+		t.Fatal("Failed")
+	}
+	if day01.FindFloor("))(") != -1 {
+		t.Fatal("Failed")
+	}
+
+	if day01.FindFloor(")))") != -3 {
+		t.Fatal("Failed")
+	}
+	if day01.FindFloor(")())())") != -3 {
+		t.Fatal("Failed")
+	}
 }
 
