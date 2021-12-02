@@ -41,9 +41,9 @@ func RoboSanta(str string) int {
 
 	var santa position = position{0, 0}
 	var robo position = position{0, 0}
-	var houses = []position{pos}
+	var houses = []position{robo}
 	for i, d := range str {
-		if i == 0 {
+		if i%2 == 0 {
 			switch d {
 			case '>':
 				santa.x += 1
@@ -54,10 +54,25 @@ func RoboSanta(str string) int {
 			case 'v':
 				santa.y -= 1
 			}
-		}
 
-		if houseInList(pos, houses) == false {
-			houses = append(houses, pos)
+			if houseInList(santa, houses) == false {
+				houses = append(houses, santa)
+			}
+		} else {
+			switch d {
+			case '>':
+				robo.x += 1
+			case '<':
+				robo.x -= 1
+			case '^':
+				robo.y += 1
+			case 'v':
+				robo.y -= 1
+			}
+
+			if houseInList(robo, houses) == false {
+				houses = append(houses, robo)
+			}
 		}
 	}
 	return len(houses)

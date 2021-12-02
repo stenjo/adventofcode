@@ -51,5 +51,6 @@ func main() {
 	// day02
 	var day03_str = getdata("../day03.txt")
 	fmt.Println(day03.PresentDelivery(strings.Join(day03_str, "")))
+	fmt.Println(day03.RoboSanta(strings.Join(day03_str, "")))
 
 }
