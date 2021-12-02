@@ -32,3 +32,14 @@ func RunString(str string) (complex64, float64) {
 	}
 	return pos, (math.Abs(float64(real(pos))) + math.Abs(float64(imag(pos))))
 }
+
+func VisitedTwice(str string) (complex64, float64) {
+	var list []string = strings.Split(str,",")
+	var pos complex64 = complex(0,0)
+	var dir complex64 = complex(0,1)
+	for i := 0; i < len(list); i++ {
+		pos, dir = NextPos(dir, pos, strings.TrimSpace(list[i]))
+	}
+	return pos, (math.Abs(float64(real(pos))) + math.Abs(float64(imag(pos))))
+}
+

@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"example.com/aoc2021/day01"
+	"example.com/aoc2021/day02"
 )
 
 func getdata(file string) []string {
@@ -42,6 +43,8 @@ func main() {
 	
 
 	// day02
-	// var day02_str = getdata("../day02.txt")
+	var day02_str = getdata("../day02.txt")
+	fmt.Println(day02.MoveTo(day02_str))
+	fmt.Println(day02.AimTo(day02_str))
 	
 }
