@@ -33,7 +33,7 @@ func RunString(str string) (complex64, float64) {
 	return pos, (math.Abs(float64(real(pos))) + math.Abs(float64(imag(pos))))
 }
 
-func VisitedTwice(str string) (complex64, float64) {
+func VisitedTwice(str string) (complex64, int) {
 	var list []string = strings.Split(str, ",")
 	var pos complex64 = complex(0, 0)
 	var dir complex64 = complex(0, 1)
@@ -46,7 +46,7 @@ func VisitedTwice(str string) (complex64, float64) {
 			break
 		}
 	}
-	return pos, (math.Abs(float64(real(pos))) + math.Abs(float64(imag(pos))))
+	return pos, int(math.Abs(float64(real(pos))) + math.Abs(float64(imag(pos))))
 }
 
 func posInList(p complex64, l []complex64) bool {
