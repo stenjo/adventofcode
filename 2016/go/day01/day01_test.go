@@ -32,5 +32,5 @@ func TestVisitedTwice(t *testing.T) {
 
 	var _, blocks = day01.VisitedTwice(input)
 
-	assert.Equal(t, float64(4), blocks)
+	assert.Equal(t, 4, blocks)
 }

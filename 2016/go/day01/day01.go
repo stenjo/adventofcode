@@ -33,20 +33,34 @@ func RunString(str string) (complex64, float64) {
 	return pos, (math.Abs(float64(real(pos))) + math.Abs(float64(imag(pos))))
 }
 
-func VisitedTwice(str string) (complex64, float64) {
+func VisitedTwice(str string) (complex64, int) {
 	var list []string = strings.Split(str, ",")
 	var pos complex64 = complex(0, 0)
 	var dir complex64 = complex(0, 1)
 	for i, locations := 0, []complex64{complex(0, 0)}; i < len(list); i++ {
 		pos, dir = NextPos(dir, pos, strings.TrimSpace(list[i]))
-		if posInList(pos, locations) == false {
-			locations = append(locations, pos)
+		if !posInList(pos, locations) {
+			last := locations[len(locations)-1]
+			positions := createPositions(last, pos)
+			locations = append(locations, positions...)
 			// fmt.Println(locations)
 		} else {
 			break
 		}
 	}
-	return pos, (math.Abs(float64(real(pos))) + math.Abs(float64(imag(pos))))
+	return pos, int(math.Abs(float64(real(pos))) + math.Abs(float64(imag(pos))))
+}
+
+func createPositions(last, pos complex64) []complex64 {
+	
+	diff := pos - last
+	var l []complex64
+	if real(diff) > 0 {
+		for i := real(last) + 1; i <= real(pos); i++  {
+			l = append(l, complex(i, imag(pos)))
+		}
+	}
+	return l
 }
 
 func posInList(p complex64, l []complex64) bool {
@@ -57,3 +71,6 @@ func posInList(p complex64, l []complex64) bool {
 	}
 	return false
 }
+
+
+
