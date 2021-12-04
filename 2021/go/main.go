@@ -9,6 +9,7 @@ import (
 	"example.com/aoc2021/day01"
 	"example.com/aoc2021/day02"
 	"example.com/aoc2021/day03"
+	"example.com/aoc2021/day04"
 )
 
 func getdata(file string) []string {
@@ -49,9 +50,16 @@ func main() {
 	fmt.Println(day02.MoveTo(day02_str))
 	fmt.Println(day02.AimTo(day02_str))
 
-	// day02
+	// day03
 	fmt.Println("\n-- Day 03 --")
 	var day03_str = getdata("../day03.txt")
 	fmt.Println(day03.GetPowerConsumption(day03_str))
 	fmt.Println(day03.GetLifeSupportRating(day03_str))
+
+	// day04
+	fmt.Println("\n-- Day 04 --")
+	var day04_str = getdata("../day04.txt")
+	fmt.Println(day04.FinalScore(day04_str))
+	fmt.Println(day04.LastWinnerScore(day04_str))
+	
 }
