@@ -37,11 +37,13 @@ func getdata(file string) []string {
 func main() {
 
 	// day01
+	fmt.Println("\n -- Day 01 --")
 	var day01_data = getdata("../day01.txt")
 	fmt.Println(day01.RunString(strings.Join(day01_data, " ")))
-	// fmt.Println(day01.FindFirstPos(strings.Join(day01_data, " ")))
+	fmt.Println(day01.VisitedTwice(strings.Join(day01_data, " ")))
 	
 	// day02
+	fmt.Println("\n -- Day 02 --")
 	// var day02_str = getdata("../day02.txt")
 	// fmt.Println(day02.TotalPaper(day02_str))
 	// fmt.Println(day02.TotalRibbon(day02_str))

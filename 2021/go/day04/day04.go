@@ -6,8 +6,8 @@ import (
 )
 
 type Number struct {
-	value  int  //
-	marked bool //
+	v  int  //
+	m bool //
 }
 
 type Board struct {
@@ -21,8 +21,8 @@ func (b Board) Score() int {
 	var score int
 	for _, row := range b.numbers {
 		for _, num := range row {
-			if !num.marked {
-				score += num.value
+			if !num.m {
+				score += num.v
 			}
 		}
 	}
@@ -38,7 +38,7 @@ func (b *Board) Won(n int) bool {
 	for _, row := range b.numbers {
 		lineWin := true
 		for x,num := range row {
-			if !num.marked {
+			if !num.m {
 				lineWin = false
 				rowWin[x] = 0
 			}
@@ -73,8 +73,8 @@ func (b *Board) Parse(str []string) int{
 func (b *Board) Mark(v int) {
 	for y,row := range b.numbers {
 		for x,num := range row {
-			if num.value == v {
-				num.marked = true
+			if num.v == v {
+				num.m = true
 				b.numbers[y][x] = num
 			}
 		}

@@ -1,6 +1,7 @@
 package day01
 
 import (
+	"reflect"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -27,6 +28,7 @@ func TestRunString(t *testing.T) {
 }
 
 var input = "R8, R4, R4, R8"
+
 func TestVisitedTwice(t *testing.T) {
 	type args struct {
 		str string
@@ -38,7 +40,7 @@ func TestVisitedTwice(t *testing.T) {
 		want1 int
 	}{
 		// TODO: Add test cases.
-		{"1", args{str:input}, complex(1,1), 4},
+		{"1", args{str: input}, complex(4, 0), 4},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -69,6 +71,53 @@ func Test_posInList(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := posInList(tt.args.p, tt.args.l); got != tt.want {
 				t.Errorf("posInList() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_pathsCrosses(t *testing.T) {
+	type args struct {
+		path      []complex64
+		locations []complex64
+	}
+	tests := []struct {
+		name  string
+		args  args
+		want  bool
+		want1 complex64
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, got1 := pathsCrosses(tt.args.path, tt.args.locations)
+			if got != tt.want {
+				t.Errorf("pathsCrosses() got = %v, want %v", got, tt.want)
+			}
+			if got1 != tt.want1 {
+				t.Errorf("pathsCrosses() got1 = %v, want %v", got1, tt.want1)
+			}
+		})
+	}
+}
+
+func Test_createPositions(t *testing.T) {
+	type args struct {
+		last complex64
+		pos  complex64
+	}
+	tests := []struct {
+		name string
+		args args
+		want []complex64
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := createPositions(tt.args.last, tt.args.pos); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("createPositions() = %v, want %v", got, tt.want)
 			}
 		})
 	}

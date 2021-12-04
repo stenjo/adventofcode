@@ -4,7 +4,12 @@ import (
 	"reflect"
 	"testing"
 )
-
+var num = Number{v:1}
+var nums = [5][5]Number{
+	{Number{v:1}, Number{v:1}}, 
+	{Number{v:1}, Number{v:1, m:true}},
+}
+var brd = Board{numbers: nums, score:0}
 func TestBoard_Score(t *testing.T) {
 	tests := []struct {
 		name string
@@ -12,7 +17,7 @@ func TestBoard_Score(t *testing.T) {
 		want int
 	}{
 		// TODO: Add test cases.
-		{"1", Board{}, 0},
+		{"1", Board{numbers:nums}, 3},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
