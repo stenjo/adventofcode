@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"example.com/aoc2016/day01"
+	"example.com/aoc2016/day02"
 )
 
 func getdata(file string) []string {
@@ -44,8 +45,8 @@ func main() {
 	
 	// day02
 	fmt.Println("\n -- Day 02 --")
-	// var day02_str = getdata("../day02.txt")
-	// fmt.Println(day02.TotalPaper(day02_str))
-	// fmt.Println(day02.TotalRibbon(day02_str))
+	var day02_str = getdata("../day02.txt")
+	fmt.Println(day02.KeypadDecode(day02_str))
+	fmt.Println(day02.NightmareKeypadDecode(day02_str))
 	
 }
