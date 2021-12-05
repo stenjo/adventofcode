@@ -10,6 +10,7 @@ import (
 	"example.com/aoc2021/day02"
 	"example.com/aoc2021/day03"
 	"example.com/aoc2021/day04"
+	"example.com/aoc2021/day05"
 )
 
 func getdata(file string) []string {
@@ -61,5 +62,11 @@ func main() {
 	var day04_str = getdata("../day04.txt")
 	fmt.Println(day04.FinalScore(day04_str))
 	fmt.Println(day04.LastWinnerScore(day04_str))
+	
+	// day05
+	fmt.Println("\n-- Day 05 --")
+	var day05_str = getdata("../day05.txt")
+	fmt.Println(day05.GetOverlappingPoints(day05_str))
+	fmt.Println(day05.GetDagonalOverlappingPoints(day05_str))
 	
 }
