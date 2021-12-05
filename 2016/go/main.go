@@ -10,6 +10,7 @@ import (
 	"example.com/aoc2016/day01"
 	"example.com/aoc2016/day02"
 	"example.com/aoc2016/day03"
+	"example.com/aoc2016/day04"
 )
 
 func getdata(file string) []string {
@@ -55,5 +56,11 @@ func main() {
 	var day03_str = getdata("../day03.txt")
 	fmt.Println(day03.FindValidTriangles(day03_str))
 	fmt.Println(day03.FindValidVerticalTriangles(day03_str))
+	
+	// day04
+	fmt.Println("\n -- Day 04 --")
+	var day04_str = getdata("../day04.txt")
+	fmt.Println(day04.RealRoomSectorIdSums(day04_str))
+	fmt.Println(day04.NortPoleObjectsId(day04_str))
 	
 }
