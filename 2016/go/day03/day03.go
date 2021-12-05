@@ -39,12 +39,18 @@ func FindValidVerticalTriangles(strList []string) int {
 }
 
 func validTriangle(v []int) bool {
-	panic("unimplemented")
+	sort.Ints(v[:])
+	return v[0] + v[1] > v[2] 
 }
 
 func getTriangles(a [][]int) [][]int {
-	panic("unimplemented")
-
+	var transposed [][]int
+	for i:=0; i<len(a); i+=3 {
+		for j:=0; j<len(a[i]); j++ {
+			transposed = append(transposed,[]int{a[i][j], a[i+1][j], a[i+2][j]})
+		}
+	}
+	return transposed
 }
 
 func getIntsFromStrings(strList []string) [][]int {

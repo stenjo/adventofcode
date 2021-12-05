@@ -54,6 +54,6 @@ func main() {
 	fmt.Println("\n -- Day 03 --")
 	var day03_str = getdata("../day03.txt")
 	fmt.Println(day03.FindValidTriangles(day03_str))
-	// fmt.Println(day02.NightmareKeypadDecode(day02_str))
+	fmt.Println(day03.FindValidVerticalTriangles(day03_str))
 	
 }

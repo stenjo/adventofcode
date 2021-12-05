@@ -60,7 +60,7 @@ func Test_getIntsFromStrings(t *testing.T) {
 	}{
 		// TODO: Add test cases.
 		{"1", args{strList: []string{"1 1 1", "2 2 2"}}, [][]int{{1, 1, 1}, {2, 2, 2}}},
-		{"2", args{strList: []string{"10 25   5", "  407  630  900"}}, [][]int{{10, 25, 5}, {407, 640, 900}}},
+		{"2", args{strList: []string{"10 25   5", "  407  630  900"}}, [][]int{{10, 25, 5}, {407, 630, 900}}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -101,6 +101,9 @@ func Test_validTriangle(t *testing.T) {
 		want bool
 	}{
 		// TODO: Add test cases.
+		{"1", args{v:[]int{1, 1, 1}}, true},
+		{"1", args{v:[]int{3, 1, 1}}, false},
+
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -120,7 +123,8 @@ func Test_getTriangles(t *testing.T) {
 		args args
 		want [][]int
 	}{
-		// TODO: Add test cases.
+		{"1", args{a:[][]int{{1, 1, 1}, {2, 2, 2}, {3, 3, 3}}}, [][]int{{1, 2, 3}, {1, 2, 3}, {1, 2, 3}}},
+		{"2", args{a:[][]int{{1, 2, 3}, {2, 3, 4}, {3, 4, 5}}}, [][]int{{1, 2, 3}, {2, 3, 4}, {3, 4, 5}}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
