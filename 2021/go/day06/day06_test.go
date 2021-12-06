@@ -131,7 +131,7 @@ func TestRunLanternFishCycles(t *testing.T) {
 		want int
 	}{
 		// TODO: Add test cases.
-		{"1", args{s: "3,4,3,1,2", gens: 20}, 5934},
+		{"1", args{s: "3,4,3,1,2", gens: 80}, 5934},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

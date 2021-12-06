@@ -1,7 +1,6 @@
 package day06
 
 import (
-	"fmt"
 	"strconv"
 	"strings"
 )
@@ -31,15 +30,34 @@ func RunLanternFishGens(s string, gens int) int {
 func RunLanternFishCycles(s string, gens int) int {
 
 	fish := ParseFish(s)
-	length := len(fish)
-	var m int
-	for i := 0; i < gens; i++ {
-		m,fish = RunCycle(fish, gens)
-		length += m * len(fish)
-		i += m
-		fmt.Println(length, fish)
+	var ages [9]int
+	for _,f := range fish {
+		ages[f] += 1
 	}
-	return length + len(fish)
+
+	for i := 0; i < gens; i++ {
+		for a := 1; a < len(ages)-1; a++ {
+			ages[a-1] = ages[a]
+		}
+		ages[len(ages)-1] = 0
+		for a := 0; a < len(ages); a++ {
+			if a == 0 {
+				ages[8] = a
+				ages[6] += a
+			}
+		}
+	}
+
+	return sum(ages)
+}
+
+func sum(ages [9]int) int {
+
+	var s int
+	for i := range ages {
+		s += i
+	}
+	return s
 }
 
 func RunCycle(f []int, max int) (int, []int) {
