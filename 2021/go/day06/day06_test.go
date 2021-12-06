@@ -73,7 +73,6 @@ func TestRunLanternFishGens(t *testing.T) {
 	}
 }
 
-
 func Test_hashFunc(t *testing.T) {
 	type args struct {
 		v []int
@@ -106,7 +105,7 @@ func TestRunCycle(t *testing.T) {
 		want1 []int
 	}{
 		// TODO: Add test cases.
-		{"1", args{f:[]int{3,4,3,1,2}, max:10}, 7, []int{3,4,5,5,6}},
+		{"1", args{f: []int{3, 4, 3, 1, 2}, max: 10}, 7, []int{3, 4, 5, 5, 6}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -116,6 +115,28 @@ func TestRunCycle(t *testing.T) {
 			}
 			if !reflect.DeepEqual(got1, tt.want1) {
 				t.Errorf("RunCycle() got1 = %v, want %v", got1, tt.want1)
+			}
+		})
+	}
+}
+
+func TestRunLanternFishCycles(t *testing.T) {
+	type args struct {
+		s    string
+		gens int
+	}
+	tests := []struct {
+		name string
+		args args
+		want int
+	}{
+		// TODO: Add test cases.
+		{"1", args{s: "3,4,3,1,2", gens: 20}, 5934},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := RunLanternFishCycles(tt.args.s, tt.args.gens); got != tt.want {
+				t.Errorf("RunLanternFishCycles() = %v, want %v", got, tt.want)
 			}
 		})
 	}

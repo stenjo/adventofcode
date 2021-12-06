@@ -28,21 +28,35 @@ func RunLanternFishGens(s string, gens int) int {
 	return len(fish)
 }
 
+func RunLanternFishCycles(s string, gens int) int {
+
+	fish := ParseFish(s)
+	length := len(fish)
+	var m int
+	for i := 0; i < gens; i++ {
+		m,fish = RunCycle(fish, gens)
+		length += m * len(fish)
+		i += m
+		fmt.Println(length, fish)
+	}
+	return length + len(fish)
+}
+
 func RunCycle(f []int, max int) (int, []int) {
 	length := len(f)
 	hash := hashFunc(f)
-	multiplier := 1
-	fmt.Println(length)
+	// multiplier := 1
+	// fmt.Println(length)
 	for i := 1; i <= max; i++ {
 		f = RunLanternFishDay(f)
 		if hash == hashFunc(f[:length]) {
-			fmt.Println(i)
-			multiplier *= i
+			// fmt.Println(i)
+			// multiplier *= i
 			f = f[length:]
-			return multiplier,f
+			return i,f
 		}
 	}
-	return multiplier, f
+	return 1, f
 }
 
 func hashFunc(v []int) int {
