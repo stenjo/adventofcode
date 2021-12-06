@@ -36,16 +36,12 @@ func RunLanternFishCycles(s string, gens int) int {
 	}
 
 	for i := 0; i < gens; i++ {
-		for a := 1; a < len(ages)-1; a++ {
+		mothers := ages[0]
+		for a := 1; a < len(ages); a++ {
 			ages[a-1] = ages[a]
 		}
-		ages[len(ages)-1] = 0
-		for a := 0; a < len(ages); a++ {
-			if a == 0 {
-				ages[8] = a
-				ages[6] += a
-			}
-		}
+		ages[8] = mothers
+		ages[6] += mothers
 	}
 
 	return sum(ages)
@@ -54,38 +50,12 @@ func RunLanternFishCycles(s string, gens int) int {
 func sum(ages [9]int) int {
 
 	var s int
-	for i := range ages {
+	for _,i := range ages {
 		s += i
 	}
 	return s
 }
 
-func RunCycle(f []int, max int) (int, []int) {
-	length := len(f)
-	hash := hashFunc(f)
-	// multiplier := 1
-	// fmt.Println(length)
-	for i := 1; i <= max; i++ {
-		f = RunLanternFishDay(f)
-		if hash == hashFunc(f[:length]) {
-			// fmt.Println(i)
-			// multiplier *= i
-			f = f[length:]
-			return i,f
-		}
-	}
-	return 1, f
-}
-
-func hashFunc(v []int) int {
-    var hash int
-    var i uint
-    for _, x := range v {
-        hash |= int(x) << (i * 8)
-        i++
-    }
-    return hash
-}
 
 func ParseFish(s string) []int {
 	var fishes []int

@@ -75,6 +75,6 @@ func main() {
 	fmt.Println("\n-- Day 06 --")
 	var day06_str = getdata("../day06.txt")
 	fmt.Println(day06.RunLanternFishGens(strings.Join(day06_str, ","), 80))
-	fmt.Println(day06.RunLanternFishGens(strings.Join(day06_str, ","), 256))
+	fmt.Println(day06.RunLanternFishCycles(strings.Join(day06_str, ","), 256))
 	
 }

@@ -73,52 +73,6 @@ func TestRunLanternFishGens(t *testing.T) {
 	}
 }
 
-func Test_hashFunc(t *testing.T) {
-	type args struct {
-		v []int
-	}
-	tests := []struct {
-		name string
-		args args
-		want int
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := hashFunc(tt.args.v); got != tt.want {
-				t.Errorf("hashFunc() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func TestRunCycle(t *testing.T) {
-	type args struct {
-		f   []int
-		max int
-	}
-	tests := []struct {
-		name  string
-		args  args
-		want  int
-		want1 []int
-	}{
-		// TODO: Add test cases.
-		{"1", args{f: []int{3, 4, 3, 1, 2}, max: 10}, 7, []int{3, 4, 5, 5, 6}},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got, got1 := RunCycle(tt.args.f, tt.args.max)
-			if got != tt.want {
-				t.Errorf("RunCycle() got = %v, want %v", got, tt.want)
-			}
-			if !reflect.DeepEqual(got1, tt.want1) {
-				t.Errorf("RunCycle() got1 = %v, want %v", got1, tt.want1)
-			}
-		})
-	}
-}
 
 func TestRunLanternFishCycles(t *testing.T) {
 	type args struct {
@@ -131,7 +85,10 @@ func TestRunLanternFishCycles(t *testing.T) {
 		want int
 	}{
 		// TODO: Add test cases.
-		{"1", args{s: "3,4,3,1,2", gens: 80}, 5934},
+		{"1", args{s: "3,4,3,1,2", gens: 2}, 6},
+		{"2", args{s: "3,4,3,1,2", gens: 3}, 7},
+		{"3", args{s: "3,4,3,1,2", gens: 80}, 5934},
+		{"4", args{s: "3,4,3,1,2", gens: 256}, 26984457539},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
