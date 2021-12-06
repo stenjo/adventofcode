@@ -62,5 +62,11 @@ func main() {
 	var day04_str = getdata("../day04.txt")
 	fmt.Println(day04.RealRoomSectorIdSums(day04_str))
 	fmt.Println(day04.NortPoleObjectsId(day04_str))
+
+	// day05
+	fmt.Println("\n -- Day 05 --")
+	var day05_str = "ojvtpuvg"
+	fmt.Println(day05.GetPassword(day05_str))
+	// fmt.Println(day05.NortPoleObjectsId(day05_str))
 	
 }

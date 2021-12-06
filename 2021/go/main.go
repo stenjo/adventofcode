@@ -5,12 +5,14 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 
 	"example.com/aoc2021/day01"
 	"example.com/aoc2021/day02"
 	"example.com/aoc2021/day03"
 	"example.com/aoc2021/day04"
 	"example.com/aoc2021/day05"
+	"example.com/aoc2021/day06"
 )
 
 func getdata(file string) []string {
@@ -68,5 +70,11 @@ func main() {
 	var day05_str = getdata("../day05.txt")
 	fmt.Println(day05.GetOverlappingPoints(day05_str))
 	fmt.Println(day05.GetDagonalOverlappingPoints(day05_str))
+
+	// day06
+	fmt.Println("\n-- Day 06 --")
+	var day06_str = getdata("../day06.txt")
+	fmt.Println(day06.RunLanternFishGens(strings.Join(day06_str, ","), 80))
+	fmt.Println(day06.RunLanternFishGens(strings.Join(day06_str, ","), 256))
 	
 }
