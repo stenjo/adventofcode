@@ -3,6 +3,7 @@ package day05
 import (
 	"crypto/md5"
 	"encoding/hex"
+	"fmt"
 	"strconv"
 	"strings"
 )
@@ -50,17 +51,22 @@ func GetPassword(str string) string {
 func GetBetterSolution(str string) string {
 
 	var password = []string{"_","_","_","_","_","_","_","_",}
-	// var keys []string
-	for i := 0; i < 100000000; i++ { //
+	for i := 0; i < 100000000 && strings.Contains(strings.Join(password, ""), "_"); i++ { //
 		key,ok := GetHash(str, strconv.Itoa(i))
 		if ok {
 			password = UpdatePassword(password, key)
+			fmt.Print("\r", strings.Join(password, ""))
 		}
 	}
 
-	return strings.Join(password,"")
+	return "\r" + strings.Join(password,"")
 }
 
 func UpdatePassword(password []string, key string) []string {
-	panic("unimplemented")
+
+	pos,_ := strconv.ParseInt(string(key[0]), 16, 0)
+	if pos < 8 && password[pos] == "_" {
+		password[pos] = string(key[1])
+	}
+	return password
 }
