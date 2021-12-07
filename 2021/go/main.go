@@ -13,6 +13,7 @@ import (
 	"example.com/aoc2021/day04"
 	"example.com/aoc2021/day05"
 	"example.com/aoc2021/day06"
+	"example.com/aoc2021/day07"
 )
 
 func getdata(file string) []string {
@@ -77,4 +78,9 @@ func main() {
 	fmt.Println(day06.RunLanternFishGens(strings.Join(day06_str, ","), 80))
 	fmt.Println(day06.RunLanternFishCycles(strings.Join(day06_str, ","), 256))
 	
+	// day07
+	fmt.Println("\n-- Day 07 --")
+	var day07_str = getdata("../day07.txt")
+	fmt.Println(day07.GetCheapes(strings.Join(day07_str, ",")))
+	fmt.Println(day07.GetCheapestCrabsway(strings.Join(day07_str, ",")))
 }

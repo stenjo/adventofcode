@@ -11,6 +11,7 @@ import (
 	"example.com/aoc2016/day02"
 	"example.com/aoc2016/day03"
 	"example.com/aoc2016/day04"
+	"example.com/aoc2016/day05"
 )
 
 func getdata(file string) []string {
@@ -67,6 +68,6 @@ func main() {
 	fmt.Println("\n -- Day 05 --")
 	var day05_str = "ojvtpuvg"
 	fmt.Println(day05.GetPassword(day05_str))
-	// fmt.Println(day05.NortPoleObjectsId(day05_str))
+	fmt.Println(day05.GetBetterSolution(day05_str))
 	
 }
