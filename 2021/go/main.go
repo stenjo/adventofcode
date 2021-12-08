@@ -14,6 +14,7 @@ import (
 	"example.com/aoc2021/day05"
 	"example.com/aoc2021/day06"
 	"example.com/aoc2021/day07"
+	"example.com/aoc2021/day08"
 )
 
 func getdata(file string) []string {
@@ -83,4 +84,10 @@ func main() {
 	var day07_str = getdata("../day07.txt")
 	fmt.Println(day07.GetCheapes(strings.Join(day07_str, ",")))
 	fmt.Println(day07.GetCheapestCrabsway(strings.Join(day07_str, ",")))
+
+	// day08
+	fmt.Println("\n-- Day 08 --")
+	var day08_str = getdata("../day08.txt")
+	fmt.Println(day08.GetUniqueSegmentsDigitCount(day08_str))
+	fmt.Println(day08.GetOutputValueSum(day08_str))
 }
