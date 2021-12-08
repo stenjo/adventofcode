@@ -12,6 +12,8 @@ import (
 	"example.com/aoc2016/day03"
 	"example.com/aoc2016/day04"
 	"example.com/aoc2016/day05"
+	"example.com/aoc2016/day06"
+	"example.com/aoc2016/day07"
 )
 
 func getdata(file string) []string {
@@ -69,5 +71,18 @@ func main() {
 	var day05_str = "ojvtpuvg"
 	fmt.Println(day05.GetPassword(day05_str))
 	fmt.Println(day05.GetBetterSolution(day05_str))
+
+	// day06
+	fmt.Println("\n -- Day 06 --")
+	var day06_str = getdata("../day06.txt")
+	fmt.Println(day06.GetErrorCorrected(day06_str))
+	fmt.Println(day06.GetModifiedCorrected(day06_str))
+	
+	// day07
+	fmt.Println("\n -- Day 07 --")
+	var day07_str = getdata("../day07.txt")
+	fmt.Println(day07.CountIPsSupportingTLS(day07_str))
+	// fmt.Println(day07.GetModifiedCorrected(day07_str))
+	
 	
 }

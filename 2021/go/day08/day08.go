@@ -69,12 +69,9 @@ func (n Note)decode() int {
 		for _,s := range n.signals {
 			var value int
 			switch len(s) {
-				case 2: 
-					value = 1
-				case 3: 
-					value = 7
-				case 4: 
-					value = 4
+				case 2: value = 1
+				case 3: value = 7
+				case 4: value = 4
 				case 5: 		// Either 2, 3 or 5
 					if hasCommonWith(s, getSegsForVal(1, segMap)) == 2 {
 						value = 3
@@ -95,9 +92,7 @@ func (n Note)decode() int {
 					} else {
 						continue
 					}
-				case 7: 
-					value = 8
-				default: continue
+				case 7: value = 8
 			}
 			segMap[s] = value
 			n.signals = remove(n.signals, s)
