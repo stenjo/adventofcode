@@ -66,9 +66,7 @@ func (n Note)decode() int {
 
 	n.signals = sortStrElements(n.signals)
 	for ;len(n.signals) > 0; {
-		// l:=len(n.signals)
 		for _,s := range n.signals {
-			// s := SortString(su)
 			var value int
 			switch len(s) {
 				case 2: 

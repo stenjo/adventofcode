@@ -15,7 +15,7 @@ func Test_parseNotes(t *testing.T) {
 		want []Note
 	}{
 		// TODO: Add test cases.
-		// {"1", args{strlns: []string{"be cfbegad cbdgef fgaecd cgeb fdcge agebfd fecdb fabcd edb | fdgacbe cefdb cefbgd gcbe"}}, 
+		// {"1", args{strlns: []string{"be cfbegad cbdgef fgaecd cgeb fdcge agebfd fecdb fabcd edb | fdgacbe cefdb cefbgd gcbe"}},
 		// []Note{signals: []string{"acedgfb", "cdfbe", "gcdfa", "fbcad", "dab", "cefabd", "cdfgeb", "eafb", "cagedb", "ab"}, digits: []string{"cdfeb", "fcadb", "cdfeb", "cdbaf"}}},
 	}
 	for _, tt := range tests {
@@ -120,7 +120,9 @@ func Test_sortStrElements(t *testing.T) {
 		args args
 		want []string
 	}{
-		// TODO: Add test cases.
+		{"1", args{str:[]string{"abcd", "efgh"}}, []string{"abcd", "efgh"}},
+		{"2", args{str:[]string{"acbd", "fghe"}}, []string{"abcd", "efgh"}},
+		{"3", args{str:[]string{"dabc", "fegh"}}, []string{"abcd", "efgh"}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -270,7 +272,7 @@ func TestGetOutputValueSum(t *testing.T) {
 		{"2", args{[]string{
 			"be cfbegad cbdgef fgaecd cgeb fdcge agebfd fecdb fabcd edb | fdgacbe cefdb cefbgd gcbe",
 			"edbfga begcd cbg gc gcadebf fbgde acbgfd abcde gfcbed gfec | fcgedb cgb dgebacf gc",
-		}}, 8394+9781},
+		}}, 8394 + 9781},
 		{"3", args{[]string{
 			"be cfbegad cbdgef fgaecd cgeb fdcge agebfd fecdb fabcd edb | fdgacbe cefdb cefbgd gcbe",
 			"edbfga begcd cbg gc gcadebf fbgde acbgfd abcde gfcbed gfec | fcgedb cgb dgebacf gc",
@@ -288,6 +290,26 @@ func TestGetOutputValueSum(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := GetOutputValueSum(tt.args.str); got != tt.want {
 				t.Errorf("GetOutputValueSum() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_sortByLen(t *testing.T) {
+	type args struct {
+		s []string
+	}
+	tests := []struct {
+		name string
+		args args
+		want []string
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := sortByLen(tt.args.s); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("sortByLen() = %v, want %v", got, tt.want)
 			}
 		})
 	}
