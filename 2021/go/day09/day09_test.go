@@ -140,19 +140,6 @@ func TestGetBasinProducst(t *testing.T) {
 	}
 }
 
-func TestGetBasin(t *testing.T) {
-	tests := []struct {
-		name string
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			GetBasin()
-		})
-	}
-}
-
 func TestGetLowBasinPoints(t *testing.T) {
 	type args struct {
 		m [][]int
@@ -179,28 +166,6 @@ func TestGetLowBasinPoints(t *testing.T) {
 	}
 }
 
-func Test_isBasin(t *testing.T) {
-	type args struct {
-		p   Point
-		pts []Point
-		m   [][]int
-	}
-	tests := []struct {
-		name string
-		args args
-		want bool
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := isBasin(tt.args.p, tt.args.pts, tt.args.m); got != tt.want {
-				t.Errorf("isBasin() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
 func TestGetBasins(t *testing.T) {
 	type args struct {
 		pts []Point
@@ -217,6 +182,104 @@ func TestGetBasins(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := GetBasins(tt.args.pts, tt.args.m); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("GetBasins() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestGetBasin(t *testing.T) {
+	type args struct {
+		p Point
+		m [][]int
+	}
+	tests := []struct {
+		name string
+		args args
+		want int
+	}{
+		{"1", args{p: Point{1, 0, 1}, m: [][]int{
+			{2, 1, 9, 9, 9, 4, 3, 2, 1, 0},
+			{3, 9, 8, 7, 8, 9, 4, 9, 2, 1},
+			{9, 8, 5, 6, 7, 8, 9, 8, 9, 2},
+			{8, 7, 6, 7, 8, 9, 6, 7, 8, 9},
+			{9, 8, 9, 9, 9, 6, 5, 6, 7, 8},
+		}}, 3},
+		{"2", args{p: Point{9, 0, 0}, m: [][]int{
+			{2, 1, 9, 9, 9, 4, 3, 2, 1, 0},
+			{3, 9, 8, 7, 8, 9, 4, 9, 2, 1},
+			{9, 8, 5, 6, 7, 8, 9, 8, 9, 2},
+			{8, 7, 6, 7, 8, 9, 6, 7, 8, 9},
+			{9, 8, 9, 9, 9, 6, 5, 6, 7, 8},
+		}}, 9},
+		{"3", args{p: Point{2, 2, 5}, m: [][]int{
+			{2, 1, 9, 9, 9, 4, 3, 2, 1, 0},
+			{3, 9, 8, 7, 8, 9, 4, 9, 2, 1},
+			{9, 8, 5, 6, 7, 8, 9, 8, 9, 2},
+			{8, 7, 6, 7, 8, 9, 6, 7, 8, 9},
+			{9, 8, 9, 9, 9, 6, 5, 6, 7, 8},
+		}}, 14},
+		{"4", args{p: Point{6, 4, 5}, m: [][]int{
+			{2, 1, 9, 9, 9, 4, 3, 2, 1, 0},
+			{3, 9, 8, 7, 8, 9, 4, 9, 2, 1},
+			{9, 8, 5, 6, 7, 8, 9, 8, 9, 2},
+			{8, 7, 6, 7, 8, 9, 6, 7, 8, 9},
+			{9, 8, 9, 9, 9, 6, 5, 6, 7, 8},
+		}}, 9},
+		// TODO: Add test cases. {9, 0, 0}, {2, 2, 5}, {6, 4, 5}
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := GetBasin(tt.args.p, tt.args.m); got != tt.want {
+				t.Errorf("GetBasin() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestGetAdjacingPoints(t *testing.T) {
+	type args struct {
+		p Point
+		m [][]int
+	}
+	tests := []struct {
+		name string
+		args args
+		want []Point
+	}{
+		{"1", args{p: Point{1, 0, 1}, m: [][]int{
+			{2, 1, 9, 9, 9, 4, 3, 2, 1, 0},
+			{3, 9, 8, 7, 8, 9, 4, 9, 2, 1},
+			{9, 8, 5, 6, 7, 8, 9, 8, 9, 2},
+			{8, 7, 6, 7, 8, 9, 6, 7, 8, 9},
+			{9, 8, 9, 9, 9, 6, 5, 6, 7, 8},
+		}}, []Point{{0, 0, 2}}},
+		{"2", args{p: Point{0, 0, 2}, m: [][]int{
+			{2, 1, 9, 9, 9, 4, 3, 2, 1, 0},
+			{3, 9, 8, 7, 8, 9, 4, 9, 2, 1},
+			{9, 8, 5, 6, 7, 8, 9, 8, 9, 2},
+			{8, 7, 6, 7, 8, 9, 6, 7, 8, 9},
+			{9, 8, 9, 9, 9, 6, 5, 6, 7, 8},
+		}}, []Point{{1, 0, 1}, {0, 1, 3}}},
+		{"3", args{p: Point{2, 2, 5}, m: [][]int{
+			{2, 1, 9, 9, 9, 4, 3, 2, 1, 0},
+			{3, 9, 8, 7, 8, 9, 4, 9, 2, 1},
+			{9, 8, 5, 6, 7, 8, 9, 8, 9, 2},
+			{8, 7, 6, 7, 8, 9, 6, 7, 8, 9},
+			{9, 8, 9, 9, 9, 6, 5, 6, 7, 8},
+			}}, []Point{{2, 1, 8}, {1,2,8}, {3, 2, 6}, {2,3,6}}},
+		{"4", args{p: Point{9, 4, 8}, m: [][]int{
+			{2, 1, 9, 9, 9, 4, 3, 2, 1, 0},
+			{3, 9, 8, 7, 8, 9, 4, 9, 2, 1},
+			{9, 8, 5, 6, 7, 8, 9, 8, 9, 2},
+			{8, 7, 6, 7, 8, 9, 6, 7, 8, 9},
+			{9, 8, 9, 9, 9, 6, 5, 6, 7, 8},
+			}}, []Point{{8, 4, 7}}},
+				// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := GetAdjacingPoints(tt.args.p, tt.args.m); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("GetAdjacingPoints() = %v, want %v", got, tt.want)
 			}
 		})
 	}

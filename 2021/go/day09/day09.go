@@ -29,6 +29,9 @@ func GetBasinProducst(str [] string) int{
 	bsn := GetBasins(pts, m)
 	var count int
 	sort.Ints(bsn)
+	if len(bsn) < 3 {
+		return count
+	}
 	for _,b := range bsn[len(bsn)-3:] {
 		count = count * b
 	}
@@ -39,11 +42,19 @@ func GetBasinProducst(str [] string) int{
 func GetBasins(pts []Point, m [][]int) []int {
 	
 	var bs []int
-
+	bsp := GetLowBasinPoints(m)
+	for _,lp := range bsp {
+		b := GetBasin(lp, m)
+		bs = append(bs,b)
+	}
 	return bs
 }
 
-func GetBasin() {
+func GetBasin(p Point, m [][]int)  int {
+
+	var count int
+
+	return count
 
 }
 
@@ -62,9 +73,40 @@ func GetLowBasinPoints(m [][]int) []Point {
 
 }
 
-func isBasin(p Point, pts []Point, m [][]int) bool {
+func GetAdjacingPoints(p Point, m [][]int) []Point {
 
-	return true
+	var list []Point
+
+	startY := p.y - 1
+	endY := p.y + 1
+
+	startX := p.x - 1
+	endX := p.x + 1
+
+	if startY < 0 {
+		startY = 0
+	}
+
+	if endY > len(m)-1 {
+		endY = len(m)-1 
+	}
+
+	if startX < 0 {
+		startX = 0
+	}
+
+	if endX > len(m[p.y])-1 {
+		endX = len(m[p.y])-1
+	}
+	for y := startY; y <= endY; y++ {
+		for x := startX; x <= endX; x++ {
+			if m[y][x] != 9 && ((x == p.x && y != p.y) || (x != p.x && y == p.y))  {
+				list = append(list, Point{x, y, m[y][x]})
+			}
+		}
+	}
+
+	return list
 }
 
 
