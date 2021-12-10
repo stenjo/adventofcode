@@ -16,6 +16,7 @@ import (
 	"example.com/aoc2021/day07"
 	"example.com/aoc2021/day08"
 	"example.com/aoc2021/day09"
+	"example.com/aoc2021/day10"
 )
 
 func getdata(file string) []string {
@@ -67,7 +68,7 @@ func main() {
 	var day04_str = getdata("../day04.txt")
 	fmt.Println(day04.FinalScore(day04_str))
 	fmt.Println(day04.LastWinnerScore(day04_str))
-	
+
 	// day05
 	fmt.Println("\n-- Day 05 --")
 	var day05_str = getdata("../day05.txt")
@@ -79,7 +80,7 @@ func main() {
 	var day06_str = getdata("../day06.txt")
 	fmt.Println(day06.RunLanternFishGens(strings.Join(day06_str, ","), 80))
 	fmt.Println(day06.RunLanternFishCycles(strings.Join(day06_str, ","), 256))
-	
+
 	// day07
 	fmt.Println("\n-- Day 07 --")
 	var day07_str = getdata("../day07.txt")
@@ -97,4 +98,11 @@ func main() {
 	var day09_str = getdata("../day09.txt")
 	fmt.Println(day09.GetRiskLevelSum(day09_str))
 	fmt.Println(day09.GetBasinProducst(day09_str))
+
+	// day10
+	fmt.Println("\n-- Day 10 --")
+	var day10_str = getdata("../day10.txt")
+	fmt.Println(day10.GetSyntaxErrorPoints(day10_str))
+	fmt.Println(day10.GetCompletionScore(day10_str))
+
 }
