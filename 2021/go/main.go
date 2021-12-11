@@ -17,6 +17,7 @@ import (
 	"example.com/aoc2021/day08"
 	"example.com/aoc2021/day09"
 	"example.com/aoc2021/day10"
+	"example.com/aoc2021/day11"
 )
 
 func getdata(file string) []string {
@@ -104,5 +105,11 @@ func main() {
 	var day10_str = getdata("../day10.txt")
 	fmt.Println(day10.GetSyntaxErrorPoints(day10_str))
 	fmt.Println(day10.GetCompletionScore(day10_str))
+
+	// day11
+	fmt.Println("\n-- Day 11 --")
+	var day11_str = getdata("../day11.txt")
+	fmt.Println(day11.GetFlashes(day11_str, 100))
+	fmt.Println(day11.SimultanFlash(day11_str))
 
 }
