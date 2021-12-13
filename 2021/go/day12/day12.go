@@ -1,6 +1,9 @@
 package day12
 
-import "strings"
+import (
+	"fmt"
+	"strings"
+)
 
 type Node struct {
 	Name  string
@@ -29,6 +32,9 @@ func GetPathsPart2(str []string) int {
 		nodePath.Add((*start))
 		nodes.FindEnd(node, &nodePath, &paths, true)
 
+	}
+	for _,s := range paths {
+		fmt.Println(s)
 	}
 	return len(paths)
 }
@@ -128,6 +134,7 @@ func (nodes *NodeList) AllowedVisit(node *Node, ext bool) bool {
 			} else if last.IsLarge() && nodes.Count(node) < 2 {
 				return true
 			}
+			return false
 		} else {
 			return true
 		}
