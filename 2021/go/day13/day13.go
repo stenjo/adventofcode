@@ -39,7 +39,7 @@ func (grid *Grid) PrintDots() {
 		var line string
 		for x:=0; x < xSize; x++ {
 			if (*grid)[y][x] == 1 {
-				line = line + "O"
+				line = line + "█"
 			} else {
 				line = line + " "
 			}

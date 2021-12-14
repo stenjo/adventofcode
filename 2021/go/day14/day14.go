@@ -1,6 +1,9 @@
 package day14
 
-import "strings"
+import (
+	"math"
+	"strings"
+)
 
 type Polymer map[string]int
 
@@ -55,21 +58,32 @@ func ParseRules(str []string) map[string]string {
 }
 
 func (e Polymer) max() int {
-	var maxVal int
-	for _,v := range e {
+	maxVal := math.MinInt
+	chars := map[rune]int{}
+	for p,v := range e {
+		chars[rune(p[0])] += v 
+		chars[rune(p[1])] += v 
+	}
+
+	for _,v := range chars {
 		if v > maxVal {
 			maxVal = v
 		}
 	}
-	return maxVal
+	return (maxVal+1)/2
 }
 
 func (e Polymer) min() int {
-	minVal := len(e)
-	for _, v := range e {
+	minVal := math.MaxInt
+	chars := map[rune]int{}
+	for p,v := range e {
+		chars[rune(p[0])] += v 
+		chars[rune(p[1])] += v 
+	}
+	for _, v := range chars {
 		if v < minVal {
 			minVal = v
 		}
 	}
-	return minVal
+	return (minVal+1)/2
 }
