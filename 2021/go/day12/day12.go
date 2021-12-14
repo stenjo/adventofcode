@@ -30,7 +30,7 @@ func GetPathsPart2(str []string) int {
 	for _,node := range start.Links {
 		var nodePath NodeList
 		nodePath.Add((*start))
-		nodes.FindEnd(node, &nodePath, &paths, true)
+		nodes.FindEnd2(node, &nodePath, &paths, true)
 
 	}
 	for _,s := range paths {
@@ -71,22 +71,58 @@ func (list *NodeList) Has(node *Node) bool {
 }
 func (list *NodeList) FindEnd(n *Node, path *NodeList, str *[]string, extended bool) bool {
 	node, _ := list.Find(n.Name)
+	pathstr := path.AsString()
 	if node.Name == "start" {
 		return false
 	} else if node.Name == "end" {
 		path.Add((*node))
+		pathstr = path.AsString()
 		*str = append(*str, path.AsString())
 		path.Pop()
 		return true
 	} else if path.AllowedVisit(node, extended){
 		path.Add((*node))
-		for _,p := range node.Links {
+		pathstr = path.AsString()
+		links := node.Links[1:]
+		links = append(links, node.Links[0])
+		for _,p := range links {
 			list.FindEnd(p, path, str, extended)
 		}
 		path.Pop()
+		pathstr = path.AsString()
 	}
+	_ = pathstr
 	return false
 }
+
+func (list *NodeList) FindEnd2(n *Node, path *NodeList, str *[]string, extended bool) bool {
+	node, _ := list.Find(n.Name)
+	pathstr := path.AsString()
+	if node.Name == "start" {
+		return false
+	} else if node.Name == "end" {
+		path.Add((*node))
+		pathstr = path.AsString()
+		*str = append(*str, path.AsString())
+		path.Pop()
+		return true
+	} else {
+		path.Add((*node))
+		pathstr = path.AsString()
+		links := node.Links[1:]
+		links = append(links, node.Links[0])
+		for _,p := range links {
+			if path.AllowedVisit(p, extended){
+				list.FindEnd(p, path, str, extended)
+			}
+		}
+		path.Pop()
+		pathstr = path.AsString()
+	}
+	_ = pathstr
+	return false
+}
+
 
 func ParseNodes(str []string) (NodeList, *Node) {
 	nodes := make(NodeList, 0)
@@ -126,12 +162,12 @@ func (nodes *NodeList) AllowedVisit(node *Node, ext bool) bool {
 		}
 	} else {
 		// second := nodes.SecondLast()
-		last := nodes.Last()
+		second := nodes.Last()
 		if !node.IsLarge() {
-			if last == nil { return true }
-			if !last.IsLarge() && !nodes.Has(node) {
+			if second == nil { return true }
+			if !second.IsLarge() && !nodes.Has(node) {
 				return true
-			} else if last.IsLarge() && nodes.Count(node) < 2 {
+			} else if second.IsLarge() && nodes.Count(node) < 2 {
 				return true
 			}
 			return false

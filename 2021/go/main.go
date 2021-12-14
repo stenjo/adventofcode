@@ -20,6 +20,7 @@ import (
 	"example.com/aoc2021/day11"
 	"example.com/aoc2021/day12"
 	"example.com/aoc2021/day13"
+	"example.com/aoc2021/day14"
 )
 
 func getdata(file string) []string {
@@ -125,6 +126,12 @@ func main() {
 	var day13_str = getdata("../day13.txt")
 	fmt.Println(day13.DotsWhenFoldedOnce(day13_str))
 	fmt.Println(day13.DotsWhenFoldedAll(day13_str))
+	
+	// day14
+	fmt.Println("\n-- Day 14 --")
+	var day14_str = getdata("../day14.txt")
+	fmt.Println(day14.GetElementDiff(day14_str))
+	fmt.Println(day14.GetElementDiff40(day14_str))
 	
 
 }
