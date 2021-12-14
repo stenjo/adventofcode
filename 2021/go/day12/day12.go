@@ -1,7 +1,6 @@
 package day12
 
 import (
-	"fmt"
 	"strings"
 )
 
@@ -30,11 +29,8 @@ func GetPathsPart2(str []string) int {
 	for _,node := range start.Links {
 		var nodePath NodeList
 		nodePath.Add((*start))
-		nodes.FindEnd2(node, &nodePath, &paths, true)
+		nodes.FindEnd(node, &nodePath, &paths, true)
 
-	}
-	for _,s := range paths {
-		fmt.Println(s)
 	}
 	return len(paths)
 }
@@ -51,6 +47,7 @@ func (list *NodeList) AsString() string {
 	}
 	return s
 }
+
 func (list *NodeList) Once(node *Node) bool {
 	var count int
 	for _, n := range (*list) {
@@ -71,55 +68,22 @@ func (list *NodeList) Has(node *Node) bool {
 }
 func (list *NodeList) FindEnd(n *Node, path *NodeList, str *[]string, extended bool) bool {
 	node, _ := list.Find(n.Name)
-	pathstr := path.AsString()
 	if node.Name == "start" {
 		return false
 	} else if node.Name == "end" {
 		path.Add((*node))
-		pathstr = path.AsString()
 		*str = append(*str, path.AsString())
 		path.Pop()
 		return true
 	} else if path.AllowedVisit(node, extended){
 		path.Add((*node))
-		pathstr = path.AsString()
 		links := node.Links[1:]
 		links = append(links, node.Links[0])
 		for _,p := range links {
 			list.FindEnd(p, path, str, extended)
 		}
 		path.Pop()
-		pathstr = path.AsString()
 	}
-	_ = pathstr
-	return false
-}
-
-func (list *NodeList) FindEnd2(n *Node, path *NodeList, str *[]string, extended bool) bool {
-	node, _ := list.Find(n.Name)
-	pathstr := path.AsString()
-	if node.Name == "start" {
-		return false
-	} else if node.Name == "end" {
-		path.Add((*node))
-		pathstr = path.AsString()
-		*str = append(*str, path.AsString())
-		path.Pop()
-		return true
-	} else {
-		path.Add((*node))
-		pathstr = path.AsString()
-		links := node.Links[1:]
-		links = append(links, node.Links[0])
-		for _,p := range links {
-			if path.AllowedVisit(p, extended){
-				list.FindEnd(p, path, str, extended)
-			}
-		}
-		path.Pop()
-		pathstr = path.AsString()
-	}
-	_ = pathstr
 	return false
 }
 
@@ -161,17 +125,32 @@ func (nodes *NodeList) AllowedVisit(node *Node, ext bool) bool {
 			return true
 		}
 	} else {
-		// second := nodes.SecondLast()
-		second := nodes.Last()
 		if !node.IsLarge() {
-			if second == nil { return true }
-			if !second.IsLarge() && !nodes.Has(node) {
+			if !nodes.Has(node) {
 				return true
-			} else if second.IsLarge() && nodes.Count(node) < 2 {
+			} else if nodes.Count(node) < 2 && !nodes.HasTwoSmall() {
 				return true
 			}
 			return false
 		} else {
+			return true
+		}
+	}
+	return false
+}
+
+func (list NodeList) HasTwoSmall() bool {
+
+	caves := map[string]int{}
+
+	for _,c := range list {
+		if c.Name == strings.ToLower(c.Name) {
+			caves[c.Name] += 1
+		}
+	}
+
+	for _,v := range caves {
+		if v > 1 {
 			return true
 		}
 	}
@@ -246,9 +225,7 @@ func (n *Node) AddLink(l *Node) *Node {
 
 func (n *Node) HasLink(l *Node) bool {
 
-	if len(n.Links) == 0 {
-		return false
-	}
+	if len(n.Links) == 0 {	return false }
 	for _, lnk := range n.Links {
 		if lnk.Name == l.Name {
 			return true

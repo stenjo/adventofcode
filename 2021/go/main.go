@@ -1,10 +1,7 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
-	"log"
-	"os"
 	"strings"
 
 	"example.com/aoc2021/day01"
@@ -21,115 +18,93 @@ import (
 	"example.com/aoc2021/day12"
 	"example.com/aoc2021/day13"
 	"example.com/aoc2021/day14"
+	"example.com/aoc2021/tools"
 )
 
-func getdata(file string) []string {
-	f, err := os.Open(file)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	defer f.Close()
-
-	scanner := bufio.NewScanner(f)
-
-	var str []string
-
-	for scanner.Scan() {
-		str = append(str, scanner.Text())
-	}
-
-	if err := scanner.Err(); err != nil {
-		log.Fatal(err)
-	}
-
-	return str
-}
 
 func main() {
 
 	// day01
 	fmt.Println("\n-- Day 01 --")
-	var day01_data = getdata("../day01.txt")
+	var day01_data = tools.GetData("../day01.txt")
 	fmt.Println(day01.CountDepth(day01_data))
 	fmt.Println(day01.SlidingDepth(day01_data))
 
 	// day02
 	fmt.Println("\n-- Day 02 --")
-	var day02_str = getdata("../day02.txt")
+	var day02_str = tools.GetData("../day02.txt")
 	fmt.Println(day02.MoveTo(day02_str))
 	fmt.Println(day02.AimTo(day02_str))
 
 	// day03
 	fmt.Println("\n-- Day 03 --")
-	var day03_str = getdata("../day03.txt")
+	var day03_str = tools.GetData("../day03.txt")
 	fmt.Println(day03.GetPowerConsumption(day03_str))
 	fmt.Println(day03.GetLifeSupportRating(day03_str))
 
 	// day04
 	fmt.Println("\n-- Day 04 --")
-	var day04_str = getdata("../day04.txt")
+	var day04_str = tools.GetData("../day04.txt")
 	fmt.Println(day04.FinalScore(day04_str))
 	fmt.Println(day04.LastWinnerScore(day04_str))
 
 	// day05
 	fmt.Println("\n-- Day 05 --")
-	var day05_str = getdata("../day05.txt")
+	var day05_str = tools.GetData("../day05.txt")
 	fmt.Println(day05.GetOverlappingPoints(day05_str))
 	fmt.Println(day05.GetDagonalOverlappingPoints(day05_str))
 
 	// day06
 	fmt.Println("\n-- Day 06 --")
-	var day06_str = getdata("../day06.txt")
+	var day06_str = tools.GetData("../day06.txt")
 	fmt.Println(day06.RunLanternFishGens(strings.Join(day06_str, ","), 80))
 	fmt.Println(day06.RunLanternFishCycles(strings.Join(day06_str, ","), 256))
 
 	// day07
 	fmt.Println("\n-- Day 07 --")
-	var day07_str = getdata("../day07.txt")
+	var day07_str = tools.GetData("../day07.txt")
 	fmt.Println(day07.GetCheapes(strings.Join(day07_str, ",")))
 	fmt.Println(day07.GetCheapestCrabsway(strings.Join(day07_str, ",")))
 
 	// day08
 	fmt.Println("\n-- Day 08 --")
-	var day08_str = getdata("../day08.txt")
+	var day08_str = tools.GetData("../day08.txt")
 	fmt.Println(day08.GetUniqueSegmentsDigitCount(day08_str))
 	fmt.Println(day08.GetOutputValueSum(day08_str))
 
 	// day09
 	fmt.Println("\n-- Day 09 --")
-	var day09_str = getdata("../day09.txt")
+	var day09_str = tools.GetData("../day09.txt")
 	fmt.Println(day09.GetRiskLevelSum(day09_str))
 	fmt.Println(day09.GetBasinProducst(day09_str))
 
 	// day10
 	fmt.Println("\n-- Day 10 --")
-	var day10_str = getdata("../day10.txt")
+	var day10_str = tools.GetData("../day10.txt")
 	fmt.Println(day10.GetSyntaxErrorPoints(day10_str))
 	fmt.Println(day10.GetCompletionScore(day10_str))
 
 	// day11
 	fmt.Println("\n-- Day 11 --")
-	var day11_str = getdata("../day11.txt")
+	var day11_str = tools.GetData("../day11.txt")
 	fmt.Println(day11.GetFlashes(day11_str, 100))
 	fmt.Println(day11.SimultanFlash(day11_str))
 
 	// day12
 	fmt.Println("\n-- Day 12 --")
-	var day12_str = getdata("../day12.txt")
+	var day12_str = tools.GetData("../day12.txt")
 	fmt.Println(day12.GetPaths(day12_str))
-	// fmt.Println(day12.GetPathsPart2(day12_str))
+	fmt.Println(day12.GetPathsPart2(day12_str))
 	
 	// day13
 	fmt.Println("\n-- Day 13 --")
-	var day13_str = getdata("../day13.txt")
+	var day13_str = tools.GetData("../day13.txt")
 	fmt.Println(day13.DotsWhenFoldedOnce(day13_str))
 	fmt.Println(day13.DotsWhenFoldedAll(day13_str))
 	
 	// day14
 	fmt.Println("\n-- Day 14 --")
-	var day14_str = getdata("../day14.txt")
+	var day14_str = tools.GetData("../day14.txt")
 	fmt.Println(day14.GetElementDiff(day14_str))
 	fmt.Println(day14.GetElementDiff40(day14_str))
 	

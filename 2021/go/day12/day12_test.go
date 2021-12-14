@@ -187,8 +187,8 @@ func TestGetPathsPart2(t *testing.T) {
 		want int
 	}{
 		{"1", args{str: []string{"start-A", "start-b", "A-c", "A-b", "b-d", "A-end", "b-end"}}, 36},
-		// {"2", args{str: []string{"dc-end", "HN-start", "start-kj", "dc-start", "dc-HN", "LN-dc", "HN-end", "kj-sa", "kj-HN", "kj-dc"}}, 103},
-		// {"3", args{str: []string{"fs-end", "he-DX", "fs-he", "start-DX", "pj-DX", "end-zg", "zg-sl", "zg-pj", "pj-he", "RW-he", "fs-DX", "pj-RW", "zg-RW", "start-pj", "he-WI", "zg-he", "pj-fs", "start-RW"}}, 3509},
+		{"2", args{str: []string{"dc-end", "HN-start", "start-kj", "dc-start", "dc-HN", "LN-dc", "HN-end", "kj-sa", "kj-HN", "kj-dc"}}, 103},
+		{"3", args{str: []string{"fs-end", "he-DX", "fs-he", "start-DX", "pj-DX", "end-zg", "zg-sl", "zg-pj", "pj-he", "RW-he", "fs-DX", "pj-RW", "zg-RW", "start-pj", "he-WI", "zg-he", "pj-fs", "start-RW"}}, 3509},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -251,6 +251,69 @@ func TestNodeList_Pop(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.list.Pop()
+		})
+	}
+}
+
+func TestNodeList_FindEnd(t *testing.T) {
+	type args struct {
+		n        *Node
+		path     *NodeList
+		str      *[]string
+		extended bool
+	}
+	tests := []struct {
+		name string
+		list *NodeList
+		args args
+		want bool
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.list.FindEnd(tt.args.n, tt.args.path, tt.args.str, tt.args.extended); got != tt.want {
+				t.Errorf("NodeList.FindEnd() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestNodeList_AllowedVisit(t *testing.T) {
+	type args struct {
+		node *Node
+		ext  bool
+	}
+	tests := []struct {
+		name  string
+		nodes *NodeList
+		args  args
+		want  bool
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.nodes.AllowedVisit(tt.args.node, tt.args.ext); got != tt.want {
+				t.Errorf("NodeList.AllowedVisit() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestNodeList_HasTwoSmall(t *testing.T) {
+	tests := []struct {
+		name string
+		list NodeList
+		want bool
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.list.HasTwoSmall(); got != tt.want {
+				t.Errorf("NodeList.HasTwoSmall() = %v, want %v", got, tt.want)
+			}
 		})
 	}
 }
