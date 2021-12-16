@@ -18,6 +18,7 @@ import (
 	"example.com/aoc2021/day12"
 	"example.com/aoc2021/day13"
 	"example.com/aoc2021/day14"
+	"example.com/aoc2021/day15"
 	"example.com/aoc2021/tools"
 )
 
@@ -107,6 +108,12 @@ func main() {
 	var day14_str = tools.GetData("../day14.txt")
 	fmt.Println(day14.GetElementDiff(day14_str))
 	fmt.Println(day14.GetElementDiff40(day14_str))
+	
+	// day15
+	fmt.Println("\n-- Day 15 --")
+	var day15_str = tools.GetData("../day15.txt")
+	fmt.Println(day15.GetLowestRiskPath(day15_str))
+	fmt.Println(day15.GetLowestRiskPathExtended(day15_str))
 	
 
 }
