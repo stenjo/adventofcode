@@ -19,6 +19,7 @@ import (
 	"example.com/aoc2021/day13"
 	"example.com/aoc2021/day14"
 	"example.com/aoc2021/day15"
+	"example.com/aoc2021/day17"
 	"example.com/aoc2021/tools"
 )
 
@@ -113,7 +114,19 @@ func main() {
 	fmt.Println("\n-- Day 15 --")
 	var day15_str = tools.GetData("../day15.txt")
 	fmt.Println(day15.GetLowestRiskPath(day15_str))
-	fmt.Println(day15.GetLowestRiskPathExtended(day15_str))
+	// fmt.Println(day15.GetLowestRiskPathExtended(day15_str))
+	
+	// day16
+	fmt.Println("\n-- Day 16 --")
+	// var day16_str = tools.GetData("../day16.txt")
+	// fmt.Println(day16.GetLowestRiskPath(day16_str))
+	// fmt.Println(day16.GetLowestRiskPathExtended(day16_str))
+	
+	// day17
+	fmt.Println("\n-- Day 17 --")
+	var day17_str = tools.GetData("../day17.txt")
+	fmt.Println(day17.GetHighestY(strings.Join(day17_str, "")))
+	fmt.Println(day17.GetNumOfDistinctV(strings.Join(day17_str, "")))
 	
 
 }
