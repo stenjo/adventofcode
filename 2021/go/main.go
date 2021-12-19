@@ -20,6 +20,7 @@ import (
 	"example.com/aoc2021/day14"
 	"example.com/aoc2021/day15"
 	"example.com/aoc2021/day17"
+	"example.com/aoc2021/day18"
 	"example.com/aoc2021/tools"
 )
 
@@ -127,6 +128,12 @@ func main() {
 	var day17_str = tools.GetData("../day17.txt")
 	fmt.Println(day17.GetHighestY(strings.Join(day17_str, "")))
 	fmt.Println(day17.GetNumOfDistinctV(strings.Join(day17_str, "")))
+
+	// day18
+	fmt.Println("\n-- Day 18 --")
+	var day18_str = tools.GetData("../day18.txt")
+	fmt.Println(day18.GetMagnitude(day18_str))
+	// fmt.Println(days.Day18(day18_str))
 	
 
 }
