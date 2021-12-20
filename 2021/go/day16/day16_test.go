@@ -2,7 +2,10 @@ package day16
 
 import (
 	"reflect"
+	"strings"
 	"testing"
+
+	"example.com/aoc2021/tools"
 )
 
 // func Test_parseLiteral(t *testing.T) {
@@ -54,6 +57,12 @@ func TestGetVersionsSum(t *testing.T) {
 		// {"5", args{s: "620080001611562C8802118E34"}, 12},
 		// {"6", args{s: "C0015000016115A2E0802F182340"}, 23},
 		// {"7", args{s: "A0016C880162017C3686B18A3D4780"}, 31},
+		{"8", args{s: strings.Join(tools.GetData("../../day16.txt"), "")}, 963},
+
+// part1:  963
+// 1.008ms
+// part2:  1549026292886
+// 0s
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
