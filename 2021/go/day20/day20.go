@@ -7,31 +7,29 @@ import (
 )
 type Enhancement string
 
-type TrenchMap map[int]string
+type TrenchMap []string
 
+// Still does not work on real data - only the test data...
 func GetCountBy2Enhancements(str []string) int {
-	enh, trMap := loadData(str)
-	var count int
-	for i := 0; i < 2; i++ {
-		count = trMap.refine(enh)
-		// trMap.print()
-	}
-	return count
+	return getCountByXEnhancements(str, 2)
 }
 
 func GetCountBy50Enhancements(str []string) int {
+	return getCountByXEnhancements(str, 50)
+}
+
+func getCountByXEnhancements(str []string, x int) int {
 	enh, trMap := loadData(str)
 	var count int
-	for i := 0; i < 50; i++ {
+	for i := 0; i < x; i++ {
 		count = trMap.refine(enh)
-		// trMap.print()
 	}
 	return count
 }
 
 func loadData(data []string) (Enhancement, TrenchMap) {
 	enhancement := Enhancement(data[0])
-	trenchMap := make(TrenchMap)
+	trenchMap := make(TrenchMap,len(data)-2)
 	for i := 2; i < len(data); i++ {
 		trenchMap[i-2] = data[i]
 	}
@@ -40,16 +38,27 @@ func loadData(data []string) (Enhancement, TrenchMap) {
 
 func (tm *TrenchMap) refine(e Enhancement) int {
 
-	(*tm).expand()
-	original := (*tm)
-
-	for y:=0; y < len(original)-2; y++ {
-		for x:=0; x < len(original[y])-2; x++ {
-			str := (*tm)[y]
-			str = str[:x] + e.getChar((original.getSubMap(x,y)).calcIndex()) + str[x+1:]
-			(*tm)[y] = str
+	(*tm) = tm.expand()
+	new := make(TrenchMap, len(*tm))
+	width := len((*tm)[0])
+	height := len(*tm)
+	new[0] = strings.Repeat(".", width)
+	for y:=1; y < height-1; y++ {
+		new[y] = strings.Repeat(".", width)
+		for x:=1; x < len(*tm)-1; x++ {
+			sm := (*tm).getSubMap(x-1,y-1)
+			i := sm.calcIndex()
+			str := new[y]
+			str = str[:x] + e.getChar(i) + str[x+1:]
+			new[y] = str
+			// if i > 0 {
+			// 	fmt.Println(fmt.Sprint("x:", x, " y:", y, " index:", i))
+			// 	sm.print()
+			// }
 		}
 	}
+	new[height-1] = strings.Repeat(".", width)
+	(*tm) = new
 	return tm.count()
 }
 
@@ -88,7 +97,7 @@ func (e Enhancement) getChar(index int) string {
 }
 
 func (m TrenchMap) getSubMap(x,y int) TrenchMap {
-	subMap := TrenchMap{}
+	subMap := make(TrenchMap,3)
 	subMap[0] = m[y][x:x+3]
 	subMap[1] = m[y+1][x:x+3]
 	subMap[2] = m[y+2][x:x+3]
@@ -96,36 +105,40 @@ func (m TrenchMap) getSubMap(x,y int) TrenchMap {
 	return subMap
 }
 
-func (m *TrenchMap) expand() {
-	newMap := make(TrenchMap)
+func (m TrenchMap) expand() TrenchMap {
 	var yOffsetTop int
 	var xOffsetLeft string
 	var xOffsetRight string
-	if strings.Contains((*m).colAsStr(0), "#") || strings.Contains((*m).colAsStr(1), "#") {
+	height := len(m)
+	width := len(m[0])
+	newMap := make(TrenchMap, height)
+	if strings.Contains(m.col(0), "#") || strings.Contains(m.col(1), "#") {
 		xOffsetLeft = ".."
 	}
-	if strings.Contains((*m).colAsStr(len((*m)[0])-1), "#") || strings.Contains((*m).colAsStr(len((*m)[0])-2), "#") {
+	if strings.Contains(m.col(width-1), "#") || strings.Contains(m.col(width-2), "#") {
 		xOffsetRight = ".."
 	}
-	if strings.Contains((*m)[0], "#") || strings.Contains((*m)[1], "#"){
+	if strings.Contains(m[0], "#") || strings.Contains(m[1], "#"){
 		yOffsetTop = 2
-		newMap[0] = xOffsetLeft + strings.Repeat(".",len((*m)[0])) + xOffsetRight
-		newMap[1] = xOffsetLeft + strings.Repeat(".",len((*m)[1])) + xOffsetRight
+		newMap = append(newMap,[]string{"",""}...)
+		newMap[0] = xOffsetLeft + strings.Repeat(".",width) + xOffsetRight
+		newMap[1] = xOffsetLeft + strings.Repeat(".",width) + xOffsetRight
 	}
-	for i := 0; i < len(*m); i++ {
-		newMap[i+yOffsetTop] = xOffsetLeft + (*m)[i] + xOffsetRight
-	}
-
-	if strings.Contains((*m)[len(*m)-1], "#") || strings.Contains((*m)[len(*m)-2], "#"){
-		l := len(newMap)
-		newMap[l] = xOffsetLeft + strings.Repeat(".",len((*m)[0])) + xOffsetRight
-		newMap[l+1] = xOffsetLeft + strings.Repeat(".",len((*m)[1])) + xOffsetRight
+	for i := 0; i < height; i++ {
+		newMap[i+yOffsetTop] = xOffsetLeft + m[i] + xOffsetRight
 	}
 
-	(*m) = newMap
+	if strings.Contains(m[height-1], "#") || strings.Contains(m[height-2], "#"){
+		l := height + yOffsetTop
+		newMap = append(newMap,[]string{"",""}...)
+		newMap[l] = xOffsetLeft + strings.Repeat(".",width) + xOffsetRight
+		newMap[l+1] = xOffsetLeft + strings.Repeat(".",width) + xOffsetRight
+	}
+
+	return newMap
 }
 
-func (m TrenchMap) colAsStr(x int) string {
+func (m TrenchMap) col(x int) string {
 	var str string
 	if x < 0 || x >= len(m) {
 		panic("Column out of range")

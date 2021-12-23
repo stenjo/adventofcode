@@ -19,9 +19,11 @@ import (
 	"example.com/aoc2021/day13"
 	"example.com/aoc2021/day14"
 	"example.com/aoc2021/day15"
+	"example.com/aoc2021/day16"
 	"example.com/aoc2021/day17"
 	"example.com/aoc2021/day18"
 	"example.com/aoc2021/day20"
+	"example.com/aoc2021/day22"
 	"example.com/aoc2021/tools"
 )
 
@@ -120,9 +122,9 @@ func main() {
 	
 	// day16
 	fmt.Println("\n-- Day 16 --")
-	// var day16_str = tools.GetData("../day16.txt")
-	// fmt.Println(day16.GetLowestRiskPath(day16_str))
-	// fmt.Println(day16.GetLowestRiskPathExtended(day16_str))
+	var day16_str = tools.GetData("../day16.txt")
+	fmt.Println(day16.GetVersionsSum(day16_str[0]))
+	fmt.Println(day16.GetValue(day16_str[0]))
 	
 	// day17
 	fmt.Println("\n-- Day 17 --")
@@ -147,4 +149,17 @@ func main() {
 	var day20_str = tools.GetData("../day20.txt")
 	fmt.Println(day20.GetCountBy2Enhancements(day20_str))
 	// fmt.Println(day20.GetLowestRiskPathExtended(day20_str))
+
+	// day21
+	fmt.Println("\n-- Day 21 --")
+	// var day21_str = tools.GetData("../day21.txt")
+	// fmt.Println(day21.GetLowestRiskPath(day21_str))
+	// fmt.Println(day21.GetLowestRiskPathExtended(day21_str))
+
+	// day22
+	fmt.Println("\n-- Day 22 --")
+	var day22_str = tools.GetData("../day22.txt")
+	fmt.Println(day22.CountOn(day22_str))
+	// fmt.Println(day22.GetLowestRiskPathExtended(day22_str))
+
 }

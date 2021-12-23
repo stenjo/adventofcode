@@ -14,6 +14,16 @@ func TestTrenchMap_calcIndex(t *testing.T) {
 		want   int
 	}{
 		{"1", TrenchMap{0: "...", 1: "#..", 2: ".#."}, 34},
+		{"2", TrenchMap{0: "#..", 1: "...", 2: "..#"}, 257},
+		{"3", TrenchMap{0: "#..", 1: "...", 2: "..."}, 256}, // .
+		{"4", TrenchMap{0: ".#.", 1: "...", 2: "..."}, 128}, // #
+		{"5", TrenchMap{0: "..#", 1: "...", 2: "..."}, 64},  // .
+		{"6", TrenchMap{0: "...", 1: "#..", 2: "..."}, 32},  // #
+		{"7", TrenchMap{0: "...", 1: ".#.", 2: "..."}, 16},  // .
+		{"8", TrenchMap{0: "...", 1: "..#", 2: "..."}, 8},   // #
+		{"9", TrenchMap{0: "...", 1: "...", 2: "#.."}, 4},   // #
+		{"10", TrenchMap{0: "...", 1: "...", 2: ".#."}, 2},  // #
+		{"11", TrenchMap{0: "...", 1: "...", 2: "..#"}, 1},  // .
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -118,7 +128,7 @@ func TestTrenchMap_expand(t *testing.T) {
 	}
 }
 
-func TestTrenchMap_colAsStr(t *testing.T) {
+func TestTrenchMap_col(t *testing.T) {
 	type args struct {
 		x int
 	}
@@ -131,15 +141,15 @@ func TestTrenchMap_colAsStr(t *testing.T) {
 		// TODO: Add test cases.
 		{"1", TrenchMap{0: "#"}, args{x: 0}, "#"},
 		{"2", TrenchMap{0: ".#.", 1: ".#.", 2: ".#."}, args{x: 0}, "..."},
-		// {"3", TrenchMap{0: "#"}, args{x: -1}, "."},
+		{"3", TrenchMap{0: ".#.", 1: ".#.", 2: ".#."}, args{x: 2}, "..."},
 		// {"4", TrenchMap{0: "#"}, args{x: 1}, "."},
 		{"5", TrenchMap{0: ".#.", 1: ".#.", 2: ".#."}, args{x: 1}, "###"},
 		// {"6", TrenchMap{0: ".#.", 1: ".#.", 2: ".#."}, args{x: 3}, "..."},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := tt.m.colAsStr(tt.args.x); got != tt.want {
-				t.Errorf("TrenchMap.colAsStr() = %v, want %v", got, tt.want)
+			if got := tt.m.col(tt.args.x); got != tt.want {
+				t.Errorf("TrenchMap.col() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -162,7 +172,7 @@ func TestGetCountBy2Enhancements(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := GetCountBy2Enhancements(tt.args.str); got != tt.want {
-				t.Errorf("GetCountBy3Enhancements() = %v, want %v", got, tt.want)
+				t.Errorf("GetCountBy2Enhancements() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -239,6 +249,29 @@ func TestTrenchMap_print(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.m.print()
+		})
+	}
+}
+
+func Test_getCountByXEnhancements(t *testing.T) {
+	type args struct {
+		str []string
+		x   int
+	}
+	tests := []struct {
+		name string
+		args args
+		want int
+	}{
+		// TODO: Add test cases.
+		{"1", args{str: tools.GetData("test.txt"), x: 1}, 5},
+		{"2", args{str: tools.GetData("test_day20.txt"), x: 2}, 35},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := getCountByXEnhancements(tt.args.str, tt.args.x); got != tt.want {
+				t.Errorf("getCountByXEnhancements() = %v, want %v", got, tt.want)
+			}
 		})
 	}
 }
