@@ -37,9 +37,18 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-export function depthscan(filename: string): number { 
-    let file = path.join(__dirname,filename);
-    let depts = fs.readFileSync(file, 'utf8').trim().split('\n').map(line => parseInt(line));
+function getlines(): string[] {
+    let file = path.join(__dirname,'../input/day01.txt');
+    let lines = fs.readFileSync(file, 'utf8').trim().split('\n');
+
+    return lines;
+}
+
+// Part 1
+
+export function depthscan(lines: string[]): number { 
+
+    let depts = lines.map(line => parseInt(line));
 
     let increases = 0;
     let previous = depts[0];
@@ -51,12 +60,14 @@ export function depthscan(filename: string): number {
     }
     return increases;
 }
-let result = depthscan('../src/input/day01.txt');
-console.log(result);
+let result = depthscan(getlines());
+console.log('Part 1: ', result);
 
-export function depthsweep(filename: string): number {
-    let file = path.join(__dirname,filename);
-    let depts = fs.readFileSync(file, 'utf8').trim().split('\n').map(line => parseInt(line));
+
+// Part 2
+
+export function depthsweep(lines: string[]): number {
+    let depts = lines.map(line => parseInt(line));
 
     let increases = 0;
     let previous = depts[0]+depts[1]+ depts[2];
@@ -70,5 +81,5 @@ export function depthsweep(filename: string): number {
     return increases;
 }
 
-result = depthsweep('../src/input/day01.txt');
-console.log(result);
+result = depthsweep(getlines());
+console.log('Part 2: ', result);

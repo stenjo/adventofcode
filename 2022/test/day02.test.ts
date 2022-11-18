@@ -1,4 +1,6 @@
-import { parseCommand } from '../src/2021Day2';
+import { parseCommand } from '../src/day02';
+import * as fs from 'fs';
+import * as path from 'path';
 
 describe('Navigation tests', () => {
 
@@ -11,3 +13,11 @@ describe('Navigation tests', () => {
         
     })
 })
+
+
+function getlines(): string[] {
+    let file = path.join(__dirname,'../input/day01.txt');
+    let lines = fs.readFileSync(file, 'utf8').trim().split('\n');
+
+    return lines;
+}
