@@ -30,18 +30,21 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-export function getlines(filename: string): string[] {
-    let file = path.join(__dirname,filename);
+function getlines(): string[] {
+    let file = path.join(__dirname,'../input/day02.txt');
     let lines = fs.readFileSync(file, 'utf8').trim().split('\n');
 
     return lines;
 }
 
-export function parseCommand(command: string): [string, number] {
 
-    let cmd:string = command.split(' ')[0]; 
-    let num:string = command.split(' ')[1];
-    return [cmd, parseInt(num)];
+// Part 1
+
+export function parseCommand(line: string): {command:string, value:number} {
+
+    let command:string = line.split(' ')[0]; 
+    let value:number = parseInt(line.split(' ')[1]);
+    return {command, value};
 }
 
 export function navigate(lines: string[]): [number, number] {
@@ -50,12 +53,55 @@ export function navigate(lines: string[]): [number, number] {
     let position = 0;
 
     for (let i = 0; i < lines.length; i++) {
-        let cmd, val = parseCommand(lines[i]);
-        if (cmd === 'forward') {
-            position += 1;
+        let {command, value} = parseCommand(lines[i]);
+        if (command === 'forward') {
+            position += value;
+        }
+
+        if (command === 'down') {
+            depth += value;
+        }
+
+        if (command === 'up') {
+            depth -= value;
         }
     }
 
     return [position, depth];
 
 }
+
+let result = navigate(getlines());
+console.log('Part 1: ', result[0]*result[1]);
+
+// Part 2
+export function navigateWithAim(lines: string[]): [number, number] {
+
+    let depth = 0;
+    let position = 0;
+    let aim = 0
+
+    for (let i = 0; i < lines.length; i++) {
+        let {command, value} = parseCommand(lines[i]);
+        if (command === 'forward') {
+            position += value;
+            depth += aim * value;
+        }
+
+        if (command === 'down') {
+            aim += value;
+        }
+
+        if (command === 'up') {
+            aim -= value;
+        }
+    }
+
+
+    return [position, depth];
+
+}
+
+result = navigateWithAim(getlines());
+console.log('Part 2: ', result[0]*result[1]);
+
