@@ -40,68 +40,28 @@ function getlines(): string[] {
 
 // Part 1
 
-export function parseCommand(line: string): {command:string, value:number} {
-
-    let command:string = line.split(' ')[0]; 
-    let value:number = parseInt(line.split(' ')[1]);
-    return {command, value};
-}
-
-export function navigate(lines: string[]): [number, number] {
+export function part1(lines: string[]): [number, number] {
 
     let depth = 0;
     let position = 0;
-
-    for (let i = 0; i < lines.length; i++) {
-        let {command, value} = parseCommand(lines[i]);
-        if (command === 'forward') {
-            position += value;
-        }
-
-        if (command === 'down') {
-            depth += value;
-        }
-
-        if (command === 'up') {
-            depth -= value;
-        }
-    }
 
     return [position, depth];
 
 }
 
-let result = navigate(getlines());
+let result = part1(getlines());
 console.log('Part 1: ', result[0]*result[1]);
 
 // Part 2
-export function navigateWithAim(lines: string[]): [number, number] {
+export function part2(lines: string[]): [number, number] {
 
     let depth = 0;
     let position = 0;
-    let aim = 0
-
-    for (let i = 0; i < lines.length; i++) {
-        let {command, value} = parseCommand(lines[i]);
-        if (command === 'forward') {
-            position += value;
-            depth += aim * value;
-        }
-
-        if (command === 'down') {
-            aim += value;
-        }
-
-        if (command === 'up') {
-            aim -= value;
-        }
-    }
-
 
     return [position, depth];
 
 }
 
-result = navigateWithAim(getlines());
+result = part2(getlines());
 console.log('Part 2: ', result[0]*result[1]);
 
