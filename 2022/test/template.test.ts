@@ -1,4 +1,4 @@
-import { parseCommand, navigate, navigateWithAim } from '../src/day02';
+import { parseCommand, navigate, navigateWithAim } from '../src/template';
 import * as fs from 'fs';
 import * as path from 'path';
 
