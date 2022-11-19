@@ -59,7 +59,7 @@ export function getLeastCommonBit(line: string): number {
         }
     }
 
-    if (zeros < ones) {
+    if (zeros <= ones) {
         return 0;
     }
     return 1;
@@ -127,8 +127,8 @@ export function getPowerConsumption(lines: string[]): number {
 
 }
 
-let result = getPowerConsumption(getlines());
-console.log('Part 1: ', result);
+// let result = getPowerConsumption(getlines());
+// console.log('Part 1: ', result);
 
 // Part 2
 
@@ -160,13 +160,30 @@ export function getOxygenRating(lines: string[]): number {
     return rate;
 }
 
-export function navigateWithAim(lines: string[]): number {
+export function getCo2ScrubberRating(lines: string[]): number {
+    let rate = 0;
+    let pos = 0;
+    let pattern = "";
+    while (lines.length > 1) {
+        let bit = getLeastCommonBit(getBitSlice(lines, pos));
+        pattern += bit.toString();
+        lines = filterList(lines, pattern);
+        pos++;
+    }
+    // 
+    rate = getBinaryValue(lines[0]);
 
- 
-    return 0;
-
+    return rate;
 }
 
-result = navigateWithAim(getlines());
-console.log('Part 2: ', 0);
+export function getLifeSupportRating(lines: string[]): number {
+
+    let oxygenRate = getOxygenRating(lines);
+    let co2Rating = getCo2ScrubberRating(Object.assign([],lines));
+ 
+    return oxygenRate * co2Rating;
+}
+
+// result = getLifeSupportRating(getlines());
+// console.log('Part 2: ', result);
 
