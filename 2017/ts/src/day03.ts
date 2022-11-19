@@ -28,18 +28,30 @@ export function manhattan(x: number, y: number): number {
     return Math.abs(x) + Math.abs(y);
 }
 
-export function getXYOfNumber(square: number): {x:number, y:number} {
+export function getXYOfSquare(square: number): {x:number, y:number} {
 
     let x: number = 0;
     let y: number = 0;
 
-    if (square === 2) {
+    if ((square >= 2 && square < 4) || square >= 9 && square < 10) {
         x = 1;
+    }
+    if (square >= 10) {
+        x = 2;
+    }
+    if (square >= 5 && square < 8) {
+        x = -1;
     }
 
-    if (square === 3) {
-        x = 1;
+    if ((square >= 3 && square < 6) || square >= 12) {
         y = 1;
     }
+    if (square >= 13) {
+        y = 2;
+    }
+    if (square >= 7 && square < 11) {
+        y = -1;
+    }
+
     return {x, y}
 }
