@@ -109,7 +109,7 @@ export function getLeastCommonBits(lines: string[]):string {
 export function getBinaryValue(line: string):number {
 
     let value = 0;
-    for (let i = 0; i < line.length; i++) {
+    for (let i = 0; i < line.trim().length; i++) {
         value *= 2;
         if (line.charAt(i) === '1') {
             value += 1;
@@ -131,6 +131,35 @@ let result = getPowerConsumption(getlines());
 console.log('Part 1: ', result);
 
 // Part 2
+
+export function filterList(lines: string[], pattern: string): string[] {
+
+    let result = [];
+    for (let i = 0; i < lines.length; i++) {
+        if (lines[i].startsWith(pattern)) {
+            result.push(lines[i]);
+        }
+    }
+
+    return result;
+}
+
+export function getOxygenRating(lines: string[]): number {
+    let rate = 0;
+    let pos = 0;
+    let pattern = "";
+    while (lines.length > 1) {
+        let bit = getMostCommonBit(getBitSlice(lines, pos));
+        pattern += bit.toString();
+        lines = filterList(lines, pattern);
+        pos++;
+    }
+    // 
+    rate = getBinaryValue(lines[0]);
+
+    return rate;
+}
+
 export function navigateWithAim(lines: string[]): number {
 
  

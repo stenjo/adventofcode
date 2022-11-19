@@ -1,4 +1,4 @@
-import { getMostCommonBit, getBitSlice, getMostCommonBits, getLeastCommonBit, getBinaryValue, getPowerConsumption, getLeastCommonBits} from '../src/day03';
+import { getMostCommonBit, getBitSlice, getMostCommonBits, getLeastCommonBit, getBinaryValue, getPowerConsumption, getLeastCommonBits, getOxygenRating, filterList} from '../src/day03';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -119,7 +119,19 @@ describe('Binary Diagnostic tests', () => {
         expect(rate).toBe(9);
     })
 
+    test('Oxygen rate should be 23', () => {
+        let rate = getOxygenRating(getLines());
+
+        expect(rate).toBe(23);
+    })
     
+    test('filterlist should return filtered list', () => {
+        let result = filterList(["000","100","011","100","111","010","000"], "01");
+
+        expect(result.length).toBe(2);
+        expect(result[0]).toBe("011");
+        expect(result[1]).toBe("010");
+    })
 
     test('Power consumption should be 198', () => {
 
