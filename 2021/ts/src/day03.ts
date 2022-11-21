@@ -27,7 +27,7 @@ export function getMostCommonBit(line: string): number {
 
     let zeros = 0;
     let ones = 0;
-
+    
     for (let i = 0; i < line.length; i++) {
 
         if (line.charAt(i) === '0') {
