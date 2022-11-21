@@ -16,12 +16,12 @@ describe('Determining the most common bit', () => {
         expect(bit).toBe(0);
     })
 
-    it('Should be 0 when equal numbers of 1 and 0', () => {
+    it('Should be 1 when equal numbers of 0 and 1', () => {
         let bit = getMostCommonBit('0101');
 
-        expect(bit).toBe(0);
+        expect(bit).toBe(1);
     })
-    
+
     it('Most common bit in 111111110000 should be 1', () => {
         let bit = getMostCommonBit('111111110000');
 

@@ -8,3 +8,4 @@
 2022/out/**
 2021/ts/node_modules/**
 2021/ts/out/*
+**/node_modules/**
