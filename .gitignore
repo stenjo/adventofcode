@@ -1,4 +1,6 @@
-**/__pycache__/*
+*/code/*/__pycache__/*
+*/code/__pycache__/*
+**/code/__pycache__/*
+*/node_modules/**
+**/out/*
 **/node_modules/**
-**/ts/out/*
-*/out/*

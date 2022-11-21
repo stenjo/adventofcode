@@ -2,51 +2,57 @@ import { getMostCommonBit, getBitSlice, getMostCommonBits, getLeastCommonBit, ge
 import * as fs from 'fs';
 import * as path from 'path';
 
-describe('Binary Diagnostic tests', () => {
+describe('Determining the most common bit', () => {
 
-    test('Most common bit in 011110011100 should be 1', () => {
+    it('Should be 1 for 011110011100', () => {
         let bit = getMostCommonBit('011110011100');
 
         expect(bit).toBe(1);
     })
 
-    test('Most common bit in 010001010101 should be 0', () => {
+    it('Should be 0 for 010001010101', () => {
         let bit = getMostCommonBit('010001010101');
 
         expect(bit).toBe(0);
     })
 
-    test('Most common bit in 111111110000 should be 1', () => {
+    it('Should be 1 when equal numbers of 0 and 1', () => {
+        let bit = getMostCommonBit('0101');
+
+        expect(bit).toBe(1);
+    })
+
+    it('Most common bit in 111111110000 should be 1', () => {
         let bit = getMostCommonBit('111111110000');
 
         expect(bit).toBe(1);
     })
 
-    test('Most common bit in 011101100011 should be 1', () => {
+    it('Most common bit in 011101100011 should be 1', () => {
         let bit = getMostCommonBit('011101100011');
 
         expect(bit).toBe(1);
     })
 
-    test('Least common bit in 011101100011 should be 1', () => {
+    it('Least common bit in 011101100011 should be 1', () => {
         let bit = getLeastCommonBit('011101100011');
 
         expect(bit).toBe(0);
     })
 
-    test('Most common bit in 000111100100 should be 1', () => {
+    it('Most common bit in 000111100100 should be 1', () => {
         let bit = getMostCommonBit('000111100100');
 
         expect(bit).toBe(0);
     })
 
-    test('Bit slice at position 3 in 000111100100 and 111111110000 should be 11', () => {
+    it('Bit slice at position 3 in 000111100100 and 111111110000 should be 11', () => {
         let slice = getBitSlice(["000111100100","111111110000"], 3);
 
         expect(slice).toBe("11");
     })
 
-    test('Bit slice at position 0 in 000111100100 and 111111110000 should be 01', () => {
+    it('Bit slice at position 0 in 000111100100 and 111111110000 should be 01', () => {
         let slice = getBitSlice(["000111100100","111111110000"], 0);
 
         expect(slice).toBe("01");
