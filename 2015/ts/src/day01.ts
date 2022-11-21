@@ -38,6 +38,29 @@ export function part1(): number {
     return findFloor(getInput());
 }
 
+export function findBasementPosition(directions: string):number {
+
+    let floor = 0;
+    for (let i = 0; i < directions.length; i++) {
+        if (directions[i] == '(') {
+            floor += 1;
+        }
+        if (directions[i] == ')') {
+            floor -= 1;
+        }
+
+        if (floor == -1)
+            return i+1;
+    }
+    return 0;
+}
+export function part2(): number { 
+    return findBasementPosition(getInput());
+}
+
+
+
+
 import * as fs from 'fs';
 import * as path from 'path';
 function getInput(): string {
