@@ -116,7 +116,6 @@ export function Part2(): number {
 
     let m = new Matchsticks();
     let lines = m.LoadLines();
-    // let lines = ['""','"abc"','"aaa\\"aaa"','"\\x27"']
     let codes = 0;
     let chars = 0;
     lines.forEach(line =>{
