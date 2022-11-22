@@ -38,7 +38,7 @@ class Light {
     }
 }
 
-class Rectangle {
+export class Rectangle {
     x1: number = 0;
     y1: number = 0;
     x2: number = 0;
@@ -60,15 +60,15 @@ export class Lights {
         let lines = this.LoadLines();
 
         lines.forEach(element => {
-            let [cmd, x1, y1, x2, y2] = this.ParseLine(element)
+            let [cmd, r] = this.ParseLine(element)
             if (cmd === "on") {
-                this.TurnOn(x1, y1, x2, y2)
+                this.TurnOn(r)
             }
             if (cmd === "off") {
-                this.TurnOff(x1, y1, x2, y2)
+                this.TurnOff(r)
             }
             if (cmd === "toggle") {
-                this.Toggle(x1, y1, x2, y2)
+                this.Toggle(r)
             }
         });
     }
@@ -90,7 +90,7 @@ export class Lights {
         return lines.map(line => line.trim())
     }
 
-    ParseLine(instruction: string): [string, number, number, number, number] {
+    ParseLine(instruction: string): [string, Rectangle] {
         
         let [lastCorner, through, firstCorner, command, dummy] = instruction.split(' ').reverse();
 
@@ -100,29 +100,30 @@ export class Lights {
         let x1 = parseInt(firstCorner.split(',')[0]);
         let y1 = parseInt(firstCorner.split(',')[1]);
         
-        return [command, x1, y1, x2, y2]
+        return [command, new Rectangle(x1, y1, x2, y2)]
     }
-    TurnOff(x1: number, y1: number, x2: number, y2: number) {
-        for (let i = x1; i <= x2; i++) {
-            for (let j = y1; j <= y2; j++) {
+
+    TurnOff(r: Rectangle) {
+        for (let i = r.x1; i <= r.x2; i++) {
+            for (let j = r.y1; j <= r.y2; j++) {
                 this.grid[i*this.dimension + j].light = false;
                 if (this.grid[i*this.dimension + j].brightness > 0)
                     this.grid[i*this.dimension + j].brightness -= 1;
             }
         }
     }
-    Toggle(x1: number, y1: number, x2: number, y2: number) {
-        for (let i = x1; i <= x2; i++) {
-            for (let j = y1; j <= y2; j++) {
+    Toggle(r:Rectangle) {
+        for (let i = r.x1; i <= r.x2; i++) {
+            for (let j = r.y1; j <= r.y2; j++) {
                 this.grid[i*this.dimension + j].light = !this.grid[i*this.dimension + j].light;
                 this.grid[i*this.dimension + j].brightness += 2;
             }
         }
     }
 
-    TurnOn(x1: number, y1: number, x2: number, y2: number) {
-        for (let i = x1; i <= x2; i++) {
-            for (let j = y1; j <= y2; j++) {
+    TurnOn(r:Rectangle) {
+        for (let i = r.x1; i <= r.x2; i++) {
+            for (let j = r.y1; j <= r.y2; j++) {
                 this.grid[i*this.dimension + j].light = true;
                 this.grid[i*this.dimension + j].brightness += 1;
             }
