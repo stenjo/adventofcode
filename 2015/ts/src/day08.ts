@@ -39,6 +39,21 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 export class Matchsticks {
+    CountEncodedChars(codeString: string):number {
+        
+        let count = 2;
+        codeString.split('').forEach(c => {
+            if (c === '"') {
+                count++;
+            }
+            if (c === '\\') {
+                count++;
+            }
+            count ++;
+        })
+        return count;
+    }
+
     CountChars(codeString: string): number {
 
         let escaped = false;
@@ -91,6 +106,22 @@ export function Part1(): number {
     lines.forEach(line =>{
         codes += line.length;
         chars += m.CountChars(line);
+    })
+
+    return codes - chars;
+
+}
+
+export function Part2(): number {
+
+    let m = new Matchsticks();
+    let lines = m.LoadLines();
+    // let lines = ['""','"abc"','"aaa\\"aaa"','"\\x27"']
+    let codes = 0;
+    let chars = 0;
+    lines.forEach(line =>{
+        codes += m.CountEncodedChars(line);
+        chars += line.length;;
     })
 
     return codes - chars;
