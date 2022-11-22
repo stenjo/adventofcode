@@ -41,6 +41,7 @@ export class Matchsticks {
 
         let escaped = false;
         let count = 0;
+        let ascii = "";
         codeString.split('').forEach(code => {
             if (code === '\\') {
                 escaped = true;
@@ -50,10 +51,22 @@ export class Matchsticks {
                 return
             }
 
+            if (code === 'x' && escaped) {
+                ascii += code;
+                return
+            }
+
+            if (escaped && ascii !== "") {
+                ascii += code;
+                if (ascii.length < 3) {
+                    return
+                }
+            }
+
+            ascii = "";
             count++;
             escaped = false;
         })
         return count;
     }
-
 }

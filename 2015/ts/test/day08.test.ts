@@ -22,4 +22,11 @@ describe('Matchsticks', () => {
 
         expect(chars).toBe(7);
     })
+
+    it('should count 1 caracter from ascii char in string', ()=>{
+        
+        let chars = m.CountChars('"\\x27"');
+
+        expect(chars).toBe(1);
+    })
 })
