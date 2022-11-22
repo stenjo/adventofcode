@@ -38,7 +38,7 @@
 
 export class Matchsticks {
     CountChars(codeString: string) {
-        return codeString.length - 2
+        return 0
     }
 
 }
