@@ -1,4 +1,4 @@
-import { Matchsticks } from '../src/day08'
+import { Matchsticks, Part1 } from '../src/day08'
 
 const m = new Matchsticks();
 describe('Matchsticks', () => {
@@ -28,5 +28,11 @@ describe('Matchsticks', () => {
         let chars = m.CountChars('"\\x27"');
 
         expect(chars).toBe(1);
+    })
+})
+
+describe('Part 1', ()=>{
+    it('should return answer to real data', ()=>{
+        expect(Part1()).toBe(1371)
     })
 })

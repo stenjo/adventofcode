@@ -35,6 +35,8 @@
 // For example, given the four strings above, the total number of characters
 // of string code (2 + 5 + 10 + 6 = 23) minus the total number of characters
 // in memory for string values (0 + 3 + 7 + 1 = 11) is 23 - 11 = 12.
+import * as fs from 'fs';
+import * as path from 'path';
 
 export class Matchsticks {
     CountChars(codeString: string): number {
@@ -43,7 +45,7 @@ export class Matchsticks {
         let count = 0;
         let ascii = "";
         codeString.split('').forEach(code => {
-            if (code === '\\') {
+            if (code === '\\' && !escaped) {
                 escaped = true;
                 return
             }
@@ -69,4 +71,28 @@ export class Matchsticks {
         })
         return count;
     }
+
+    LoadLines(): string[] {
+
+        let filename = path.join(__dirname, '../../day08.txt');
+        let lines = fs.readFileSync(filename, 'utf8').trim().split('\n');
+
+        return lines.map(line => line.trim())
+    }
+
+}
+
+export function Part1(): number {
+
+    let m = new Matchsticks();
+    let lines = m.LoadLines();
+    let codes = 0;
+    let chars = 0;
+    lines.forEach(line =>{
+        codes += line.length;
+        chars += m.CountChars(line);
+    })
+
+    return codes - chars;
+
 }
