@@ -37,8 +37,23 @@
 // in memory for string values (0 + 3 + 7 + 1 = 11) is 23 - 11 = 12.
 
 export class Matchsticks {
-    CountChars(codeString: string) {
-        return 0
+    CountChars(codeString: string): number {
+
+        let escaped = false;
+        let count = 0;
+        codeString.split('').forEach(code => {
+            if (code === '\\') {
+                escaped = true;
+                return
+            }
+            if (code == '"' && !escaped) {
+                return
+            }
+
+            count++;
+            escaped = false;
+        })
+        return count;
     }
 
 }

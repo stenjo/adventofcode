@@ -15,4 +15,11 @@ describe('Matchsticks', () => {
 
         expect(chars).toBe(3);
     })
+
+    it('should count 7 caracters from escaped char in string', ()=>{
+        
+        let chars = m.CountChars('"aaa\\"aaa"');
+
+        expect(chars).toBe(7);
+    })
 })
