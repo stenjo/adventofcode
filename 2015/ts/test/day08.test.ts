@@ -8,4 +8,11 @@ describe('Matchsticks', () => {
 
         expect(chars).toBe(0);
     })
+
+    it('should count 3 caracters', ()=>{
+        
+        let chars = m.CountChars('"abc"');
+
+        expect(chars).toBe(3);
+    })
 })
