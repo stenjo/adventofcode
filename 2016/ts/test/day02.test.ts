@@ -30,7 +30,7 @@ describe('Bathroom should', () => {
         expect(b.GetKey("ULL")).toBe(1);
     })
 
-    it('decode RRDDD to 9 given ULL to 1', () => {
+    it('decode RRDDD to 9 given ULL', () => {
         let b = new Bathroom();
         b.GetKey("ULL")
         expect(b.GetKey("RRDDD")).toBe(9);
@@ -41,5 +41,23 @@ describe('Bathroom should', () => {
         b.GetKey("ULL")
         b.GetKey("RRDDD")
         expect(b.GetKey("LURDL")).toBe(8);
+    })
+
+    it('decode UUUUD to 5 given ULL, RRDDD and LURDL', () => {
+        let b = new Bathroom();
+        b.GetKey("ULL")
+        b.GetKey("RRDDD")
+        b.GetKey("LURDL")
+        expect(b.GetKey("UUUUD")).toBe(5);
+    })
+
+    it('let Part 1 return 1985 given ULL, RRDDD, LURDL and UUUUD', () => {
+        let b = new Bathroom();
+        expect(b.Part1(["ULL", "RRDDD", "LURDL", "UUUUD"])).toBe(1985)
+    })
+
+    it('let Part 1 return solution for real data', () => {
+        let b = new Bathroom();
+        expect(b.Part1(b.LoadLines())).toBe(73597)
     })
 })

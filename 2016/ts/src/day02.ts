@@ -1,3 +1,5 @@
+import * as fs from 'fs';
+import * as path from 'path';
 
 export class Bathroom {
     GetKey(arg0: string): any {
@@ -11,7 +13,9 @@ export class Bathroom {
 
     Move(direction: any) {
         if (direction == 'U') {
-            this.location -= 3;
+            if (this.location > 3) {
+                this.location -= 3;
+            }
         }
         if (direction === 'L') {
             if (notAtLeftEdge(this.location)) {
@@ -40,6 +44,22 @@ export class Bathroom {
 
     IsAt(): number {
         return this.location;    
+    }
+
+    Part1(lines: string[]): number {
+
+        let code = 0;
+        for (let i = 0; i < lines.length; i++) {
+            code = code * 10 + this.GetKey(lines[i]);
+        }
+        return code;
+
+    }
+
+    LoadLines():string[] {
+        let filename = path.join(__dirname, '../../day02.txt')
+        let lines = fs.readFileSync(filename, 'utf8').trim().split('\n')
+        return lines
     }
 
 }
