@@ -14,12 +14,12 @@ export class Bathroom {
             this.location -= 3;
         }
         if (direction === 'L') {
-            if (this.location > 1 && this.location !== 4 && this.location !== 7) {
+            if (notAtLeftEdge(this.location)) {
                 this.location -= 1;
             }
         }
         if (direction === 'R') {
-            if (this.location !== 3 && this.location !== 6 && this.location !== 9) {
+            if (notAtRightEdge(this.location)) {
                 this.location += 1;
             }
         }
@@ -27,6 +27,14 @@ export class Bathroom {
             if (this.location < 7) {
                 this.location += 3;
             }
+        }
+
+        function notAtRightEdge(l:number): boolean {
+            return l !== 3 && l !== 6 && l !== 9;
+        }
+
+        function notAtLeftEdge(l: number): boolean {
+            return l > 1 && l !== 4 && l !== 7;
         }
     }
 

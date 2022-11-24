@@ -35,4 +35,11 @@ describe('Bathroom should', () => {
         b.GetKey("ULL")
         expect(b.GetKey("RRDDD")).toBe(9);
     })
+
+    it('decode LURDL to 8 given ULL and RRDDD', () => {
+        let b = new Bathroom();
+        b.GetKey("ULL")
+        b.GetKey("RRDDD")
+        expect(b.GetKey("LURDL")).toBe(8);
+    })
 })
