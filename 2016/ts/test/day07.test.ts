@@ -26,6 +26,34 @@ describe('IP should', () => {
 
         expect(i.supportsSSL()).toBe(true)
     })
+    it('detect invalid ABA in "xyx[xyx]xyx"', ()=>{
+        let i = new Ip( 'xyx[xyx]xyx' );
+
+        expect(i.supportsSSL()).toBe(false)
+    })
+    it('detect ABA in "aaa[kek]eke"', ()=>{
+        let i = new Ip( 'aaa[kek]eke' );
+
+        expect(i.supportsSSL()).toBe(true)
+    })
+
+    it('detect ABA in "zazbz[bzb]cdb"', ()=>{
+        let i = new Ip( 'zazbz[bzb]cdb' );
+
+        expect(i.supportsSSL()).toBe(true)
+    })
+
+    it('detect ABA in "zazaza"', ()=>{
+        let i = new Ip( 'zazaz' );
+
+        expect(i.supportsSSL()).toBe(false)
+    })
+    it('detect ABA in "zaz[aba]aza"', ()=>{
+        let i = new Ip( 'zaz[aba]aza' );
+
+        expect(i.supportsSSL()).toBe(false)
+    })
+
 })
 
 describe('Snooping should', () => {
@@ -33,5 +61,10 @@ describe('Snooping should', () => {
 
         let i = new Snooping()
         expect(i.Part1()).toBe(115)
+    })
+    it('should return answer', () => {
+
+        let i = new Snooping()
+        expect(i.Part2()).toBe(231)
     })
 })

@@ -26,8 +26,27 @@ import * as path from 'path';
 
 export class Ip {
     address: string;
+    hypernet: string;
+    supernet: string;
     constructor(address: string) {
         this.address = address
+        this.hypernet = ""
+        this.supernet = ""
+        let part = "super"
+        this.address.split("").forEach(ch => {
+            if (ch == "[") {
+                part = "hyper"
+            }
+            if (ch == "]") {
+                part = "super"
+            }
+            if (part == "hyper") {
+                this.hypernet += ch;
+            }
+            if (part == "super") {
+                this.supernet += ch
+            }
+        })
     }
 
     supportsSSL(): boolean {
@@ -35,24 +54,25 @@ export class Ip {
         let hypernetSequence = 0;
         let abas = 0
 
-        for (let i = 0; i < this.address.length-2; i++) {
+        for (let i = 0; i < this.supernet.length-2; i++) {
 
-            if (this.address.charAt(i) === '[') {
-                hypernetSequence += 1
-                continue
-            }
-            if (this.address.charAt(i) === ']') {
-                hypernetSequence -= 1
-                continue
-            }
+            // if (this.address.charAt(i) === '[') {
+            //     hypernetSequence += 1
+            //     continue
+            // }
+            // if (this.address.charAt(i) === ']') {
+            //     hypernetSequence -= 1
+            //     continue
+            // }
 
-            let aba = this.address.substring(i,i+3)
-            let reverse = aba.split("").reverse().join("");
+            let aba = this.supernet.substring(i,i+3)
+            let [x,y,z] = aba.split("");
+            let flip = [y,x,y].join("");
 
-            if (this.isABA(aba, reverse) && this.address.substring(i+1, this.address.length).includes(reverse)) {
-                if (hypernetSequence > 0) {
-                    return false
-                }
+            if (this.isABA(aba) && this.hypernet.includes(flip)) {
+                // if (hypernetSequence > 0) {
+                //     return false
+                // }
                 abas += 1
             }
         }
@@ -60,8 +80,15 @@ export class Ip {
         return abas > 0
     }
 
-    private isABA(aba: string, reverse: string) {
-        return aba == reverse && aba.charCodeAt(0) == aba.charCodeAt(2) && aba.charCodeAt(0) != aba.charCodeAt(1);
+    private isInRestOfString(i: number, substr: string) {
+        return this.address.substring(i + 3, this.address.length).includes(substr);
+    }
+
+    private isABA(aba: string): boolean {
+        if (aba.includes("[") || aba.includes("]")) {
+            return false
+        }
+        return aba.charCodeAt(0) == aba.charCodeAt(2) && aba.charCodeAt(0) != aba.charCodeAt(1);
     }
 
     supportsTLS(): boolean {
@@ -108,6 +135,19 @@ export class Snooping {
         this.loadlines().forEach(line => {
             let ip = new Ip(line.trim());
             if (ip.supportsTLS()) {
+                count += 1
+            }
+        })
+
+        return count
+    }
+
+    Part2():number {
+
+        let count = 0
+        this.loadlines().forEach(line => {
+            let ip = new Ip(line.trim());
+            if (ip.supportsSSL()) {
                 count += 1
             }
         })
