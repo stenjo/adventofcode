@@ -1,85 +1,100 @@
-// --- Day 1: Sonar Sweep ---
+// --- Day 1: Calorie Counting ---
 
-// You're minding your own business on a ship at sea when the overboard alarm 
-// goes off! You rush to see if you can help. Apparently, one of the Elves 
-// tripped and accidentally sent the sleigh keys flying into the ocean!
+// The jungle must be too overgrown and difficult to navigate in vehicles or
+// access from the air; the Elves' expedition traditionally goes on foot. As
+// your boats approach land, the Elves begin taking inventory of their
+// supplies. One important consideration is food - in particular, the number
+// of Calories each Elf is carrying (your puzzle input).
 
-// Before you know it, you're inside a submarine the Elves keep ready for 
-// situations like this. 
+// The Elves take turns writing down the number of Calories contained by the
+// various meals, snacks, rations, etc. that they've brought with them, one
+// item per line. Each Elf separates their own inventory from the previous
+// Elf's inventory (if any) by a blank line.
 
-// As the submarine drops below the surface of the ocean, it automatically 
-// performs a sonar sweep of the nearby sea floor. On a small screen, the 
-// sonar sweep report (your puzzle input) appears: each line is a measurement 
-// of the sea floor depth as the sweep looks further and further away from 
-// the submarine.
+// For example, suppose the Elves finish writing their items' Calories and
+// end up with the following list:
 
-// For example, suppose you had the following report:
+// 1000
+// 2000
+// 3000
 
-// 199
-// 200
-// 208
-// 210
-// 200
-// 207
-// 240
-// 269
-// 260
-// 263
-// This report indicates that, scanning outward from the submarine, the sonar 
-// sweep found depths of 199, 200, 208, 210, and so on.
-// The first order of business is to figure out how quickly the depth 
-// increases, just so you know what you're dealing with - you never know if 
-// the keys will get carried into deeper water by an ocean current or a fish 
-// or something.
-// To do this, count the number of times a depth measurement increases from 
-// the previous measurement.
+// 4000
+
+// 5000
+// 6000
+
+// 7000
+// 8000
+// 9000
+
+// 10000
+// This list represents the Calories of the food carried by five Elves:
+
+// The first Elf is carrying food with 1000, 2000, and 3000 Calories, a
+// total of 6000 Calories.
+// The second Elf is carrying one food item with 4000 Calories.
+// The third Elf is carrying food with 5000 and 6000 Calories, a total
+// of 11000 Calories.
+// The fourth Elf is carrying food with 7000, 8000, and 9000 Calories, a
+// total of 24000 Calories.
+// The fifth Elf is carrying one food item with 10000 Calories.
+// In case the Elves get hungry and need extra snacks, they need to know
+// which Elf to ask: they'd like to know how many Calories are being carried
+// by the Elf carrying the most Calories. In the example above, this is
+// 24000 (carried by the fourth Elf).
+
+// Find the Elf carrying the most Calories. How many total Calories is that
+// Elf carrying?
+
 
 import * as fs from 'fs';
 import * as path from 'path';
 
-function getlines(): string[] {
-    let file = path.join(__dirname,'../input/day01.txt');
-    let lines = fs.readFileSync(file, 'utf8').trim().split('\n');
+export class CaloriesCounter {
+    elves: number[];
 
-    return lines;
-}
+    GetTop3Calories(): any {
 
-// Part 1
+        this.elves.sort((a, b) => {
+            return a > b ? -1 : 1;
+        })
 
-export function depthscan(lines: string[]): number { 
-
-    let depts = lines.map(line => parseInt(line));
-
-    let increases = 0;
-    let previous = depts[0];
-    for (let i = 0; i < depts.length; i++) {
-        if (depts[i] > previous) {
-            increases ++;
-        }
-        previous = depts[i];
+        return this.elves[0] + this.elves[1] + this.elves[2]
     }
-    return increases;
-}
-let result = depthscan(getlines());
-console.log('Part 1: ', result);
-
-
-// Part 2
-
-export function depthsweep(lines: string[]): number {
-    let depts = lines.map(line => parseInt(line));
-
-    let increases = 0;
-    let previous = depts[0]+depts[1]+ depts[2];
-    for (let i = 0; i < depts.length + 2; i++) {
-        let sum = depts[i + 1] + depts[i + 2] + depts[i];
-        if (sum > previous) {
-            increases ++;
-        }
-        previous = sum;
+    GetMaxCalories(): number {
+        let maxCalories = 0
+        this.elves.forEach(elve => {
+            if (elve > maxCalories) {
+                maxCalories = elve;
+            }
+        })
+        return maxCalories;
     }
-    return increases;
-}
 
-result = depthsweep(getlines());
-console.log('Part 2: ', result);
+    GetElves() {
+        return this.elves.length;
+    }
+        
+    constructor(fname:string) {
+
+        this.elves = [];
+        let calorieSum = 0
+        this.getlines(fname).forEach(line => {
+            if (line.trim() == "") {
+                this.elves.push(calorieSum);
+                calorieSum = 0;
+                return
+            }
+            let calories = parseInt(line.trim(), 10);
+            calorieSum += calories    
+        })
+        this.elves.push(calorieSum);
+    }
+
+    getlines(fname: string): string[] {
+        let file = path.join(__dirname,fname);
+        let lines = fs.readFileSync(file, 'utf8').trim().split('\n');
+    
+        return lines;
+    }
+}

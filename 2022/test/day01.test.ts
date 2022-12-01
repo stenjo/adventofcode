@@ -1,26 +1,37 @@
-import { depthscan, depthsweep } from "../src/day01";
-import * as fs from 'fs';
-import * as path from 'path';
+import { CaloriesCounter } from "../src/day01";
 
-describe("test depthscan", () => {
-    test("depthscan", () => {
-        let result = depthscan(getlines());
-        expect(result).toBe(7);
-    });
-})
 
-describe('testing depthsweep', () => {
-    test('depthsweep', () => {
-        let result = depthsweep(getlines());
+describe("CaloriesCounter should", () => {
+    it('load lines', () => {
+        let s = new CaloriesCounter('../test/input/day01.txt');
 
-        expect(result).toBe(5)
+        expect(s.GetElves()).toBe(5);
     })
 
+    it('should return higest calories', () => {
+        let s = new CaloriesCounter('../test/input/day01.txt');
+
+        expect(s.GetMaxCalories()).toBe(24000)
+    })
+
+    it('should return correct answer for Part1', () => {
+        let s = new CaloriesCounter('../input/day01.txt')
+
+        expect(s.GetMaxCalories()).toBe(67016)
+    })
+
+    it('should return top 3 calories', () => {
+        let s = new CaloriesCounter('../test/input/day01.txt');
+
+        expect(s.GetTop3Calories()).toBe(45000)
+    })
+
+
+    it('should return correct answer for Part2', () => {
+        let s = new CaloriesCounter('../input/day01.txt')
+
+        expect(s.GetTop3Calories()).toBe(200116         )
+    })
+
+
 })
-
-function getlines(): string[] {
-    let file = path.join(__dirname,'input/day01.txt');
-    let lines = fs.readFileSync(file, 'utf8').trim().split('\n');
-
-    return lines;
-}
