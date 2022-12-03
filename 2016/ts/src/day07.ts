@@ -51,37 +51,25 @@ export class Ip {
 
     supportsSSL(): boolean {
     
-        let hypernetSequence = 0;
         let abas = 0
 
         for (let i = 0; i < this.supernet.length-2; i++) {
 
-            // if (this.address.charAt(i) === '[') {
-            //     hypernetSequence += 1
-            //     continue
-            // }
-            // if (this.address.charAt(i) === ']') {
-            //     hypernetSequence -= 1
-            //     continue
-            // }
-
             let aba = this.supernet.substring(i,i+3)
-            let [x,y,z] = aba.split("");
-            let flip = [y,x,y].join("");
+            let flip = getFlipped(aba);
 
             if (this.isABA(aba) && this.hypernet.includes(flip)) {
-                // if (hypernetSequence > 0) {
-                //     return false
-                // }
                 abas += 1
             }
         }
 
         return abas > 0
-    }
 
-    private isInRestOfString(i: number, substr: string) {
-        return this.address.substring(i + 3, this.address.length).includes(substr);
+        function getFlipped(aba: string) {
+            let [x, y, z] = aba.split("");
+            let flip = [y, x, y].join("");
+            return flip;
+        }
     }
 
     private isABA(aba: string): boolean {
