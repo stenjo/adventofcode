@@ -5,12 +5,11 @@ export class Rucksack {
     getGroupPrioritySum(): any {
         let sum = 0
         for (let i = 0; i < this.lines.length-2; i+=3) {
-            sum += this.getPriority(this.getCommonOfThree(
-                [
+            sum += this.getPriority(this.getCommonOfThree([
                 this.lines[i], 
                 this.lines[i+1], 
-                this.lines[i+2]]
-                ))
+                this.lines[i+2]
+            ]))
         }
     
         return sum;

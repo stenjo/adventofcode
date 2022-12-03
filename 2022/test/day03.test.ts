@@ -56,7 +56,7 @@ describe('Rucksack should', () => {
 
         expect(r.getPriority('L')).toBe(38);
     })
-    it('get 42 as priority from L', () => {
+    it('get 42 as priority from P', () => {
         let r = new Rucksack()
 
         expect(r.getPriority('P')).toBe(42);
