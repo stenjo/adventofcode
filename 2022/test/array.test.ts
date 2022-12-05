@@ -38,9 +38,16 @@ describe('Testing array functions should', () => {
         let merged = [1,2,3,4,2].concat([2, 5, 8, 1, 4]).sort( (a, b) => { return b - a})
         expect(merged.pop()).toBe(1)
     })
-    it('filters arrays ', () => {
+    it('filters arrays with includes', () => {
         let merged = [1,5,2,3,4,2].concat([2, 5, 8, 1, 4]).sort((a, b)=> { return b - a})
-            .filter( (elmnt, i, arr) => { return !arr.slice(0,i).includes(elmnt)})
+            .filter( (e, i, arr) => { return !arr.slice(0,i).includes(e)})
+
+        expect(merged).toStrictEqual([1,2,3,4,5,8].reverse())
+        expect(merged.length).toBe(6)
+    })
+    it('filters arrays with some', () => {
+        let merged = [1,5,2,3,4,2].concat([2, 5, 8, 1, 4]).sort().reverse()
+            .filter( (e, i, arr) => { return !arr.slice(0,i).some(x => x == e)})
 
         expect(merged).toStrictEqual([1,2,3,4,5,8].reverse())
         expect(merged.length).toBe(6)
