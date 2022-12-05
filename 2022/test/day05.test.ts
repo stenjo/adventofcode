@@ -140,9 +140,16 @@ describe('CrateMover should', () => {
         let cm = new CrateMover(inputData.Stacks());
         cm.RunCraneMultiple(inputData.Commands())
 
-        expect(cm.TopString()).toBe('FWNSHLDNZ')
+        expect(cm.TopString()).toBe('RNRGDNFQG')
     })
 
+    it('parse Martins input file', () => {
+        let inputData = new FileInput('../test/input/day05-martin.txt')
+        let cm = new CrateMover(inputData.Stacks());
+        cm.RunCrane(inputData.Commands())
+
+        expect(cm.TopString()).toBe('TDCHVHJTG')
+    })
 })
 
 describe('FileInput should', () => {
