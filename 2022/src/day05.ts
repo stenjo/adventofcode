@@ -14,8 +14,8 @@ export class CrateStack {
     }
 
     stack: string[];
-    constructor(crateStrings: string[]) {
 
+    constructor() {
         this.stack = [];
     }
 }
@@ -93,7 +93,7 @@ export class CrateMover {
             let crates = this.GetCrates(line)
             for (let i = 0; i < crates.length; i++) {
                 if (this.crateStacks.length <= i) {
-                    this.crateStacks.push(new CrateStack([]))
+                    this.crateStacks.push(new CrateStack())
                 }
                 if (crates[i] != ' ') {
                     this.crateStacks[i].AddCrate(crates[i])

@@ -2,17 +2,17 @@ import {CrateStack, CrateMover, FileInput} from '../src/day05'
 
 describe('CrateStack should', () => {
     it('have test runnings', () => {
-        let cs = new CrateStack([])
+        let cs = new CrateStack()
         expect(cs).not.toBeNull();
     })
     it('add crate to stack', () => {
-        let cs = new CrateStack([])
+        let cs = new CrateStack()
         cs.AddCrate('D')
 
         expect(cs.Top()).toBe('D');
     })
     it('remove crate from stack', () => {
-        let cs = new CrateStack([])
+        let cs = new CrateStack()
         cs.AddCrate('D')
         cs.AddCrate('B')
 
