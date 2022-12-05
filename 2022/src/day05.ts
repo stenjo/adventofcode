@@ -1,4 +1,18 @@
+// --- Day 5: Supply Stacks ---
 
+// The expedition can depart as soon as the final supplies have been
+// unloaded from the ships. Supplies are stored in stacks of marked crates,
+// but because the needed supplies are buried under many other crates, the
+// crates need to be rearranged.
+
+// The ship has a giant cargo crane capable of moving crates between stacks.
+// To ensure none of the crates get crushed or fall over, the crane operator
+// will rearrange them in a series of carefully-planned steps. After the
+// crates are rearranged, the desired crates will be at the top of each stack.
+
+// The Elves don't want to interrupt the crane operator during this delicate
+// procedure, but they forgot to ask her which crate will end up where, and
+// they want to be ready to unload them as soon as possible so they can embark.
 
 export class CrateStack {
     RemoveCrate():string {
@@ -108,11 +122,12 @@ export class CrateMover {
     }
 
     private getStackRangeFromInput(input: string): number {
-        let splitString = input.split(' ');
-        let filteredString = splitString.filter((item) => item != '');
-        let numbers = filteredString.map(number => parseInt(number, 10));
-        let sorted = numbers.sort();
-        return sorted.pop() as number;
+
+        return  input.split(' ')
+                .filter((item) => item != '')
+                .map(number => parseInt(number, 10))
+                .sort()
+                .pop() as number;
     }
 }
 
@@ -120,22 +135,14 @@ import * as fs from 'fs';
 import * as path from 'path';
 export class FileInput {
     Commands() {
-        let commands: string[] = [];
-        let belowStacks = false;
-        for (let i = 0; i < this.lines.length; i++)  {
-            if (belowStacks) commands.push(this.lines[i])
-            if (this.lines[i] == '') belowStacks = true;
-        }
-        return commands;
+
+        return this.lines.slice(this.lines.indexOf('')+1,this.lines.length)
     }
     Stacks():string[] {
-        let stacks: string[] = [];
-        for (let i = 0; i < this.lines.length; i++)  {
-            if (this.lines[i] == '') return stacks
-            stacks.push(this.lines[i])
-        }
-        return stacks;
+
+        return this.lines.slice(0, this.lines.indexOf(''))
     }
+
     lines: string[];
     constructor(fname: string) {
         let filename = path.join(__dirname, fname);
