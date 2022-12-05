@@ -120,6 +120,29 @@ describe('CrateMover should', () => {
 
         expect(cm.TopString()).toBe('FWNSHLDNZ')
     })
+
+    it('move multiple 3 from 1 to 3', () => {
+        const crateList = [
+            '    [D]    ',
+            '[N] [C]    ',
+            '[Z] [M] [P]',
+            ' 1   2   3 '
+        ]
+        let cm = new CrateMover(crateList);
+        cm.DoMoveMultiple('move 1 from 2 to 1')
+        cm.DoMoveMultiple('move 3 from 1 to 3')
+
+        expect(cm.Top(3)).toBe('D')
+    })
+
+    it('parse real input file', () => {
+        let inputData = new FileInput('../input/day05.txt')
+        let cm = new CrateMover(inputData.Stacks());
+        cm.RunCraneMultiple(inputData.Commands())
+
+        expect(cm.TopString()).toBe('FWNSHLDNZ')
+    })
+
 })
 
 describe('FileInput should', () => {

@@ -21,6 +21,21 @@ export class CrateStack {
 }
 
 export class CrateMover {
+    RunCraneMultiple(arg0: string[]) {
+        arg0.forEach(c => {
+            this.DoMoveMultiple(c)
+        })
+    }
+    DoMoveMultiple(commandString: string) {
+        let { items, to, from } = this.parseCommand(commandString);
+        let batch:string[] = []
+        for (let i = 0; i < items; i++) {
+            batch.push(this.crateStacks[from-1].RemoveCrate())
+        }
+        for (let i = 0; i < items; i++) {
+            this.crateStacks[to-1].AddCrate(batch.pop() as string)
+        }
+    }
     RunCrane(arg0: string[]) {
         arg0.forEach(c => {
             this.DoMove(c)
@@ -31,18 +46,23 @@ export class CrateMover {
         this.crateStacks.forEach((crate) => topString += crate.Top());
         return topString;
     }
-    DoMove(arg0: string) {
-        if (arg0.trim().length == 0) return
-        let [_move, numOfItems, _from, fromStack, _to, toStack] = arg0.split(' ')
-
-        let items = parseInt(numOfItems)
-        let from = parseInt(fromStack)
-        let to = parseInt(toStack)
+    DoMove(commandString: string) {
+        if (commandString.trim().length == 0) return
+        let { items, to, from } = this.parseCommand(commandString);
         for (let i = 0; i < items; i++) {
             this.crateStacks[to-1].AddCrate(this.crateStacks[from-1].RemoveCrate())
         }
         
     }
+    private parseCommand(arg0: string) {
+        let [_move, numOfItems, _from, fromStack, _to, toStack] = arg0.split(' ');
+
+        let items = parseInt(numOfItems);
+        let from = parseInt(fromStack);
+        let to = parseInt(toStack);
+        return { items, to, from };
+    }
+
     Top(stackNumber: number): any {
         return this.crateStacks[stackNumber-1].Top();
     }
