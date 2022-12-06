@@ -121,6 +121,6 @@ export class FileInput {
 
     constructor(fname: string) {
         let filename = path.join(__dirname, fname);
-        this.lines = fs.readFileSync(filename, 'utf8').split('\n');
+        this.lines = fs.readFileSync(filename, 'utf8').split('\n').map(l=>l.replace('\r', ''));
     }
 }
