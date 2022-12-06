@@ -52,4 +52,10 @@ describe('Testing array functions should', () => {
         expect(merged).toStrictEqual([1,2,3,4,5,8].reverse())
         expect(merged.length).toBe(6)
     })
+
+    it('remove trailing whitespace only', () => {
+        let str = '  start       '.replace(/\s+$/, '');
+
+        expect(str).toStrictEqual('  start')
+    })
 })

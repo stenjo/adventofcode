@@ -41,7 +41,7 @@ describe('CrateMover should', () => {
 
         let c = cm.GetCrates('    [D]    ')
 
-        expect(c).toStrictEqual([' ','D',' ']);
+        expect(c).toStrictEqual([' ','D']);
     })
     it('create initial stacks', () => {
         const crateList = [
@@ -149,6 +149,13 @@ describe('CrateMover should', () => {
         cm.RunCrane(inputData.Commands())
 
         expect(cm.TopString()).toBe('TDCHVHJTG')
+    })
+    it.skip('parse huge input file', () => {
+        let inputData = new FileInput('../input/aoc_2022_day05_large_input.txt')
+        let cm = new CrateMover(inputData.Stacks());
+        cm.RunCrane(inputData.Commands())
+
+        expect(cm.TopString()).toBe('GATHERING')
     })
 })
 

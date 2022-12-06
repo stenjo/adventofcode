@@ -63,7 +63,8 @@ export class CrateMover {
 
     GetCrates(input: string): string[] {
 
-        let commaString = input.split('')
+        let commaString = input.replace(/\s+$/, '').split('')
+
         for (let i = 3; i < commaString.length; i+=4) {
             commaString[i] = ','
         }
@@ -88,6 +89,7 @@ export class CrateMover {
 
     private parseCratesSpec(crates: string[]) {
         let inputStrings = crates.reverse();
+        inputStrings.shift();
 
         inputStrings.forEach(line => {
             let crates = this.GetCrates(line)
