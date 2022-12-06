@@ -1,9 +1,15 @@
 // --- Day 6: Tuning Trouble ---
+// The preparations are finally complete; you and the Elves leave camp on
+// foot and begin to make your way toward the star fruit grove.
+
+// As you move through the dense undergrowth, one of the Elves gives you a
+// handheld device. He says that it has many fancy features, but the most
+// important one to set up right now is the communication system.
 
 export class Communicator {
     FindMarker(dataStream: string, len: number):number {
         let stream = dataStream.split('');
-        for (let i = 4; i < stream.length; i++) {
+        for (let i = len; i < stream.length; i++) {
             if (this.isValidMarker(stream.slice(i-len, i), len)) {
                 return i;
             }
@@ -16,7 +22,6 @@ export class Communicator {
     }
 
     constructor() {
-
     }
 }
 
