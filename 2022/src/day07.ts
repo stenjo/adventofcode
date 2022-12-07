@@ -18,6 +18,21 @@ export class FileElement {
 
 
 export class Cli {
+    GetDeletCandidateSize(): any {
+        let deleteCandidates: number[] = []
+        const totalSize: number = 70000000
+        const needed: number = 30000000
+        const unused: number = totalSize - this.GetCurrentDirSize()
+        const minimum: number = needed - unused
+
+        let dirSizes:number[] = []
+        this.GetDirSizez(dirSizes);
+        
+
+    }
+    GetDirSizez(dirSizes: number[]) {
+        
+    }
     GetDirSizeSumMax100K(f:FileElement = this.root): any {
         let sum = 0;
         if (f.isDirectory) {

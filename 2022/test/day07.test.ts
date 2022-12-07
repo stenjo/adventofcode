@@ -126,4 +126,16 @@ describe('Cli should', () => {
 
         expect(cli.GetDirSizeSumMax100K()).toBe(1886043)
     })
+
+    it('return delete candidate size for test data', () => {
+        let cli = new Cli()
+        let input = new FileInput('../test/input/day07.txt')
+        input.data.forEach(line => {
+            cli.ParseLine(line)
+        })
+        cli.ChangeDir('/')
+
+        expect(cli.GetDeletCandidateSize()).toBe(24933642)
+    })
+
 })
