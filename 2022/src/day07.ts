@@ -18,6 +18,29 @@ export class FileElement {
 
 
 export class Cli {
+    PrintDisk() {
+        let input = new FileInput('../input/day07.txt')
+        input.data.forEach(line => {
+            this.ParseLine(line)
+        })
+        this.ChangeDir('/')
+
+        console.log('- ' + this.root.fileName);
+        this.Print(this.root.children, 2);
+
+    }
+    Print(children: FileElement[], arg1: number) {
+        let indent = new Array(arg1).fill(' ').join('');
+        children.forEach(child => {
+            if (child.isDirectory) {
+                console.log(indent + '- ' + child.fileName + ' (dir)')
+                this.Print(child.children, arg1 + 2)
+                return
+            }
+
+            console.log(indent + '- ' + child.fileName + ' (file, size=' + child.fileSize + ')')
+        })
+    }
     GetDeletCandidateSize(): any {
         let deleteCandidates: number[] = []
         const totalSize: number = 70000000
@@ -26,11 +49,18 @@ export class Cli {
         const minimum: number = needed - unused
 
         let dirSizes:number[] = []
-        this.GetDirSizez(dirSizes);
+        this.GetDirSizes(dirSizes, this.root, minimum);
         
+        return dirSizes.sort((a, b)=> a-b).shift();
 
     }
-    GetDirSizez(dirSizes: number[]) {
+    GetDirSizes(dirSizes: number[], f:FileElement, limit: number) {
+        
+        if (f.isDirectory && f.fileSize > limit) {
+            dirSizes.push(f.fileSize);
+        }
+
+        f.children.forEach(child => this.GetDirSizes(dirSizes, child, limit));
         
     }
     GetDirSizeSumMax100K(f:FileElement = this.root): any {
@@ -44,6 +74,7 @@ export class Cli {
         return sum;
     }
     ParseLine(line: string) {
+        if (line == '') return
         let [p, cmd, params] = line.split(' ');
         if (p == '$') {
             this.listmode = false;
@@ -129,6 +160,6 @@ export class FileInput {
 
     constructor(fname: string) {
         let file = path.join(__dirname,fname);
-        this.data = fs.readFileSync(file, 'utf8').trim().split('\n')
+        this.data = fs.readFileSync(file, 'utf8').split('\n').map(e=>e.trim())
     }
 }

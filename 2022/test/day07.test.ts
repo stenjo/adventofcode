@@ -138,4 +138,15 @@ describe('Cli should', () => {
         expect(cli.GetDeletCandidateSize()).toBe(24933642)
     })
 
+    it('return delete candidate size for real data', () => {
+        let cli = new Cli()
+        let input = new FileInput('../input/day07.txt')
+        input.data.forEach(line => {
+            cli.ParseLine(line)
+        })
+        cli.ChangeDir('/')
+
+        expect(cli.GetDeletCandidateSize()).toBe(3842121)
+    })
+
 })
