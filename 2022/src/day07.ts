@@ -18,6 +18,16 @@ export class FileElement {
 
 
 export class Cli {
+    GetDirSizeSumMax100K(f:FileElement = this.root): any {
+        let sum = 0;
+        if (f.isDirectory) {
+            if (f.fileSize <= 100000) sum = f.fileSize;
+            f.children.forEach(child => {
+                sum += this.GetDirSizeSumMax100K(child)
+            })
+        }
+        return sum;
+    }
     ParseLine(line: string) {
         let [p, cmd, params] = line.split(' ');
         if (p == '$') {
@@ -33,6 +43,7 @@ export class Cli {
         }
         if (this.listmode && p == 'dir') {
             this.AddDir(cmd)
+            return
         }
         if (this.listmode && !isNaN(+p)) {
             let size = parseInt(p)
@@ -87,7 +98,7 @@ export class Cli {
     root: FileElement;
     listmode: boolean;
     constructor() {
-        this.current = new FileElement('/', 0);
+        this.current = new FileElement('/', 0, true);
         this.current.parent = this.current;
         this.root = this.current
         this.listmode = false;

@@ -114,6 +114,16 @@ describe('Cli should', () => {
         })
         cli.ChangeDir('/')
 
-        expect(cli.GetCurrentDirSize()).toBe(48381165)
+        expect(cli.GetDirSizeSumMax100K()).toBe(95437)
+    })
+    it('return correct size for real data', () => {
+        let cli = new Cli()
+        let input = new FileInput('../input/day07.txt')
+        input.data.forEach(line => {
+            cli.ParseLine(line)
+        })
+        cli.ChangeDir('/')
+
+        expect(cli.GetDirSizeSumMax100K()).toBe(1886043)
     })
 })
