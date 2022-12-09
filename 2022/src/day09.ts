@@ -11,16 +11,18 @@ export class LoadLines {
     }
 }
 
-export class Pos {
-    Clone(): Pos {
-        return new Pos(this.x,this.y)
+export class Knot {
+    Clone(): Knot {
+        return new Knot(this.x,this.y)
     }
     x: number;
     y: number;
+    count: number;
 
     constructor(x: number, y: number) {
         this.x = x;
         this.y = y;
+        this.count = 1;
     }
 }
 
@@ -44,7 +46,7 @@ export class RopeModel {
             }
         }
     }
-    UpdateTail(head: Pos) {
+    UpdateTail(head: Knot) {
 
         if (Math.abs(head.y - this.tail.y) > 1) {
             if (head.y < this.tail.y) this.tail.y -= 1
@@ -79,23 +81,22 @@ export class RopeModel {
     GetTailVisits(): number {
         return this.tailVisits.length
     }
-    Visit(tail: Pos) {
-        
-        const exist = this.tailVisits
-        .find((t) => {return t.x == tail.x && t.y == tail.y}) !== undefined
-
-        if (!exist) {
-            this.tailVisits.push(tail.Clone())
+    Visit(tail: Knot) {
+        if (!this.tailVisits.some(t => t.x === tail.x && t.y === tail.y)) {
+          this.tailVisits.push(tail.Clone());
         }
     }
-    head: Pos;
-    tail: Pos;
-    tailVisits: Pos[];
+
+    head: Knot;
+    tail: Knot;
+    tailVisits: Knot[];
+    knotMap: Knot[];
 
     constructor() {
-        this.head = new Pos(0,0)
-        this.tail = new Pos(0,0)
+        this.head = new Knot(0,0)
+        this.tail = new Knot(0,0)
         this.tailVisits = [];
         this.tailVisits.push(this.tail.Clone())
+        this.knotMap = [];
     }
 }
