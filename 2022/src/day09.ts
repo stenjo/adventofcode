@@ -6,11 +6,14 @@ import * as path from 'path';
 export class LoadLines {
     lines: string[];
     constructor(fname: string) {
-        let file = path.join(__dirname,fname);
-        this.lines = fs.readFileSync(file, 'utf8').trim().split('\n').map(line => line.trim())
+      this.lines = fs
+        .readFileSync(path.join(__dirname, fname), 'utf8')
+        .trim()
+        .split('\n')
+        .map(line => line.trim());
     }
-}
-
+  }
+  
 export class Knot {
     Clone(): Knot {
         return new Knot(this.x,this.y)
