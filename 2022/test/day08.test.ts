@@ -132,7 +132,7 @@ describe('TreeGrid should', () => {
 
         expect(t.TreeCountRight(3,4)).toBe(2)
     })
-    it('see 3 trees looking right from left-middle (1,3) 6 (of height 5, 3 and 3)', () => {
+    it('see 1 tree looking right from left-middle (1,3) 6 (of height 5)', () => {
         let d = new LoadLines('../test/input/day08.txt')
         let t = new TreeGrid(d.lines)
 
@@ -162,6 +162,18 @@ describe('TreeGrid should', () => {
 
         expect(t.TreeCountDown(5,1)).toBe(3)
     })
+
+    it('count visible in array ', () => {
+        let t = new TreeGrid([''])
+        expect(t.countVisible([ 0, 9, 2, 2, 3 ])).toBe(1)
+        expect(t.countVisible([ 6, 3, 3, 2 ])).toBe(3)
+        expect(t.countVisible([ 6 ])).toBe(0)
+        expect(t.countVisible([ 3, 4, 9 ])).toBe(1)
+        expect(t.countVisible([ 3, 1, 7 ])).toBe(2)
+        expect(t.countVisible([ 3, 3, 5, 6 ])).toBe(1)
+        expect(t.countVisible([ 3, 2 ])).toBe(1)
+    })
+
     it('get scenic score from left-middle (3,2) to be 4', () => {
         let d = new LoadLines('../test/input/day08.txt')
         let t = new TreeGrid(d.lines)
@@ -185,7 +197,7 @@ describe('TreeGrid should', () => {
         let d = new LoadLines('../input/day08.txt')
         let t = new TreeGrid(d.lines)
 
-        expect(t.MaxScenicScore()).toBe(192)
+        expect(t.MaxScenicScore()).toBe(331344)
     })
 
 })

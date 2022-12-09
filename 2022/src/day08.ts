@@ -3,10 +3,13 @@
 
 export class TreeGrid {
     MaxScenicScore(): number {
+        const maxY = this.treeGrid.length
+        const maxX = this.treeGrid[0].length
         let bestScore: number = 0;
-        for (let y = 1; y <= this.treeGrid.length; y++) {
-            for (let x = 1; x <= this.treeGrid[y-1].length; x++) {
+        for (let y = 1; y <= maxY; y++) {
+            for (let x = 1; x <= maxX; x++) {
                 let score = this.TreeScenicScore(x,y)
+                // console.log('['+x+','+y+']:'+score)
                 if (score > bestScore) {
                     bestScore = score
                 }
@@ -21,81 +24,81 @@ export class TreeGrid {
         * this.TreeCountRight(x, y)
     }
     TreeCountDown(x: number, y: number): number {
-        if (y == this.treeGrid.length) return 0;
-        let count = 0;
-        let height = this.TreeAt(x,y)
-        for (let i = y+1; i <= this.treeGrid.length; i++) {
-            count += 1
-            if (this.TreeAt(x,i) > height) {
-                return count;
-            }
-            height = this.TreeAt(x,i)
+        const maxY = this.treeGrid.length
+
+        if (y == maxY) return 0;
+
+        let row: number[] = [this.TreeAt(x,y)];
+        for (let i = y+1; i <= maxY; i++) {
+            row.push(this.TreeAt(x,i));
         }
-        return count
+        return this.countVisible(row);
     }
     TreeCountRight(x: number, y: number): number {
         const maxX = this.treeGrid[0].length
+
         if (x == maxX) return 0
-        if (x == maxX-1) return 1
-        let count = 1;
-        let height = this.TreeAt(x+1,y)
-        for (let i = x+2; i <= maxX; i++) {
-            if (this.TreeAt(i,y) < height) {
-                return count;
-            }
-            count++
-            height = this.TreeAt(i,y)
+        let row: number[] = [this.TreeAt(x,y)];
+        for (let i = x+1; i <= maxX; i++) {
+            row.push(this.TreeAt(i,y));
         }
-        return count;
+        return this.countVisible(row);
     }
     TreeCountLeft(x: number, y: number): number {
         if (x == 1) return 0
-        if (x == 2) return 1
-        let count = 0;
-        let height = this.TreeAt(x-1,y)
-        for (let i = x-2; i >= 1; i--) {
-            count += 1
-            if (this.TreeAt(i,y) < height) {
-                return count;
-            }
-            height = this.TreeAt(i,y)
+
+        let row: number[] = [this.TreeAt(x,y)];
+        for (let i = x-1; i >= 1; i--) {
+            row.push(this.TreeAt(i,y));
         }
-        return count;
+        return this.countVisible(row);
     }
     TreeCountUp(x: number, y: number): number {
         if (y == 1) return 0
-        if (y == 2) return 1
 
-        let count = 0;
-        let height = this.TreeAt(x,y-1)
-        for (let i = y-2; i >= 1; i--) {
-            count += 1
-            if (this.TreeAt(x,i) < height) {
-                return count;
-            }
-            height = this.TreeAt(x,i)
+        let row: number[] = [this.TreeAt(x,y)];
+        for (let i = y-1; i >= 1; i--) {
+            row.push(this.TreeAt(x,i));
         }
-
-        return count;
+        return this.countVisible(row);
     }
+    countVisible(row:number[]):number {
+        // console.log(row)
+        if (row.length == 0 || row.length == 1) return 0
+        let count = 1
+        for (let i = 1; i < row.length-1; i++) {
+            if (row[i] < row[0]) {
+                count ++
+            }
+            else {
+                return count
+            }
+        }
+        return count
+    } 
     CountVisibleTops(): number {
+        const maxX = this.treeGrid[0].length
+        const maxY = this.treeGrid.length
 
         let count: number = 0;
-        for (let x = 1; x <= this.treeGrid[1].length; x++) {
-            for (let y = 1; y <= this.treeGrid.length; y++) {
+        for (let x = 1; x <= maxX; x++) {
+            for (let y = 1; y <= maxY; y++) {
                 if (this.VisibleTop(x,y)
                  || this.VisibleBottom(x,y)
                  || this.VisibleLeft(x,y) 
                  || this.VisibleRight(x,y)) {
                     count += 1
-                }
+                // console.log('['+x+','+y+']:'+this.treeGrid[y-1].length)
+            }
             }
         }
 
         return count
     }
     VisibleRight(x: number, y: number): boolean {
-        for (let i = x+1; i <= this.treeGrid[y-1].length; i++) {
+        const maxX = this.treeGrid[0].length
+        if (x == maxX) return true;
+        for (let i = x+1; i <= maxX; i++) {
             if (this.TreeAt(i,y) >= this.TreeAt(x,y)) {
                 return false;
             }
@@ -103,7 +106,9 @@ export class TreeGrid {
         return true;
     }
     VisibleBottom(x: number, y: number): boolean {
-        for (let i = y+1; i <= this.treeGrid.length; i++) {
+        const maxY = this.treeGrid.length
+        if (y == maxY) return true;
+        for (let i = y+1; i <= maxY; i++) {
             if (this.TreeAt(x,i) >= this.TreeAt(x,y)) {
                 return false;
             }
@@ -148,6 +153,6 @@ export class LoadLines {
     lines: string[];
     constructor(fname: string) {
         let file = path.join(__dirname,fname);
-        this.lines = fs.readFileSync(file, 'utf8').trim().split('\n')
+        this.lines = fs.readFileSync(file, 'utf8').trim().split('\n').map(line => line.trim())
     }
 }
