@@ -51,11 +51,13 @@ export class RopeModel {
             if (head.y > this.tail.y) this.tail.y += 1
             this.tail.x = head.x
         }
+
         if (Math.abs(this.head.x - this.tail.x) > 1) {
             if (head.x < this.tail.x) this.tail.x -= 1
             if (head.x > this.tail.x) this.tail.x += 1
             this.tail.y = head.y
         }
+
         this.Visit(this.tail)
     }
     MoveD() {
