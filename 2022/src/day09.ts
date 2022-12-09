@@ -44,52 +44,43 @@ export class RopeModel {
             }
         }
     }
+    UpdateTail(head: Pos) {
+
+        if (Math.abs(head.y - this.tail.y) > 1) {
+            if (head.y < this.tail.y) this.tail.y -= 1
+            if (head.y > this.tail.y) this.tail.y += 1
+            this.tail.x = head.x
+        }
+        if (Math.abs(this.head.x - this.tail.x) > 1) {
+            if (head.x < this.tail.x) this.tail.x -= 1
+            if (head.x > this.tail.x) this.tail.x += 1
+            this.tail.y = head.y
+        }
+        this.Visit(this.tail)
+    }
     MoveD() {
         this.head.y -= 1
-        if (Math.abs(this.head.y - this.tail.y) > 1) {
-            this.tail.y -= 1
-            if (this.tail.x != this.head.x) {
-                this.tail.x = this.head.x
-            }
-            this.Visit(this.tail)
-        }
+        this.UpdateTail(this.head)
     }
     MoveU() {
         this.head.y += 1
-        if (Math.abs(this.head.y - this.tail.y) > 1) {
-            this.tail.y += 1
-            if (this.tail.x != this.head.x) {
-                this.tail.x = this.head.x
-            }
-            this.Visit(this.tail)
-        }
+        this.UpdateTail(this.head)
     }
     MoveL() {
         this.head.x -= 1
-        if (Math.abs(this.head.x - this.tail.x) > 1) {
-            this.tail.x -= 1
-            if (this.tail.y != this.head.y) {
-                this.tail.y = this.head.y
-            }
-            this.Visit(this.tail)
-        }
+        this.UpdateTail(this.head)
     }
     MoveR() {
         this.head.x += 1
-        if (Math.abs(this.head.x - this.tail.x) > 1) {
-            this.tail.x += 1
-            if (this.tail.y != this.head.y) {
-                this.tail.y = this.head.y
-            }
-            this.Visit(this.tail)
-        }
+        this.UpdateTail(this.head)
     }
     GetTailVisits(): number {
         return this.tailVisits.length
     }
     Visit(tail: Pos) {
         
-        const exist = this.tailVisits.find((t) => {return t.x == tail.x && t.y == tail.y}) !== undefined
+        const exist = this.tailVisits
+        .find((t) => {return t.x == tail.x && t.y == tail.y}) !== undefined
 
         if (!exist) {
             this.tailVisits.push(tail.Clone())
