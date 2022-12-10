@@ -17,49 +17,39 @@ export class LoadLines {
     cycle: number;
     level: number;
     x: number;
-    inst: string;
 
-    constructor(cycle: number, x: number, inst = "") {
+    constructor(cycle: number, x: number) {
         this.cycle = cycle;
         this.level = x * cycle;
         this.x = x;
-        this.inst = inst;
-
     }
   }
 
   export class Cpu {
     SignalStrength(cycle: number): number {
-        let result = this.signalStrength.find((c)=> { return cycle === c.cycle; });
-        if (result === undefined) {
-            return 0;
-        }
-        return result.level
+        let result = this.signalStrength.find(c => cycle === c.cycle);
+        return result ? result.level : 0;
     }
     RunProgram(instructions: string[]) {
         instructions.forEach(line => this.Run(line));
     }
     Run(instruction: string) {
         const [inst, arg] = instruction.split(' ');
+        this.cycles ++
+        this.UpdateSignal()
         if (inst === 'addx') {
             this.cycles ++
-            this.UpdateSignal('v')
-            this.cycles ++
-            this.UpdateSignal(instruction)
+            this.UpdateSignal()
             this.regX += parseInt(arg)
 
             return
         }
-        if (inst === 'noop') {
-            this.cycles ++
-            this.UpdateSignal('noop')
-        }
     }
-    UpdateSignal(inst = '') {
+    UpdateSignal() {
         if (this.cycles % 20 === 0 
             || (this.cycles < 10 && this.cycles > 0)
             ) {
-            this.signalStrength.push(new SignalStrength(this.cycles, this.regX, inst))
+            this.signalStrength.push(new SignalStrength(this.cycles, this.regX))
         }
         this.crt.DrawPixel(this.regX)
     }
@@ -94,6 +84,12 @@ export class Crt {
         this.screen = ''
         this.spritePos = 1
         this.pixelPos = 0
+    }
+
+    PrintScreen() {
+        const regex = new RegExp(`.{1,40}`, 'g');
+        let crtLines = this.screen.match(regex) as string[];
+        console.log(crtLines.join('\n'));
     }
 
     private isWithinSprite() {
