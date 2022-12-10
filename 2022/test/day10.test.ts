@@ -165,6 +165,19 @@ describe('CPU should', () => {
 
         expect(cpu.crt.screen).toContain('##..##..##..##..##..##..##..##..##..##..###...###...###...###...###...###...###.')
         expect(crtLines[5]).toContain('#######.......#######.......#######.....')
+    })    
+    it('draw image from real data', () => {
+        let cpu = new Cpu();
+        let instructions = new LoadLines('../input/day10.txt').lines
+
+        cpu.RunProgram(instructions)
+        const regex = new RegExp(`.{1,40}`, 'g');
+        let crtLines = cpu.crt.screen.match(regex) as string[];
+
+        console.log(crtLines)
+
+        // PCPBKAPJ
+        expect(crtLines[5]).toBe('#.....##..#....###..#..#.#..#.#.....##..')
     })
 
 })
