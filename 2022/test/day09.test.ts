@@ -115,8 +115,8 @@ describe('RopeModel should', () => {
 
         r.MoveR();
 
-        expect(r.RopeAt(0,0)).toBe(2)
-        expect(r.RopeAt(1,0)).toBe(1)
+        expect(r.RopeAt(0,0)).toBe(true)
+        expect(r.RopeAt(1,0)).toBe(true)
     })
     it('pull rope two steps when head moves two right', () => {
         let r = new RopeModel();
@@ -124,9 +124,9 @@ describe('RopeModel should', () => {
         r.MoveR();
         r.MoveR();
 
-        expect(r.RopeAt(0,0)).toBe(1)
-        expect(r.RopeAt(1,0)).toBe(1)
-        expect(r.RopeAt(2,0)).toBe(1)
+        expect(r.RopeAt(0,0)).toBe(true)
+        expect(r.RopeAt(1,0)).toBe(true)
+        expect(r.RopeAt(2,0)).toBe(true)
         expect(r.GetRopeVisits()).toBe(1)
     })
 
@@ -137,13 +137,13 @@ describe('RopeModel should', () => {
         r.MoveR();
         r.MoveR();
 
-        expect(r.RopeAt(0,0)).toBe(0)
-        expect(r.RopeAt(1,0)).toBe(1)
-        expect(r.RopeAt(2,0)).toBe(1)
-        expect(r.RopeAt(3,0)).toBe(1)
+        expect(r.RopeAt(0,0)).toBe(false)
+        expect(r.RopeAt(1,0)).toBe(true)
+        expect(r.RopeAt(2,0)).toBe(true)
+        expect(r.RopeAt(3,0)).toBe(true)
         expect(r.GetRopeVisits()).toBe(2)
     })
-    it.skip('pull rope three steps when head moves three right and one up', () => {
+    it('pull rope three steps when head moves three right and one up', () => {
         let r = new RopeModel();
 
         r.MoveR();
@@ -151,14 +151,14 @@ describe('RopeModel should', () => {
         r.MoveR();
         r.MoveU();
 
-        expect(r.RopeAt(0,0)).toBe(0)
-        expect(r.RopeAt(1,0)).toBe(1)
-        expect(r.RopeAt(2,0)).toBe(1)
-        expect(r.RopeAt(3,0)).toBe(0)
-        expect(r.RopeAt(3,1)).toBe(1)
+        expect(r.RopeAt(0,0)).toBe(false)
+        expect(r.RopeAt(1,0)).toBe(true)
+        expect(r.RopeAt(2,0)).toBe(true)
+        expect(r.RopeAt(3,0)).toBe(false)
+        expect(r.RopeAt(3,1)).toBe(true)
         expect(r.GetRopeVisits()).toBe(2)
     })
-    it.skip('pull rope four steps when head moves three right and two up', () => {
+    it('pull rope four steps when head moves three right and two up', () => {
         let r = new RopeModel();
 
         r.MoveR();
@@ -167,12 +167,13 @@ describe('RopeModel should', () => {
         r.MoveU();
         r.MoveU();
 
-        expect(r.RopeAt(0,0)).toBe(0)
-        expect(r.RopeAt(1,0)).toBe(1)
-        expect(r.RopeAt(2,0)).toBe(1)
-        expect(r.RopeAt(3,0)).toBe(0)
-        expect(r.RopeAt(3,1)).toBe(1)
-        expect(r.RopeAt(3,2)).toBe(1)
+        console.log(r.rope)
+        expect(r.RopeAt(0,0)).toBe(false)
+        expect(r.RopeAt(1,0)).toBe(false)
+        expect(r.RopeAt(2,0)).toBe(false)
+        expect(r.RopeAt(3,0)).toBe(false)
+        expect(r.RopeAt(3,1)).toBe(true)
+        expect(r.RopeAt(3,2)).toBe(true)
         expect(r.GetRopeVisits()).toBe(3)
     })
 })

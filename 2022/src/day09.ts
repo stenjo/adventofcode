@@ -30,15 +30,12 @@ export class Knot {
 }
 
 export class RopeModel {
-    GetRopeVisits(): number {
-        return this.ropeVisits.length
-    }
-    RopeAt(x: number, y: number): number {
-        let knot = this.knotMap.find(k => k.x === x && k.y === y)
+    RopeAt(x: number, y: number): boolean {
+        let knot = this.rope.find(k => k.x === x && k.y === y)
         if (knot != null) {
-            return knot.count
+            return true
         }
-        return 0
+        return false
     }
     RunInstruction(instr: string) {
         const [dir, countStr] = instr.split(' ')
@@ -59,57 +56,59 @@ export class RopeModel {
             }
         }
     }
-    UpdateTail(head: Knot) {
+    UpdateTail(head: Knot, tail: Knot) {
 
-        if (Math.abs(head.y - this.tail.y) > 1) {
-            if (head.y < this.tail.y) this.tail.y -= 1
-            if (head.y > this.tail.y) this.tail.y += 1
-            this.tail.x = head.x
+        if (Math.abs(head.y - tail.y) > 1) {
+            if (head.y < tail.y) tail.y -= 1
+            if (head.y > tail.y) tail.y += 1
+            tail.x = head.x
         }
 
-        if (Math.abs(this.head.x - this.tail.x) > 1) {
-            if (head.x < this.tail.x) this.tail.x -= 1
-            if (head.x > this.tail.x) this.tail.x += 1
-            this.tail.y = head.y
+        if (Math.abs(head.x - tail.x) > 1) {
+            if (head.x < tail.x) tail.x -= 1
+            if (head.x > tail.x) tail.x += 1
+            tail.y = head.y
         }
 
         this.Visit(this.tail)
     }
     MoveD() {
         this.head.y -= 1
-        this.UpdateTail(this.head)
+        this.UpdateTail(this.head, this.tail)
+        this.UpdateKnots(this.head)
     }
     MoveU() {
         this.head.y += 1
-        this.UpdateTail(this.head)
+        this.UpdateTail(this.head, this.tail)
+        this.UpdateKnots(this.head)
     }
     MoveL() {
         this.head.x -= 1
-        this.UpdateTail(this.head)
+        this.UpdateTail(this.head, this.tail)
+        this.UpdateKnots(this.head)
     }
     MoveR() {
         this.head.x += 1
-        this.UpdateRope(this.head)
-        this.UpdateTail(this.head)
+        this.UpdateTail(this.head, this.tail)
+        this.UpdateKnots(this.head)
     }
-    UpdateRope(head: Knot) {
-        let latest = this.knotMap[this.knotMap.length-1]
-        let secondLatest = this.knotMap[this.knotMap.length-2]
+    UpdateKnots(head: Knot) {
 
-        if (this.knotMap.length > 1 && Math.abs(secondLatest.y - head.y ) > 0 && Math.abs(secondLatest.x - head.x ) > 0 ) {
-            // We're moving diagonally
-            latest.x = head.x
-            latest.y = head.y
-            return
+        this.rope[0].x = head.x
+        this.rope[0].y = head.y
+        for (let i = 1; i < this.rope.length; i++) {
+            this.UpdateTail(this.rope[i-1], this.rope[i])
         }
 
-        this.knotMap[0].count--;
-        if (this.knotMap[0].count === 0) {
-            this.ropeVisits.push(this.knotMap[1].Clone())
+        this.VisitRope(this.rope[this.rope.length-1])
+    }
+    GetRopeVisits(): number {
+        return this.ropeVisits.length
+    }
+    VisitRope(tail: Knot) {
+        if (!this.ropeVisits.some(t => t.x === tail.x && t.y === tail.y)) {
+            this.ropeVisits.push(tail.Clone());
         }
-        let knot = head.Clone();
-        knot.count = 1
-        this.knotMap.push(knot);
     }
     GetTailVisits(): number {
         return this.tailVisits.length
@@ -123,17 +122,22 @@ export class RopeModel {
     head: Knot;
     tail: Knot;
     tailVisits: Knot[];
-    knotMap: Knot[];
+    // knotMap: Knot[];
     ropeVisits: Knot[];
+    rope: Knot[];
 
     constructor(ropelength: number = 3) {
         this.head = new Knot(0,0);
         this.tail = new Knot(0,0);
         this.tailVisits = [];
         this.tailVisits.push(this.tail.Clone());
-        this.knotMap = [];
-        this.knotMap.push(new Knot(0,0));
-        this.knotMap[0].count = ropelength;
+        // this.knotMap = [];
+        // this.knotMap.push(new Knot(0,0));
+        // this.knotMap[0].count = ropelength;
+        this.rope = []
+        for (var i = 0; i < ropelength; i++) {
+            this.rope.push(new Knot(0,0))
+        }
         this.ropeVisits = [];
         this.ropeVisits.push(new Knot(0,0));
     }
