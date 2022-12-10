@@ -143,6 +143,30 @@ describe('CPU should', () => {
 
         expect(sum).toBe(14320)
     })
+
+    it('draw image', () => {
+        let cpu = new Cpu();
+        let instructions = new LoadLines('../test/input/day10.txt').lines
+
+        cpu.RunProgram(instructions)
+
+        expect(cpu.crt.screen).toContain('##..##..##..##..##..##..##..##..##..##..###...###...###...###...###...###...###.')
+    })
+    it('draw image and have correct last line', () => {
+        let cpu = new Cpu();
+        let instructions = new LoadLines('../test/input/day10.txt').lines
+
+        cpu.RunProgram(instructions)
+        console.log(cpu.crt.screen)
+        const regex = new RegExp(`.{1,40}`, 'g');
+        let crtLines = cpu.crt.screen.match(regex) as string[];
+
+        console.log(crtLines)
+
+        expect(cpu.crt.screen).toContain('##..##..##..##..##..##..##..##..##..##..###...###...###...###...###...###...###.')
+        expect(crtLines[5]).toContain('#######.......#######.......#######.....')
+    })
+
 })
 
 describe('CRT should', () => {
@@ -154,7 +178,7 @@ describe('CRT should', () => {
     it('draw # on first cycle', () => {
         let crt = new Crt()
 
-        crt.DrawPixel()
+        crt.DrawPixel(1)
 
         expect(crt.pixelPos).toBe(1)
         expect(crt.screen).toContain('#')
@@ -162,8 +186,8 @@ describe('CRT should', () => {
     it('draw ## on second cycle', () => {
         let crt = new Crt()
 
-        crt.DrawPixel()
-        crt.DrawPixel()
+        crt.DrawPixel(1)
+        crt.DrawPixel(1)
 
         expect(crt.pixelPos).toBe(2)
         expect(crt.screen).toContain('##')
@@ -171,11 +195,22 @@ describe('CRT should', () => {
     it('draw ##. on third cycle', () => {
         let crt = new Crt()
 
-        crt.DrawPixel()
-        crt.DrawPixel()
+        crt.DrawPixel(1)
+        crt.DrawPixel(1)
         crt.DrawPixel(16)
 
         expect(crt.pixelPos).toBe(3)
         expect(crt.screen).toContain('##.')
+    })
+    it('draw ##.. on fourth cycle', () => {
+        let crt = new Crt()
+
+        crt.DrawPixel(1)
+        crt.DrawPixel(1)
+        crt.DrawPixel(16)
+        crt.DrawPixel(16)
+
+        expect(crt.pixelPos).toBe(4)
+        expect(crt.screen).toContain('##..')
     })
 })

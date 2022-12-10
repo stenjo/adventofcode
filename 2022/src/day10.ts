@@ -61,42 +61,43 @@ export class LoadLines {
             ) {
             this.signalStrength.push(new SignalStrength(this.cycles, this.regX, inst))
         }
+        this.crt.DrawPixel(this.regX)
     }
     regX: number;
     cycles: number;
     signalStrength: SignalStrength[];
+    crt: Crt;
 
     constructor() {
         this.regX = 1;
         this.cycles = 0;
         this.signalStrength = []
+        this.crt = new Crt();
     }
 }
 
 export class Crt {
-    DrawPixel(spritePos = this.spritePos) {
+    DrawPixel(spritePos:number) {
         this.spritePos = spritePos
-        if (this.screen.length < 1) {
-            this.screen.push('#')
-            this.pixelPos ++
-            return
+        if (this.isWithinSprite()) {
+            this.screen += '#'
+        } else {
+            this.screen += '.'
         }
-        if (this.pixelPos <= this.spritePos + 1 && this.pixelPos >= this.spritePos - 1) {
-            this.screen[0] += '#'
-            this.pixelPos ++
-            return
-        }
-        this.screen[0] += '.'
         this.pixelPos ++
 
     }
-    screen: string[];
+    screen: string;
     spritePos: number;
     pixelPos: number;
     constructor() {
-        this.screen = []
+        this.screen = ''
         this.spritePos = 1
         this.pixelPos = 0
+    }
+
+    private isWithinSprite() {
+        return this.pixelPos % 40 <= this.spritePos + 1 && this.pixelPos % 40 >= this.spritePos - 1;
     }
 }
   
