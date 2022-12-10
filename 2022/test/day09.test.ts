@@ -143,7 +143,7 @@ describe('RopeModel should', () => {
         expect(r.RopeAt(3,0)).toBe(1)
         expect(r.GetRopeVisits()).toBe(2)
     })
-    it('pull rope three steps when head moves three right and one up', () => {
+    it.skip('pull rope three steps when head moves three right and one up', () => {
         let r = new RopeModel();
 
         r.MoveR();
@@ -158,7 +158,7 @@ describe('RopeModel should', () => {
         expect(r.RopeAt(3,1)).toBe(1)
         expect(r.GetRopeVisits()).toBe(2)
     })
-    it('pull rope four steps when head moves three right and two up', () => {
+    it.skip('pull rope four steps when head moves three right and two up', () => {
         let r = new RopeModel();
 
         r.MoveR();

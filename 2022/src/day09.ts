@@ -93,9 +93,14 @@ export class RopeModel {
         this.UpdateTail(this.head)
     }
     UpdateRope(head: Knot) {
-        let latest = this.knotMap.reverse()[0]
+        let latest = this.knotMap[this.knotMap.length-1]
+        let secondLatest = this.knotMap[this.knotMap.length-2]
 
-        if (latest.y < head.y) {
+        if (this.knotMap.length > 1 && Math.abs(secondLatest.y - head.y ) > 0 && Math.abs(secondLatest.x - head.x ) > 0 ) {
+            // We're moving diagonally
+            latest.x = head.x
+            latest.y = head.y
+            return
         }
 
         this.knotMap[0].count--;
