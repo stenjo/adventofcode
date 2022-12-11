@@ -124,10 +124,10 @@ export class RopeModel {
     }
 
     PrintRopeVisits() {
-        const minY = -5
-        const maxY = 15
-        const minX = -11
-        const maxX = 15
+        const minY = -35
+        const maxY = 35
+        const minX = -35
+        const maxX = 35
         for (let y = maxY; y >= minY; y--) {
             let line = ''
             for (let x = minX; x <= maxX; x++) {
@@ -188,15 +188,16 @@ export class RopeModel {
     }
 }
 
-// let r = new RopeModel(10)
+let r = new RopeModel(10)
 
-// let instr = new LoadLines('../test/input/day09-large.txt').lines
+let instr = new LoadLines('../test/input/day09-large.txt').lines
 
-// instr.forEach(line => {
-//     r.RunInstruction(line)
-//     console.log('\n== ' + line + ' ==')
-//     r.PrintRope()
-// })
+instr.forEach(line => {
+    r.RunInstruction(line)
+    // console.log('\n== ' + line + ' ==')
+    // r.PrintRope()
+})
 
-// console.log('\n== ' + 'Rope tail track' + ' ==')
-// r.PrintRopeVisits()
+console.log('\n== ' + 'Rope tail track' + ' ==')
+r.PrintRopeVisits()
+// console.log(r.ropeVisits)

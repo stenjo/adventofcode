@@ -176,8 +176,8 @@ describe('RopeModel should', () => {
         expect(r.RopeAt(3,2)).toBe(true)
         expect(r.GetRopeVisits()).toBe(3)
     })
-    it.skip('produce correct rope path for test input', () => {
-        let r = new RopeModel();
+    it('produce correct rope path for test input', () => {
+        let r = new RopeModel(10);
         let instr = new LoadLines('../test/input/day09-large.txt').lines
 
         instr.forEach(line => {
@@ -186,14 +186,14 @@ describe('RopeModel should', () => {
 
         expect(r.GetRopeVisits()).toBe(36)
     })
-    it.skip('produce correct result for real input', () => {
-        let r = new RopeModel();
+    it('produce correct result for real input', () => {
+        let r = new RopeModel(10);
         let instr = new LoadLines('../input/day09.txt').lines
 
         instr.forEach(line => {
             r.RunInstruction(line)
         })
 
-        expect(r.GetRopeVisits()).toBe(6339)
+        expect(r.GetRopeVisits()).toBe(2578)
     })
 })
