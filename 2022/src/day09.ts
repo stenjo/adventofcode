@@ -187,17 +187,3 @@ export class RopeModel {
         this.ropeVisits.push(new Knot(0,0));
     }
 }
-
-let r = new RopeModel(10)
-
-let instr = new LoadLines('../test/input/day09-large.txt').lines
-
-instr.forEach(line => {
-    r.RunInstruction(line)
-    // console.log('\n== ' + line + ' ==')
-    // r.PrintRope()
-})
-
-console.log('\n== ' + 'Rope tail track' + ' ==')
-r.PrintRopeVisits()
-// console.log(r.ropeVisits)
