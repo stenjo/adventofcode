@@ -37,6 +37,10 @@ export class RopeModel {
         }
         return false
     }
+    KnotNumber(x: number, y: number): number {
+        let knot = this.rope.find(k => k.x === x && k.y === y)
+        return this.rope.indexOf(knot as Knot)
+    }
     RunInstruction(instr: string) {
         const [dir, countStr] = instr.split(' ')
         const count = parseInt(countStr)
@@ -119,10 +123,54 @@ export class RopeModel {
         }
     }
 
+    PrintRopeVisits() {
+        const minY = -5
+        const maxY = 15
+        const minX = -11
+        const maxX = 15
+        for (let y = maxY; y >= minY; y--) {
+            let line = ''
+            for (let x = minX; x <= maxX; x++) {
+                if (x == 0 && y == 0) {
+                    line += 's'
+                } else {
+                    line += this.RopeVisitAt(x,y) ? '#' : '.'
+                }
+            }
+            console.log(line)
+        }
+    }
+    RopeVisitAt(x: number, y: number):boolean {
+        let knot = this.ropeVisits.find(k => k.x === x && k.y === y)
+        if (knot != null) {
+            return true
+        }
+        return false
+    }
+
+    PrintRope() {
+        const minY = -5
+        const maxY = 15
+        const minX = -11
+        const maxX = 15
+        for (let y = maxY; y >= minY; y--) {
+            let line = ''
+            for (let x = minX; x <= maxX; x++) {
+                if (x == 0 && y == 0) {
+                    line += 's'
+                } else if (this.rope[0].x == x && this.rope[0].y == y) {
+                    line += 'H'
+                } else {
+                    line += this.RopeAt(x,y) ? this.KnotNumber(x,y) : '.'
+                }
+            }
+            console.log(line)
+        }
+    }
+
     head: Knot;
     tail: Knot;
     tailVisits: Knot[];
-    // knotMap: Knot[];
     ropeVisits: Knot[];
     rope: Knot[];
 
@@ -131,9 +179,6 @@ export class RopeModel {
         this.tail = new Knot(0,0);
         this.tailVisits = [];
         this.tailVisits.push(this.tail.Clone());
-        // this.knotMap = [];
-        // this.knotMap.push(new Knot(0,0));
-        // this.knotMap[0].count = ropelength;
         this.rope = []
         for (var i = 0; i < ropelength; i++) {
             this.rope.push(new Knot(0,0))
@@ -142,3 +187,16 @@ export class RopeModel {
         this.ropeVisits.push(new Knot(0,0));
     }
 }
+
+// let r = new RopeModel(10)
+
+// let instr = new LoadLines('../test/input/day09-large.txt').lines
+
+// instr.forEach(line => {
+//     r.RunInstruction(line)
+//     console.log('\n== ' + line + ' ==')
+//     r.PrintRope()
+// })
+
+// console.log('\n== ' + 'Rope tail track' + ' ==')
+// r.PrintRopeVisits()

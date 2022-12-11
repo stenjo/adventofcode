@@ -167,7 +167,7 @@ describe('RopeModel should', () => {
         r.MoveU();
         r.MoveU();
 
-        console.log(r.rope)
+        // console.log(r.rope)
         expect(r.RopeAt(0,0)).toBe(false)
         expect(r.RopeAt(1,0)).toBe(false)
         expect(r.RopeAt(2,0)).toBe(false)
@@ -175,5 +175,25 @@ describe('RopeModel should', () => {
         expect(r.RopeAt(3,1)).toBe(true)
         expect(r.RopeAt(3,2)).toBe(true)
         expect(r.GetRopeVisits()).toBe(3)
+    })
+    it.skip('produce correct rope path for test input', () => {
+        let r = new RopeModel();
+        let instr = new LoadLines('../test/input/day09-large.txt').lines
+
+        instr.forEach(line => {
+            r.RunInstruction(line)
+        })
+
+        expect(r.GetRopeVisits()).toBe(36)
+    })
+    it.skip('produce correct result for real input', () => {
+        let r = new RopeModel();
+        let instr = new LoadLines('../input/day09.txt').lines
+
+        instr.forEach(line => {
+            r.RunInstruction(line)
+        })
+
+        expect(r.GetRopeVisits()).toBe(6339)
     })
 })
