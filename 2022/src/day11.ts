@@ -14,45 +14,58 @@ export class LoadLines {
 }
   
 export class Monkey {
+    AddWorry(w: number) {
+            this.worries.push(w);
+    }
     GetNextWorry(): number {
-        if (this.hasNoWorries()) {
-            return NaN;
+        if (this.hasWorries() == false) {
+            return 0;
         }
         return this.worries.shift() as number;
     }
 
-    hasNoWorries() {
-        return this.worries.length === 0;
+    hasWorries() {
+        return this.worries.length > 0;
     }
 
     TestAndThrow(worry: number): number {
         this.inspects++
-        if (worry % this.divisibleBy == 0) {
+        if (worry % this.divisibleBy == 0 && worry > 0) {
             return this.throwIfTrue
         }
         return this.throwIfFalse
     }
-    RunOperation(worry: number): number{
-        if (this.operation.includes('+')) {
-            let [_arg1, arg2] = this.operation.split('+')
-            if (arg2.trim() === 'old'){
-                return Math.floor((worry + worry) / 3)
-            }
-            if (!isNaN(Number(arg2))) {
-                return Math.floor((worry + parseInt(arg2, 10))/3)
-            }
-        }
-        if (this.operation.includes('*')) {
-            let [_arg1, arg2] = this.operation.split('*')
-            if (arg2.trim() === 'old'){
-                return Math.floor((worry * worry)/3)
-            }
-            if (!isNaN(Number(arg2))) {
-                return Math.floor((worry * parseInt(arg2, 10))/3)
-            }
+    
+    RunOperation(worry: number, releaf = true, l = 1): number {
+        
+        if (releaf) {
+            return Math.floor(this.GetNewWorryLevel(worry, l) / 3);
         }
 
+        return this.GetNewWorryLevel(worry, l);
+    }
+    GetNewWorryLevel(worry: number, lcm: number): number {
+        const [argStr1, argStr2] = this.operation.split(/[+*]/).map(o => o.trim());
+  
+        let arg1:number = argStr1 === 'old' ? worry : NaN
+        let arg2:number = argStr2 === 'old' ? worry : isNaN(Number(argStr2)) ? NaN : parseInt(argStr2, 10)
+
+        if (this.operation.includes('+')) {
+            return arg1 + arg2
+        }
+        if (this.operation.includes('*')) {
+            if (lcm != 1)
+                return arg1 % lcm * arg2 % lcm
+            else
+                return arg1 * arg2
+        }
+    
         return NaN;
+    }
+    private lcm(a:number,b:number): number {
+        const gcd = (x:number, y:number):number => (!y ? x : gcd(y, x % y));
+        const _lcm = (x:number, y:number):number => (x * y) / gcd(x, y);
+        return [a,b].reduce((a, b) => _lcm(a, b));
     }
     throwIfFalse!: number;
     throwIfTrue!: number;
@@ -105,6 +118,7 @@ export class Monkey {
 }
 
 export class MonkeySim {
+    lcm: number;
     GetMonkeyBusiness(): any {
         let inspects = this.monkeys.map((monkey) => monkey.inspects)
         inspects.sort((a, b) => b - a);
@@ -116,17 +130,23 @@ export class MonkeySim {
         }
     }
     InspectMonkey(monkey: Monkey) {
-        while (!monkey.hasNoWorries()) {
-            let {monkey:m, worry:w} = this.Inspect(monkey);
-            this.monkeys[m].worries.push(w)
+        while (monkey.hasWorries()) {
+            let w = monkey.RunOperation(monkey.GetNextWorry(), this.releaf, this.lcm);
+            // let g = this.gcd(w, this.lcm)
+   
+            let m = monkey.TestAndThrow(w) //) / this.lcm);
+            let targetMonkey = this.FindMonkey(m)
+            targetMonkey.AddWorry(w)
         }
     }
+    FindMonkey(m: number) {
+        return this.monkeys.find(x => x.id == m) as Monkey;
+    }
     Inspect(monkey: Monkey) {
-        let w = monkey.RunOperation(monkey.GetNextWorry());
+        let w = monkey.RunOperation(monkey.GetNextWorry(), this.releaf);
         let m = monkey.TestAndThrow(w);
 
         return {monkey:m, worry:w}
-       
     }
 
     LoadMonkeys(input: string[]) {
@@ -143,10 +163,31 @@ export class MonkeySim {
         }) 
         batch.push(chunk);
         batch.forEach(m=>this.monkeys.push(new Monkey(m)))
+        let divisors = this.monkeys.map(m=>m.divisibleBy)
+        this.lcm = divisors.reduce((l, c) =>this._lcm(l,c))
     }
 
+    releaf: boolean = true;
     monkeys: Monkey[];
     constructor() {
         this.monkeys = [];
+        this.lcm = 1
+    }
+
+    private _lcm(x:number,y:number):number {
+        return x * y / this.gcd(x,y)
+    }
+    private gcd(x:number, y:number):number {
+        return !y ? x : this.gcd(y, x % y);
     }
 }
+
+
+// let m = new MonkeySim();
+// let input = new LoadLines('../test/input/day11.txt').lines
+// m.LoadMonkeys(input)
+
+// m.releaf = false;
+// m.RunRound(10000)
+
+// console.log(m.GetMonkeyBusiness())

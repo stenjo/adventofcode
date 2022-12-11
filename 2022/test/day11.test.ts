@@ -154,6 +154,22 @@ describe('Monkey should', ()=> {
         expect(result).toBe(2)
     })
    
+    it('tests is not divisible by 19 and throw to 0', ()=> {
+        const model = [
+            'Monkey 1:',
+            'Starting items: 54, 65, 75, 74',
+            'Operation: new = old + 6',
+            'Test: divisible by 19',
+            '  If true: throw to monkey 2',
+            '  If false: throw to monkey 0'
+        ]
+        let m = new Monkey(model);
+
+        let result = m.TestAndThrow(0)
+
+        expect(result).toBe(0)
+    })
+   
 })
 
 describe('MonkeySim should', ()=> {
@@ -284,5 +300,90 @@ describe('MonkeySim should', ()=> {
 
         expect(m.GetMonkeyBusiness()).toBe(64032)
     })
-    
+    it('run 1 round with no releaf and get inspects for all Monkeys', () => {
+        let m = new MonkeySim();
+        let input = new LoadLines('../test/input/day11.txt').lines
+        m.LoadMonkeys(input)
+
+        m.releaf = false;
+        m.RunRound()
+
+        expect(m.monkeys[0].inspects).toBe(2)
+        expect(m.monkeys[1].inspects).toBe(4)
+        expect(m.monkeys[2].inspects).toBe(3)
+        expect(m.monkeys[3].inspects).toBe(6)
+    })
+    it('run 20 rounds with no releaf and get inspects for all Monkeys', () => {
+        let m = new MonkeySim();
+        let input = new LoadLines('../test/input/day11.txt').lines
+        m.LoadMonkeys(input)
+
+        m.releaf = false;
+        m.RunRound(20)
+
+        expect(m.monkeys[0].inspects).toBe(99)
+        expect(m.monkeys[1].inspects).toBe(97)
+        expect(m.monkeys[3].inspects).toBe(103)
+        expect(m.monkeys[2].inspects).toBe(8)
+    })
+    it('run 1000 rounds with no releaf giving 5204 inspects for Monkey 0', () => {
+        let m = new MonkeySim();
+        let input = new LoadLines('../test/input/day11.txt').lines
+        m.LoadMonkeys(input)
+
+        m.releaf = false;
+        m.RunRound(1000)
+
+        expect(m.monkeys[0].inspects).toBe(5204)
+        expect(m.monkeys[3].inspects).toBe(5192)
+    })
+
+    it('run 2000 rounds with no releaf and get monkeybusiness of 2713310158', () => {
+        let m = new MonkeySim();
+        let input = new LoadLines('../test/input/day11.txt').lines
+        m.LoadMonkeys(input)
+
+        m.releaf = false;
+        m.RunRound(2000)
+
+        expect(m.monkeys[0].inspects).toBe(10419)
+        expect(m.monkeys[3].inspects).toBe(10391)
+        expect(m.GetMonkeyBusiness()).toBe(108263829)
+    })
+
+    it('run 9000 rounds with no releaf and get monkeybusiness of 2713310158', () => {
+        let m = new MonkeySim();
+        let input = new LoadLines('../test/input/day11.txt').lines
+        m.LoadMonkeys(input)
+
+        m.releaf = false;
+        m.RunRound(9000)
+
+        expect(m.monkeys[0].inspects).toBe(46945)
+        expect(m.monkeys[3].inspects).toBe(46807)
+        expect(m.GetMonkeyBusiness()).toBe(2197354615)
+    })
+
+    it('run 10000 rounds with no releaf and get monkeybusiness of 2713310158', () => {
+        let m = new MonkeySim();
+        let input = new LoadLines('../test/input/day11.txt').lines
+        m.LoadMonkeys(input)
+
+        m.releaf = false;
+        m.RunRound(10000)
+
+        expect(m.monkeys[0].inspects).toBe(52166)
+        expect(m.monkeys[3].inspects).toBe(52013)
+        expect(m.GetMonkeyBusiness()).toBe(2713310158)
+    })
+    it('run 10000 rounds with no releaf from real data', () => {
+        let m = new MonkeySim();
+        let input = new LoadLines('../input/day11.txt').lines
+        m.LoadMonkeys(input)
+
+        m.releaf = false;
+        m.RunRound(10000)
+
+        expect(m.GetMonkeyBusiness()).toBe(12729522272)
+    })
 })
