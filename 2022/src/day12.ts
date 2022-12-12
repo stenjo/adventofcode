@@ -49,7 +49,17 @@ export class ElevationMap {
         if (this.isValidNext(current.x+1, current.y)) list.push({x: current.x+1, y: current.y});
         if (this.isValidNext(current.x-1, current.y)) list.push({x: current.x-1, y: current.y});
 
-        return list.sort( (a, b) => (this.getAt(a.x, a.y) as Pos).steps - (this.getAt(b.x, b.y) as Pos).steps);
+
+        let result = list.sort( (a, b) => {
+            let diff = (this.getAt(a.x, a.y) as Pos).steps - (this.getAt(b.x, b.y) as Pos).steps
+            if ((this.getAt(a.x, a.y) as Pos).steps > 0 ) diff += 100
+
+            return diff
+        });
+
+        let stepList = result.map((p) => (this.getAt(p.x, p.y) as Pos).steps);
+
+        return result
     }
     end!: Pos;
     start!: Pos;
