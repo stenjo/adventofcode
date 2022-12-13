@@ -69,6 +69,21 @@ describe('Packet should', ()=> {
         expect((p.packet[0] as Packet).packet.length).toBe(1)
         expect(p.packet[1]).toBe(4)
     })
+    it('initialise a single squared packet containing a number and a packet', () => {
+        let p = new Packet('[4,[1]]')
+        
+        expect(p.packet.length).toBe(2)
+        expect((p.packet[1] as Packet).packet.length).toBe(1)
+        expect(p.packet[0]).toBe(4)
+    })
+    it('initialise a single squared packet containing two packets', () => {
+        let p = new Packet('[[1],[2,3,4]]')
+        
+        expect(p.packet.length).toBe(2)
+        expect((p.packet[0] as Packet).packet.length).toBe(1)
+        expect((p.packet[1] as Packet).packet.length).toBe(3)
+        expect((p.packet[1] as Packet).packet[2]).toBe(4)
+    })
 })
 
 describe('Comparator should', () => {

@@ -24,26 +24,7 @@ export class Packet {
             let numString = ''
             for (let i = 0; i < content.length; i++) {
                 if (content.charAt(i) === '[') {
-                    let nesting = 0
-                    let startIndex = 0
-                    for (let j = i+1; j < content.length; j++) {
-                        if (content.charAt(j) === '[') {
-                            startIndex = i
-                            nesting ++
-                        }
-                        if (content.charAt(j) === ']') {
-                            if (nesting > 0) {
-                                nesting --
-                            }
-                            else {
-                                let sub = content.substring(startIndex, j+1)
-                                this.packet.push(new Packet(sub))
-                                i = j+1
-                                j = content.length
-                                continue
-                            }
-                        }
-                    }
+                    i = this.subPacket(i, content);
                 }
                 if (content.charAt(i) === ',') {
                     if (numString.length > 0) {
@@ -60,6 +41,30 @@ export class Packet {
                 numString = ''
             }
         }
+    }
+
+    private subPacket(i: number, content: string) {
+        let nesting = 0;
+        let startIndex = i;
+        for (let j = i + 1; j < content.length; j++) {
+            if (content.charAt(j) === '[') {
+                startIndex = i;
+                nesting++;
+            }
+            if (content.charAt(j) === ']') {
+                if (nesting > 0) {
+                    nesting--;
+                }
+                else {
+                    let sub = content.substring(startIndex, j + 1);
+                    this.packet.push(new Packet(sub));
+                    i = j + 1;
+                    j = content.length;
+                    continue;
+                }
+            }
+        }
+        return i;
     }
 }
 export class Comparator {
