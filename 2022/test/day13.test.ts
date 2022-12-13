@@ -84,6 +84,15 @@ describe('Packet should', ()=> {
         expect((p.packet[1] as Packet).packet.length).toBe(3)
         expect((p.packet[1] as Packet).packet[2]).toBe(4)
     })
+    it('initialise a complex nested packet', () => {
+        let p = new Packet('[1,[2,[3,[4,[5,6,7]]]],8,9]')
+        
+        expect(p.packet.length).toBe(4)
+        expect((p.packet[1] as Packet).packet.length).toBe(2)
+        expect((((p.packet[1] as Packet).packet[1] as Packet).packet[1] as Packet).packet.length).toBe(2)
+        expect(p.packet[2] as number).toBe(8)
+        expect(p.packet[3] as number).toBe(9)
+    })
 })
 
 describe('Comparator should', () => {
