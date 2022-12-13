@@ -124,7 +124,7 @@ describe('ElevationMap should', () => {
         expect(p?.elev).toBe('a')
         expect(p?.steps).toBe(29)
     })
-    it.skip('find shortest path to a for real data', () => {
+    it('find shortest path to a for real data', () => {
         let l = new LoadLines('../input/day12.txt').lines
         let e = new ElevationMap(l)
 
