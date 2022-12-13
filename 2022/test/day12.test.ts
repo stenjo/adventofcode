@@ -33,43 +33,105 @@ describe('ElevationMap should', () => {
         let l = new LoadLines('../test/input/day12.txt').lines
         let e = new ElevationMap(l)
 
-        e.Move()
+        e.VisitPoint(e.start)
+        let p = e.getAt(0,1)
 
-        expect(e.current.elev).toBe('a')
-        expect(e.current.steps).toBe(1)
+        expect(p?.elev).toBe('a')
+        expect(p?.steps).toBe(1)
     })
     it('move 2 positions', () => {
         let l = new LoadLines('../test/input/day12.txt').lines
         let e = new ElevationMap(l)
 
-        e.Move()
-        e.Move()
+        e.VisitPoint(e.start)
+        let p = e.getAt(1,1)
 
-        expect(e.current.elev).toBe('b')
-        expect(e.current.steps).toBe(2)
+        expect(p?.elev).toBe('b')
+        expect(p?.steps).toBe(2)
     })
     it('move 3 positions', () => {
         let l = new LoadLines('../test/input/day12.txt').lines
         let e = new ElevationMap(l)
 
-        e.Move()
-        e.Move()
-        e.Move()
+        e.VisitPoint(e.start)
+        let p = e.getAt(1,2)
 
-        expect(e.current.elev).toBe('c')
-        expect(e.current.steps).toBe(3)
+
+        expect(p?.elev).toBe('c')
+        expect(p?.steps).toBe(3)
+    })
+    it('move 4 positions', () => {
+        let l = new LoadLines('../test/input/day12.txt').lines
+        let e = new ElevationMap(l)
+
+        e.VisitPoint(e.start)
+        let p = e.getAt(2,2)
+
+
+        expect(p?.elev).toBe('c')
+        expect(p?.steps).toBe(4)
+    })
+    it('move 5 positions', () => {
+        let l = new LoadLines('../test/input/day12.txt').lines
+        let e = new ElevationMap(l)
+
+        e.VisitPoint(e.start)
+        let p = e.getAt(2,3)
+
+
+        expect(p?.elev).toBe('c')
+        expect(p?.steps).toBe(5)
+    })
+    it('move 6 positions', () => {
+        let l = new LoadLines('../test/input/day12.txt').lines
+        let e = new ElevationMap(l)
+
+        e.VisitPoint(e.start)
+        let p = e.getAt(2,4)
+
+
+        expect(p?.elev).toBe('d')
+        expect(p?.steps).toBe(6)
     })
     it('find path to E', () => {
         let l = new LoadLines('../test/input/day12.txt').lines
         let e = new ElevationMap(l)
 
-        let i = 0
-        while (!e.current.isAt(e.end.x, e.end.y) && i < 1000) {
-            e.Move()
-            i++
-        }
-        expect(e.current.elev).toBe('z')
-        expect(e.current.steps).toBe(31)
+        e.VisitPoint(e.start)
+        let p = e.getAt(e.end.x, e.end.y)
+
+        expect(p?.elev).toBe('E')
+        expect(p?.steps).toBe(31)
     })
     
+    it.skip('find path to E for real data', () => {
+        let l = new LoadLines('../input/day12.txt').lines
+        let e = new ElevationMap(l)
+
+        e.VisitPoint(e.start)
+        let p = e.getAt(e.end.x, e.end.y)
+
+        expect(p?.elev).toBe('E')
+        expect(p?.steps).toBe(412)
+    })
+    it('find shortest path to a', () => {
+        let l = new LoadLines('../test/input/day12.txt').lines
+        let e = new ElevationMap(l)
+
+        e.VisitPoint(e.end)
+        let p = e.GetLowestSteps('a')
+
+        expect(p?.elev).toBe('a')
+        expect(p?.steps).toBe(29)
+    })
+    it.skip('find shortest path to a for real data', () => {
+        let l = new LoadLines('../input/day12.txt').lines
+        let e = new ElevationMap(l)
+
+        e.VisitPoint(e.end)
+        let p = e.GetLowestSteps('a')
+
+        expect(p?.elev).toBe('a')
+        expect(p?.steps).toBe(402)
+    })
 })

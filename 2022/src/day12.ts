@@ -35,32 +35,77 @@ export class Pos {
 }
 
 export class ElevationMap {
-    Move() {
-        let x = this.current.x;
-        let y = this.current.y;
-
-        let options = this.GetMoveOptions(this.current).shift()
-        this.updateCurrent(this.getAt(options?.x, options?.y));
+    GetLowestSteps(elevation: string):Pos {
+        let list:Pos[] = [];
+        for (let y = 0; y < this.map.length; y++) {
+            for (let x = 0; x < this.map[y].length; x++) {
+                if (this.map[y][x].elev == elevation && this.map[y][x].steps != 0) {
+                    list.push(this.map[y][x])
+                }
+            }
+        }
+        return list.sort((a, b) =>a.steps - b.steps).shift() as Pos;
     }
-    GetMoveOptions(current: Pos) {
-        let list = [];
-        if (this.isValidNext(current.x, current.y+1)) list.push({x: current.x, y: current.y+1});
-        if (this.isValidNext(current.x, current.y-1)) list.push({x: current.x, y: current.y-1});
-        if (this.isValidNext(current.x+1, current.y)) list.push({x: current.x+1, y: current.y});
-        if (this.isValidNext(current.x-1, current.y)) list.push({x: current.x-1, y: current.y});
-
-
-        let result = list.sort( (a, b) => {
-            let diff = (this.getAt(a.x, a.y) as Pos).steps - (this.getAt(b.x, b.y) as Pos).steps
-            if ((this.getAt(a.x, a.y) as Pos).steps > 0 ) diff += 100
-
-            return diff
+    VisitPoint(point: Pos) {
+        let pList = this.GetValidNeighbours(point)
+        pList.forEach((p) => {
+            if (p.steps > point.steps + 1 || p.steps == 0) {
+                (p as Pos).steps = point.steps + 1
+                this.VisitPoint(p as Pos);
+                (p as Pos).visited = true
+            }
         });
-
-        let stepList = result.map((p) => (this.getAt(p.x, p.y) as Pos).steps);
-
-        return result
     }
+    GetValidNeighbours(p:Pos) {
+        let list:Pos[] = []
+        if (this.isValidNext(p.x, p.y+1, p)) list.push(this.getAt(p.x, p.y+1) as Pos);
+        if (this.isValidNext(p.x, p.y-1, p)) list.push(this.getAt(p.x, p.y-1) as Pos);
+        if (this.isValidNext(p.x+1, p.y, p)) list.push(this.getAt(p.x+1, p.y) as Pos);
+        if (this.isValidNext(p.x-1, p.y, p)) list.push(this.getAt(p.x-1, p.y) as Pos);
+
+        return list
+    }
+    GetVisitOptions(p: Pos) {
+        let list = [];
+        if (this.isValidP(p.x, p.y+1, p)) list.push({x: p.x, y: p.y+1});
+        if (this.isValidP(p.x, p.y-1, p)) list.push({x: p.x, y: p.y-1});
+        if (this.isValidP(p.x+1, p.y, p)) list.push({x: p.x+1, y: p.y});
+        if (this.isValidP(p.x-1, p.y, p)) list.push({x: p.x-1, y: p.y});
+
+        return list
+    }
+    PrintRopeVisits() {
+        const minY = 0
+        const maxY = this.map.length
+        const minX = 0
+        const maxX = this.map[0].length
+        for (let y = minY; y < maxY; y++) {
+            let line = ''
+            for (let x = minX; x < maxX; x++) {
+                if (x == 0 && y == 0) {
+                    line += 's'
+                } else {
+                    line += this.getAt(x,y)?.visited ? this.getAt(x,y)?.elev : '.'
+                }
+            }
+            console.log(line)
+        }
+    }
+    private isValidP(x: number, y: number, p:Pos) {
+        if (y >= this.map.length
+            || y < 0
+            || x >= this.map[y].length
+            || x < 0) 
+            return false;
+
+        let n = this.getAt(x, y) as Pos;
+        let nElev = n.elev.charCodeAt(0)
+        let pElev = p.elev.charCodeAt(0)
+        if (n.elev == 'E') nElev = 'z'.charCodeAt(0)
+
+        return nElev < pElev + 2 && nElev > pElev -2 && (n.steps > p.steps-1 || n.steps == 0);
+    }
+
     end!: Pos;
     start!: Pos;
     map: Pos[][];
@@ -82,31 +127,30 @@ export class ElevationMap {
         }
     }
 
-    private getAt(y: number|undefined, x: number|undefined) {
+    getAt(x: number|undefined, y: number|undefined) {
         if ( x === undefined || y === undefined) return
         return this.map[y][x];
     }
 
-    private updateCurrent(next: Pos|undefined) {
-        if (next === undefined) return
-        this.current.elev = next.elev;
-        this.current.x = next.x;
-        this.current.y = next.y;
-        this.current.steps++;
-        if (next.steps > this.current.steps || next.steps == 0) {
-            next.steps = this.current.steps;
-        }
-        else {
-            this.current.steps = next.steps;
-        }
-    }
+    private isValidNext(x: number, y: number, p:Pos) {
+        if (y >= this.map.length
+            || y < 0
+            || x >= this.map[y].length
+            || x < 0) 
+            return false;
 
-    private isValidNext(y: number, x: number) {
-        return y < this.map.length
-        && y >= 0
-        && x < this.map[y].length
-        && x >= 0
-        && this.map[y][x].elev.charCodeAt(0) < this.current.elev.charCodeAt(0) + 2 
-        && this.map[y][x].elev.charCodeAt(0) > this.current.elev.charCodeAt(0) - 2;
+        let n = this.getAt(x, y) as Pos;
+        let nElev = n.elev.charCodeAt(0)
+        let pElev = p.elev.charCodeAt(0)
+        if (n.elev == 'E') nElev = 'z'.charCodeAt(0)
+
+        return nElev < pElev + 2 && nElev > pElev -2
     }
 }
+
+let l = new LoadLines('../input/day12.txt').lines
+let e = new ElevationMap(l)
+
+e.VisitPoint(e.start)
+e.PrintRopeVisits()
+
