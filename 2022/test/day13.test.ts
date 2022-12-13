@@ -6,6 +6,12 @@ describe('LoadLines should', () => {
 
         expect(l.lines.length).toBeGreaterThan(0)
     })
+    it('get pairs', () => {
+        let l = new LoadLines('../test/input/day13.txt');
+
+        expect(l.pairs.length).toBe(8)
+        expect(l.pairs[7][0].length).toBeGreaterThan(2)
+    })
 })
 
 describe('Packet should', ()=> {
@@ -101,10 +107,77 @@ describe('Comparator should', () => {
 
         expect(c).not.toBeNull()
     })
-    it('compare high integer with low integer resulting in "right"', () => {
+    it('compare high integer with low integer => "wrong"', () => {
         let c = new Comparator()
         let result = c.compare(2,1)
 
+        expect(result).toBe('wrong')
+    })
+    it('compare high integer with low integer => "right"', () => {
+        let c = new Comparator()
+        let result = c.compare(1,2)
+
         expect(result).toBe('right')
+    })
+    it('compare equal integers => "same"', () => {
+        let c = new Comparator()
+        let result = c.compare(2,2)
+
+        expect(result).toBe('same')
+    })
+    it('compare equal arrays => "same"', () => {
+        let c = new Comparator()
+        let p1 = new Packet('[2]')
+        let p2 = new Packet('[2]')
+        let result = c.compare(p1,p2)
+
+        expect(result).toBe('same')
+    })
+    it('compare low array with high array => "right"', () => {
+        let c = new Comparator()
+        let p1 = new Packet('[1]')
+        let p2 = new Packet('[2]')
+        let result = c.compare(p1,p2)
+
+        expect(result).toBe('right')
+    })
+    it('compare arrays with several integers => "right"', () => {
+        let c = new Comparator()
+        let p1 = new Packet('[1,1]')
+        let p2 = new Packet('[1,2]')
+        let result = c.compare(p1,p2)
+
+        expect(result).toBe('right')
+    })
+    it('compare long arrays with several integers => "right"', () => {
+        let c = new Comparator()
+        let p1 = new Packet('[1,1,3,1,1]')
+        let p2 = new Packet('[1,1,5,1,1]')
+        let result = c.compare(p1,p2)
+
+        expect(result).toBe('right')
+    })
+    it('compare empty array with longer array => "right"', () => {
+        let c = new Comparator()
+        let p1 = new Packet('[]')
+        let p2 = new Packet('[3]')
+        let result = c.compare(p1,p2)
+
+        expect(result).toBe('right')
+    })
+    it('compare complex arrays => "wrong"', () => {
+        let c = new Comparator()
+        let p1 = new Packet('[1,[2,[3,[4,[5,6,7]]]],8,9]')
+        let p2 = new Packet('[1,[2,[3,[4,[5,6,0]]]],8,9]')
+        let result = c.compare(p1,p2)
+
+        expect(result).toBe('wrong')
+    })
+    it('compare package pair => "wrong"', () => {
+        let c = new Comparator()
+        let pair:string[] = ['[1,[2,[3,[4,[5,6,7]]]],8,9]', '[1,[2,[3,[4,[5,6,0]]]],8,9]']
+        let result = c.ComparePair(pair)
+
+        expect(result).toBe('wrong')
     })
 })
