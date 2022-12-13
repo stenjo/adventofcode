@@ -30,7 +30,9 @@ export class LoadLines {
 }
 
 export class Packet {
+    
     packet: (Packet | number) []
+    
     constructor(ps: string) {
         this.packet = []
         if (ps.length > 2) {
@@ -81,48 +83,51 @@ export class Packet {
         return i;
     }
 }
+
+export enum Order {
+    Wrong = 1,
+    Same = 0,
+    Right = -1,
+}
 export class Comparator {
+    
     DecodeKey(packages: string[]) {
-        packages.push('[[2]]')
-        packages.push('[[6]]')
+        
+        const DIV2 = '[[2]]'
+        const DIV6 = '[[6]]'
+
+        packages.push(DIV2)
+        packages.push(DIV6)
         let list = this.SortPackages(packages)
-        console.log(list.indexOf('[[6]]') + 1)
-        console.log(list.indexOf('[[2]]') + 1)
-        return (list.indexOf('[[6]]') + 1) * (list.indexOf('[[2]]') + 1)
+
+        return (list.indexOf(DIV2) + 1) * (list.indexOf(DIV6) + 1)
     }
+
     SortPackages(packages: string[]) {
-        // let plist = packages.join(';').replace(';;', ';').split(';')
+
         let plist = packages.filter(p => p.length > 0)
 
-        plist.sort((a, b) => {
-            let r = this.ComparePair([a,b])
-            if (r.includes('same')) return 0
-            if (r.includes('right')) return -1
-            return 1
-        })
+        plist.sort((a, b) => this.ComparePair([a,b]))
 
-        console.log(plist)
         return plist
     }
+
     IndicesSum(pairs: string[][]) {
-        let indices = pairs.map((p, i) =>{
-            if (this.ComparePair(p) == 'right') {
-                return i+1
-            }
-            return 0
-        })
+        let indices = pairs.map((p, i) => this.ComparePair(p) == Order.Right ? i+1 : 0)
         return indices.reduce((a, b) => a + b)
     }
-    ComparePair(pair: string[]) {
+
+    ComparePair(pair: string[]):Order {
         let p1 = new Packet(pair[0])
         let p2 = new Packet(pair[1])
         return this.compare(p1, p2);
     }
-    compare(val1:Packet | number, val2: Packet | number):string {
+
+    compare(val1:Packet | number, val2: Packet | number):Order {
         if (typeof val1 === 'number' && typeof val2 === 'number') {
-            if (val1 === val2) return 'same'
-            if (val1 < val2) return 'right'
-            if (val1 > val2) return 'wrong'
+            if (val1 === val2) return Order.Same
+            if (val1 < val2) return Order.Right
+            if (val1 > val2) return Order.Wrong
         }
 
         if (typeof val1 === 'number') {
@@ -133,12 +138,10 @@ export class Comparator {
         }
         for (let i = 0; i < Math.min(val1.packet.length, val2.packet.length); i++) {
             let r = this.compare(val1.packet[i], val2.packet[i])
-            if (!r.includes('same')) return r
+            if (r != Order.Same) return r
         }
-        if (val1.packet.length < val2.packet.length) return 'right'
-        if (val1.packet.length > val2.packet.length) return 'wrong'
-        return 'same'
-    }
-    constructor() {
+        if (val1.packet.length < val2.packet.length) return Order.Right
+        if (val1.packet.length > val2.packet.length) return Order.Wrong
+        return Order.Same
     }
 }
