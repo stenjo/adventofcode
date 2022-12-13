@@ -45,10 +45,8 @@ export class Packet {
 
     private subPacket(i: number, content: string) {
         let nesting = 0;
-        let startIndex = i;
         for (let j = i + 1; j < content.length; j++) {
             if (content.charAt(j) === '[') {
-                startIndex = i;
                 nesting++;
             }
             if (content.charAt(j) === ']') {
@@ -56,7 +54,7 @@ export class Packet {
                     nesting--;
                 }
                 else {
-                    let sub = content.substring(startIndex, j + 1);
+                    let sub = content.substring(i, j + 1);
                     this.packet.push(new Packet(sub));
                     i = j + 1;
                     j = content.length;
