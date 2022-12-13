@@ -20,12 +20,45 @@ export class Packet {
         if (ps.length > 2) {
             let start = ps.indexOf('[')
             let end = ps.lastIndexOf(']')
-            let cotent = ps.substring(start+1,end)
-            if (cotent.includes('[')) {
-                this.packet.push(new Packet(cotent))
-                return
+            let content = ps.substring(start+1,end)
+            let numString = ''
+            for (let i = 0; i < content.length; i++) {
+                if (content.charAt(i) === '[') {
+                    let nesting = 0
+                    let startIndex = 0
+                    for (let j = i+1; j < content.length; j++) {
+                        if (content.charAt(j) === '[') {
+                            startIndex = i
+                            nesting ++
+                        }
+                        if (content.charAt(j) === ']') {
+                            if (nesting > 0) {
+                                nesting --
+                            }
+                            else {
+                                let sub = content.substring(startIndex, j+1)
+                                this.packet.push(new Packet(sub))
+                                i = j+1
+                                j = content.length
+                                continue
+                            }
+                        }
+                    }
+                }
+                if (content.charAt(i) === ',') {
+                    if (numString.length > 0) {
+                        this.packet.push(Number(numString))
+                        numString = ''
+                    }
+                }
+                else {
+                    numString += content.charAt(i)
+                }
             }
-            ps.substring(start+1,end).split(',').forEach(n => this.packet.push(Number(n)))
+            if (numString.length > 0) {
+                this.packet.push(Number(numString))
+                numString = ''
+            }
         }
     }
 }
