@@ -82,6 +82,37 @@ export class Packet {
     }
 }
 export class Comparator {
+    DecodeKey(packages: string[]) {
+        packages.push('[[2]]')
+        packages.push('[[6]]')
+        let list = this.SortPackages(packages)
+        console.log(list.indexOf('[[6]]') + 1)
+        console.log(list.indexOf('[[2]]') + 1)
+        return (list.indexOf('[[6]]') + 1) * (list.indexOf('[[2]]') + 1)
+    }
+    SortPackages(packages: string[]) {
+        // let plist = packages.join(';').replace(';;', ';').split(';')
+        let plist = packages.filter(p => p.length > 0)
+
+        plist.sort((a, b) => {
+            let r = this.ComparePair([a,b])
+            if (r.includes('same')) return 0
+            if (r.includes('right')) return -1
+            return 1
+        })
+
+        console.log(plist)
+        return plist
+    }
+    IndicesSum(pairs: string[][]) {
+        let indices = pairs.map((p, i) =>{
+            if (this.ComparePair(p) == 'right') {
+                return i+1
+            }
+            return 0
+        })
+        return indices.reduce((a, b) => a + b)
+    }
     ComparePair(pair: string[]) {
         let p1 = new Packet(pair[0])
         let p2 = new Packet(pair[1])
@@ -102,7 +133,6 @@ export class Comparator {
         }
         for (let i = 0; i < Math.min(val1.packet.length, val2.packet.length); i++) {
             let r = this.compare(val1.packet[i], val2.packet[i])
-            console.log(r)
             if (!r.includes('same')) return r
         }
         if (val1.packet.length < val2.packet.length) return 'right'

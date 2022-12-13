@@ -180,4 +180,39 @@ describe('Comparator should', () => {
 
         expect(result).toBe('wrong')
     })
+    it('get IndiceSum => 13', () => {
+        let c = new Comparator()
+        let pairs = new LoadLines('../test/input/day13.txt').pairs
+        let result = c.IndicesSum(pairs)
+
+        expect(result).toBe(13)
+    })
+    it('get IndiceSum for real data', () => {
+        let c = new Comparator()
+        let pairs = new LoadLines('../input/day13.txt').pairs
+        let result = c.IndicesSum(pairs)
+
+        expect(result).toBe(5938)
+    })
+    it('get sorted packages => 16', () => {
+        let c = new Comparator()
+        let packages = new LoadLines('../test/input/day13.txt').lines
+        let result = c.SortPackages(packages)
+
+        expect(result.length).toBe(16)
+    })
+    it('get DecodeKey => "140"', () => {
+        let c = new Comparator()
+        let packages = new LoadLines('../test/input/day13.txt').lines
+        let result = c.DecodeKey(packages)
+
+        expect(result).toBe(140)
+    })
+    it('get DecodeKey for real data', () => {
+        let c = new Comparator()
+        let packages = new LoadLines('../input/day13.txt').lines
+        let result = c.DecodeKey(packages)
+
+        expect(result).toBe(29025)
+    })
 })
