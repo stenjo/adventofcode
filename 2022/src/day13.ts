@@ -66,7 +66,9 @@ export class Packet {
     }
 }
 export class Comparator {
-    constructor(p1:string, p2:string) {
-
+    compare(arg0: number, arg1: number) {
+        return 'right'
+    }
+    constructor() {
     }
 }

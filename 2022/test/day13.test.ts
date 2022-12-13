@@ -97,8 +97,14 @@ describe('Packet should', ()=> {
 
 describe('Comparator should', () => {
     it('be created', () => {
-        let c = new Comparator('','')
+        let c = new Comparator()
 
         expect(c).not.toBeNull()
+    })
+    it('compare high integer with low integer resulting in "right"', () => {
+        let c = new Comparator()
+        let result = c.compare(2,1)
+
+        expect(result).toBe('right')
     })
 })
