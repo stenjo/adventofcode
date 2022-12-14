@@ -35,12 +35,16 @@ export class Cave {
                 let start = pts[i]
                 let end = pts[i + 1]
 
-                this.createRockRange(start, end).forEach(r => {if (!this.RockAt(r.x,r.y)) this.structures.push(r)} )
+                this.createRockRange(start, end)
+                .forEach(r => {
+                    if (!this.RockAt(r.x,r.y)) {
+                        this.structures.push(r)
+                    }
+                } )
             }
         })
     }
-
-
+     
     private createRockRange(start: number[], end: number[]): Rock[] {
         let startX = start[0];
         let startY = start[1];
@@ -51,15 +55,15 @@ export class Cave {
         let yLength = Math.abs(endY - startY);
         if (yLength > 0) {
             let incr = yLength / (endY - startY);
-            let yes = [...Array(yLength + 1)].map((_, i) => startY + i * incr);
-            yes.forEach(y => rocks.push(new Rock(startX, y)));
+            let yCoords = [...Array(yLength + 1)].map((_, i) => startY + i * incr);
+            yCoords.forEach(y => rocks.push(new Rock(startX, y)));
         }
 
         let xLength = Math.abs(endX - startX);
         if (xLength > 0) {
             let incr = xLength / (endX - startX);
-            let xes = [...Array(xLength + 1)].map((_, i) => startX + i * incr);
-            xes.forEach(x => rocks.push(new Rock(x, startY)));
+            let xCoords = [...Array(xLength + 1)].map((_, i) => startX + i * incr);
+            xCoords.forEach(x => rocks.push(new Rock(x, startY)));
         }
 
         return rocks

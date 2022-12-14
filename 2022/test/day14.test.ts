@@ -40,4 +40,13 @@ describe('Cave should', () => {
         expect(c.RockAt(498,5)).toBe(true)
         expect(c.RockAt(497,6)).toBe(true)
     })
+    it('draw test structures', () => {
+        let input = new LoadLines('../test/input/day14.txt').lines
+        let c = new Cave(input)
+
+        expect(c.structures.length).toBe(20)
+        expect(c.RockAt(498,5)).toBe(true)
+        expect(c.RockAt(497,6)).toBe(true)
+        expect(c.RockAt(502,9)).toBe(true)
+    })
 })
