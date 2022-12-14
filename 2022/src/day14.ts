@@ -20,14 +20,57 @@ class Rock {
         this.y = y;
     }
 }
+class Sand {
+    x: number;
+    y: number;
+    resting: boolean = false;
+    constructor(x: number, y: number) { 
+        this.x = x;
+        this.y = y;
+    }
+}
 export class Cave {
+    DropUntilOverflow() {
+        let sands = -1
+        while (this.SandResting() != sands) {
+            sands = this.SandResting()
+            this.DropSand()
+        }
+    }
+    sand: Sand[] = [];
+    SandResting(): number {
+        if (this.sand.length == 0) { return 0}
+        return this.sand.map(sand => sand.resting == true ? Number(1) : Number(0)).reduce((a, b) => a + b)
+    }
+    DropSand() {
+        let s = new Sand(500, 0)
+        let maxY = this.mountain.map(r => r.y).sort().pop() as number
+
+        while (s.resting == false && s.y < maxY) {
+            if (!this.RockAt(s.x, s.y + 1) && !this.SandAt(s.x, s.y + 1)) {
+                s.y++
+            }
+            else if (!this.RockAt(s.x - 1, s.y + 1) && !this.SandAt(s.x - 1, s.y + 1)) {
+                s.x--
+                s.y++
+            }
+            else if (!this.RockAt(s.x + 1, s.y + 1) && !this.SandAt(s.x + 1, s.y + 1)) {
+                s.x++
+                s.y++
+            }
+            else {
+                s.resting = true
+            }
+        }
+        if (s.y < maxY) this.sand.push(s)
+    }
     PrintCave():string[] {
 
-        let minX = this.structures.map(r => r.x).sort().shift() as number
-        let maxX = this.structures.map(r => r.x).sort().pop() as number
+        let minX = this.mountain.map(r => r.x).sort().shift() as number
+        let maxX = this.mountain.map(r => r.x).sort().pop() as number
 
         let minY = 0
-        let maxY = this.structures.map(r => r.y).sort().pop() as number
+        let maxY = this.mountain.map(r => r.y).sort().pop() as number
 
         let line = ''
         let map:string[] = []
@@ -38,7 +81,9 @@ export class Cave {
                     line += '+'
                     continue
                 }
-                if (this.RockAt(x,y)) {
+                if (this.SandAt(x, y)) {
+                    line += 'o'
+                } else if (this.RockAt(x,y)) {
                     line += '#'
                 }
                 else {
@@ -49,13 +94,16 @@ export class Cave {
         }
         return map
     }
-    RockAt(arg0: number, arg1: number): boolean {
-        return this.structures.find(r => r.x == arg0 && r.y == arg1) !== undefined
+    SandAt(x: number, y: number): boolean {
+        return this.sand.find(r => r.x == x && r.y == y) !== undefined
     }
-    structures: Rock[];
+    RockAt(x: number, y: number): boolean {
+        return this.mountain.find(r => r.x == x && r.y == y) !== undefined
+    }
+    mountain: Rock[];
 
     constructor(input: string[] = ['']) {
-        this.structures = []
+        this.mountain = []
         input.forEach(line => {
             let pts:number[][] = line.split(' -> ').map(point => point.split(',').map(n=>Number(n)))
 
@@ -66,7 +114,7 @@ export class Cave {
                 this.createRockRange(start, end)
                 .forEach(r => {
                     if (!this.RockAt(r.x,r.y)) {
-                        this.structures.push(r)
+                        this.mountain.push(r)
                     }
                 })
             }
