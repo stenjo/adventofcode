@@ -21,9 +21,23 @@ describe('Cave should', () => {
 
         expect(c.structures.length).toBeGreaterThan(0)
     })
-    it('draw one line of rock', () => {
+    it('draw one vertical line of rock', () => {
         let c = new Cave(['498,4 -> 498,6'])
 
         expect(c.structures.length).toBe(3)
+        expect(c.RockAt(498,5)).toBe(true)
+    })
+    it('draw one horisontal line of rock', () => {
+        let c = new Cave(['498,6 -> 496,6'])
+
+        expect(c.structures.length).toBe(3)
+        expect(c.RockAt(497,6)).toBe(true)
+    })
+    it('draw two lines of rock', () => {
+        let c = new Cave(['498,4 -> 498,6 -> 496,6'])
+
+        expect(c.structures.length).toBe(5)
+        expect(c.RockAt(498,5)).toBe(true)
+        expect(c.RockAt(497,6)).toBe(true)
     })
 })
