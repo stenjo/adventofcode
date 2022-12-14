@@ -100,7 +100,7 @@ describe('ElevationMap should', () => {
         e.VisitPoint(e.start)
         let p = e.getAt(e.end.x, e.end.y)
 
-        expect(p?.elev).toBe('E')
+        expect(p?.elev).toBe('z')
         expect(p?.steps).toBe(31)
     })
     
@@ -114,17 +114,18 @@ describe('ElevationMap should', () => {
         expect(p?.elev).toBe('E')
         expect(p?.steps).toBe(412)
     })
-    it('find shortest path to a', () => {
+    it.only('find shortest path to a', () => {
         let l = new LoadLines('../test/input/day12.txt').lines
         let e = new ElevationMap(l)
 
         e.VisitPoint(e.end)
         let p = e.GetLowestSteps('a')
 
+        e.PrintVisits()
         expect(p?.elev).toBe('a')
         expect(p?.steps).toBe(29)
     })
-    it('find shortest path to a for real data', () => {
+    it.skip('find shortest path to a for real data', () => {
         let l = new LoadLines('../input/day12.txt').lines
         let e = new ElevationMap(l)
 

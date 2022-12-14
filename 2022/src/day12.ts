@@ -14,17 +14,13 @@ export class LoadLines {
 }
 
 export class Pos {
-    isAt(x: number, y: number) {
-        return this.x == x && this.y == y;
-    }
-    steps!: number;
-    Clone(): Pos {
-        return new Pos(this.x, this.y, this.elev.toString());
-    }
+    isAt(x: number, y: number) { return this.x == x && this.y == y;  }
+    Clone(): Pos { return new Pos(this.x, this.y, this.elev.toString()); }
     x: number;
     y: number;
     elev!: string;
     visited: boolean;
+    steps!: number;
     constructor(x: number, y: number, elev: string) {
         this.x = x;
         this.y = y;
@@ -44,15 +40,24 @@ export class ElevationMap {
                 }
             }
         }
-        return list.sort((a, b) =>a.steps - b.steps).shift() as Pos;
+        return list.sort((a, b) => a.steps - b.steps).shift() as Pos;
     }
     VisitPoint(point: Pos) {
         let pList = this.GetValidNeighbours(point)
+        if (point.x == 1 && point.y == 3) {
+            let v = point.visited
+        }
         pList.forEach((p) => {
+            // p.visited = true;
+            // (p as Pos).steps = point.steps + 1
+            // this.VisitPoint(p);
+            if (p.steps < point.steps + 1 && p.steps != 0) {
+                point.steps = p.steps + 1;
+            } else
             if (p.steps > point.steps + 1 || p.steps == 0) {
-                (p as Pos).steps = point.steps + 1
+                (p as Pos).steps = point.steps + 1;
+                (p as Pos).visited = true;
                 this.VisitPoint(p as Pos);
-                (p as Pos).visited = true
             }
         });
     }
@@ -65,29 +70,28 @@ export class ElevationMap {
 
         return list
     }
-    // GetVisitOptions(p: Pos) {
-    //     let list = [];
-    //     if (this.isValidP(p.x, p.y+1, p)) list.push({x: p.x, y: p.y+1});
-    //     if (this.isValidP(p.x, p.y-1, p)) list.push({x: p.x, y: p.y-1});
-    //     if (this.isValidP(p.x+1, p.y, p)) list.push({x: p.x+1, y: p.y});
-    //     if (this.isValidP(p.x-1, p.y, p)) list.push({x: p.x-1, y: p.y});
-
-    //     return list
-    // }
     PrintVisits() {
         const minY = 0
         const maxY = this.map.length
         const minX = 0
         const maxX = this.map[0].length
+        let pMap: string[] = []
         for (let y = minY; y < maxY; y++) {
             let line = ''
             for (let x = minX; x < maxX; x++) {
-                if (x == 0 && y == 0) {
-                    line += 's'
+                if (x == this.start.x && y == this.start.y) {
+                    line += '  S '
+                } else if (x == this.end.x && y == this.end.y) {
+                    line += '  E '
                 } else {
                     let p = this.getAt(x,y) as Pos
-                    if (this.hasUnvisitedNeighbour(p.x,p.y)) {
-                        line += p.elev
+                    if (this.hasUnvisitedNeighbour(p.x,p.y) || p.steps > 0) {
+                    // if (p.visited) {
+                        // line += p.elev
+                        let s = String(p.steps)
+                        if (s.length == 1) s = '  ' + s + ' '
+                        if (s.length == 2) s = ' ' + s + ' '
+                        line += s
                     }
                     else { 
                         line += '.'
@@ -95,8 +99,9 @@ export class ElevationMap {
                     // line += this.getAt(x,y)?.visited ? this.getAt(x,y)?.elev : this.getAt(x,y)?.elev.toUpperCase()
                 }
             }
-            console.log(line)
+            pMap.push(line)
         }
+        console.log(pMap)
     }
     private hasUnvisitedNeighbour(x:number, y:number) {
         
@@ -113,25 +118,11 @@ export class ElevationMap {
 
         return false
     }
-    // private isValidP(x: number, y: number, p:Pos) {
-    //     if (y >= this.map.length
-    //         || y < 0
-    //         || x >= this.map[y].length
-    //         || x < 0) 
-    //         return false;
-
-    //     let n = this.getAt(x, y) as Pos;
-    //     let nElev = n.elev.charCodeAt(0)
-    //     let pElev = p.elev.charCodeAt(0)
-    //     if (n.elev == 'E') nElev = 'z'.charCodeAt(0)
-
-    //     return nElev < pElev + 2 && nElev > pElev -2 && (n.steps > p.steps-1 || n.steps == 0);
-    // }
 
     end!: Pos;
     start!: Pos;
     map: Pos[][];
-    current!: Pos;
+    // current!: Pos;
 
     constructor(m: string[]) {
         this.map = [];
@@ -140,19 +131,21 @@ export class ElevationMap {
         })
         for (let y = 0; y < this.map.length; y++) {
             for (let x = 0; x < this.map[y].length; x++) {
-                if (this.map[y][x].elev == 'E') this.end = new Pos(x,y, 'z')
+                if (this.map[y][x].elev == 'E') this.end = this.map[y][x]
                 if (this.map[y][x].elev == 'S') {
-                    this.start = new Pos(x,y, 'a')
-                    this.current = this.start.Clone()
+                    this.start = this.map[y][x]
+                    // this.current = this.start.Clone()
                 }
             }
         }
+        this.end.elev = 'z'
+        this.start.elev = 'a'
     }
 
     getAt(x: number|undefined, y: number|undefined) {
         if ( x === undefined || y === undefined) return undefined
-        if (y >= this.map.length || y < 0
-            || x >= this.map[y].length || x < 0) 
+        if (    y >= this.map.length || y < 0
+            ||  x >= this.map[y].length || x < 0) 
             return undefined;
             
         return this.map[y][x];
@@ -166,6 +159,7 @@ export class ElevationMap {
             return false;
 
         let n = this.getAt(x, y) as Pos;
+        // if (n.visited) return false
         let nElev = n.elev.charCodeAt(0)
         let pElev = p.elev.charCodeAt(0)
         if (n.elev == 'E') nElev = 'z'.charCodeAt(0)
@@ -175,9 +169,9 @@ export class ElevationMap {
     }
 }
 
-let l = new LoadLines('../input/day12.txt').lines
-let e = new ElevationMap(l)
+// let l = new LoadLines('../input/day12.txt').lines
+// let e = new ElevationMap(l)
 
-e.VisitPoint(e.start)
-e.PrintVisits()
+// e.VisitPoint(e.start)
+// e.PrintVisits()
 
