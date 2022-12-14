@@ -21,6 +21,34 @@ class Rock {
     }
 }
 export class Cave {
+    PrintCave():string[] {
+
+        let minX = this.structures.map(r => r.x).sort().shift() as number
+        let maxX = this.structures.map(r => r.x).sort().pop() as number
+
+        let minY = 0
+        let maxY = this.structures.map(r => r.y).sort().pop() as number
+
+        let line = ''
+        let map:string[] = []
+        for (let y = minY; y <= maxY; y++) {
+            line = y + ' '
+            for (let x = minX; x <= maxX; x++) {
+                if (y == 0 && x == 500) {
+                    line += '+'
+                    continue
+                }
+                if (this.RockAt(x,y)) {
+                    line += '#'
+                }
+                else {
+                    line += '.'
+                }
+            }
+            map.push(line)
+        }
+        return map
+    }
     RockAt(arg0: number, arg1: number): boolean {
         return this.structures.find(r => r.x == arg0 && r.y == arg1) !== undefined
     }
@@ -40,7 +68,7 @@ export class Cave {
                     if (!this.RockAt(r.x,r.y)) {
                         this.structures.push(r)
                     }
-                } )
+                })
             }
         })
     }

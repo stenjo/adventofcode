@@ -49,4 +49,12 @@ describe('Cave should', () => {
         expect(c.RockAt(497,6)).toBe(true)
         expect(c.RockAt(502,9)).toBe(true)
     })
+    it('draw structures on screen', () => {
+        let input = new LoadLines('../test/input/day14.txt').lines
+        let c = new Cave(input)
+        let scr = c.PrintCave()
+
+        console.log(scr)
+        expect(scr.length).toBeGreaterThan(9)
+    })
 })
