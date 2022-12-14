@@ -30,6 +30,9 @@ class Sand {
     }
 }
 export class Cave {
+    DropUntilTop() {
+        let sands = -1
+    }
     DropUntilOverflow() {
         let sands = -1
         while (this.SandResting() != sands) {
@@ -40,11 +43,11 @@ export class Cave {
     sand: Sand[] = [];
     SandResting(): number {
         if (this.sand.length == 0) { return 0}
-        return this.sand.map(sand => sand.resting == true ? Number(1) : Number(0)).reduce((a, b) => a + b)
+        return this.sand.length
     }
     DropSand() {
         let s = new Sand(500, 0)
-        let maxY = this.mountain.map(r => r.y).sort().pop() as number
+        let maxY = this.mountain.map(r => r.y).sort((a, b) => a - b).pop() as number
 
         while (s.resting == false && s.y < maxY) {
             if (!this.RockAt(s.x, s.y + 1) && !this.SandAt(s.x, s.y + 1)) {
@@ -66,16 +69,17 @@ export class Cave {
     }
     PrintCave():string[] {
 
-        let minX = this.mountain.map(r => r.x).sort().shift() as number
-        let maxX = this.mountain.map(r => r.x).sort().pop() as number
+        let minX = this.mountain.map(r => r.x).sort((a, b) => a - b).shift() as number
+        let maxX = this.mountain.map(r => r.x).sort((a, b) => a - b).pop() as number
 
         let minY = 0
-        let maxY = this.mountain.map(r => r.y).sort().pop() as number
+        let maxY = this.mountain.map(r => r.y).sort((a, b) => a - b).pop() as number
 
         let line = ''
         let map:string[] = []
         for (let y = minY; y <= maxY; y++) {
             line = y + ' '
+            if (y < 10) line = ' ' + line
             for (let x = minX; x <= maxX; x++) {
                 if (y == 0 && x == 500) {
                     line += '+'

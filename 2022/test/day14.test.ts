@@ -49,20 +49,18 @@ describe('Cave should', () => {
         expect(c.RockAt(497,6)).toBe(true)
         expect(c.RockAt(502,9)).toBe(true)
     })
-    it.skip('draw structures on screen', () => {
+    it('draw structures on screen', () => {
         let input = new LoadLines('../test/input/day14.txt').lines
         let c = new Cave(input)
         let scr = c.PrintCave()
 
-        console.log(scr)
         expect(scr.length).toBeGreaterThan(9)
     })
-    it.skip('draw real structures on screen', () => {
+    it('draw real structures on screen', () => {
         let input = new LoadLines('../input/day14.txt').lines
         let c = new Cave(input)
         let scr = c.PrintCave()
 
-        console.log(scr)
         expect(scr.length).toBeGreaterThan(9)
     })
     it('drop sand until rest', () => {
@@ -71,7 +69,6 @@ describe('Cave should', () => {
 
         c.DropSand()
         
-        console.log(c.PrintCave())
         expect(c.SandResting()).toBe(1)
     })
     it('drop two sand until rest', () => {
@@ -80,8 +77,7 @@ describe('Cave should', () => {
 
         c.DropSand()
         c.DropSand()
-        
-        console.log(c.PrintCave())
+
         expect(c.SandResting()).toBe(2)
         expect(c.SandAt(499,8)).toBe(true)
     })
@@ -104,7 +100,6 @@ describe('Cave should', () => {
 
         c.DropUntilOverflow()
         
-        console.log(c.PrintCave())
         expect(c.SandResting()).toBe(24)
         expect(c.SandAt(499,8)).toBe(true)
         expect(c.SandAt(501,8)).toBe(true)
@@ -115,7 +110,16 @@ describe('Cave should', () => {
 
         c.DropUntilOverflow()
         
-        console.log(c.PrintCave())
-        expect(c.SandResting()).toBe(595)
+        expect(c.SandResting()).toBe(964)
+    })
+    it('drop sand until overflow', () => {
+        let input = new LoadLines('../test/input/day14.txt').lines
+        let c = new Cave(input)
+
+        c.DropUntilTop()
+        
+        expect(c.SandResting()).toBe(24)
+        expect(c.SandAt(499,8)).toBe(true)
+        expect(c.SandAt(501,8)).toBe(true)
     })
 })
