@@ -36,19 +36,12 @@ export class Beacon {
 
 export class Cave {
     CoverageAtLine(line: number):number {
-        this.cov = []
+        this.coverage = []
         this.sensors.forEach(s => this.addCoverage(s, line));
-        this.sensors.forEach(s => {
-            if (s.y == line && this.cov.includes(s.x)) {
-                this.cov.splice(this.cov.indexOf(s.x),1)
-            }
-        })
-        this.beacons.forEach(b => {
-            if (b.y == line && this.cov.includes(b.x)) {
-                this.cov.splice(this.cov.indexOf(b.x),1)
-            }
-        })
-        return this.cov.length;
+        let sum = this.coverage.reduce((acc, s) => {
+            return acc + (s.end - s.start);
+        }, 0);
+        return sum;
     }
     GetSensorAt(arg0: number, arg1: number) {
         let sensor = this.sensors.filter(s => s.x === arg0 && s.y === arg1)
@@ -65,7 +58,7 @@ export class Cave {
 
     sensors: Sensor[] = [];
     beacons: Beacon[] = [];;
-    coverage: {x: number, y: number}[] = [];
+    coverage: {start: number, end: number}[] = [];
     cov: number[] = [];
     Deploy(deployStr: string) {
         if (deployStr.length == 0) return
@@ -87,12 +80,24 @@ export class Cave {
 
     private addCoverage(sensor:Sensor, y:number) {
         let range = (2 * sensor.range + 1) - 2 *Math.abs(sensor.y - y)
-        let start = sensor.x - sensor.range + Math.abs(sensor.y - y)
-        for (let i = start+1; i <= start + range; i++) {
-            if (this.cov.includes(i) == false) {
-                this.cov.push(i)
-            }
+        let begin = sensor.x - sensor.range + Math.abs(sensor.y - y)
+        let checked: {start: number, end: number}[] = []
+        if (range < 1) return
+        if (this.coverage.length == 0) {
+            this.coverage.push({start: begin, end: begin + range})
+            return
         }
+        while(this.coverage.length > 0 ) {
+            let c = this.coverage.shift() as {start: number, end: number}
+            if (begin < c.end) {
+                checked.push({start: c.start, end: begin})
+                checked.push({start: begin, end: begin + range})
+                continue
+            }
+            checked.push(c)
+            checked.push({start: begin, end: begin + range})
+        }
+        checked.forEach(c => this.coverage.push(c))
     }
 
     SensorAt(x: number, y: number): boolean {
@@ -102,7 +107,7 @@ export class Cave {
         return this.beacons.filter(b => b.x === x && b.y === y).length > 0;
     }
     CoverageAt(x: number, y: number): boolean {
-        return this.coverage.filter(b => b.x === x && b.y === y).length > 0;
+        return this.coverage.filter(b => b.start === x && b.end === y).length > 0;
     }
     private manhattan(sx: number, sy: number, bx: number, by: number): number {
         return Math.abs(by-sy) + Math.abs(bx - sx)

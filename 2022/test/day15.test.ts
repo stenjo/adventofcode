@@ -52,18 +52,28 @@ describe('Cave should', () => {
         expect(c.CoverageAtLine(1)).toBe(7)
         expect(c.CoverageAtLine(-2)).toBe(1)
         expect(c.CoverageAtLine(2)).toBe(9)
-        expect(c.CoverageAtLine(7)).toBe(18)
+        expect(c.CoverageAtLine(7)).toBe(19)
     })
     it('have coverage for one long-range sensor', () => {
         let c = new Cave()
         c.Deploy('Sensor at x=3000768, y=3333983: closest beacon is at x=2564067, y=3163630')
 
-        expect(c.CoverageAtLine(3333983)).toBeGreaterThan(7)
+        expect(c.CoverageAtLine(3333983)).toBe(1214109)
     })
     it('have coverage for two sensors', () => {
         let c = new Cave()
         c.Deploy('Sensor at x=8, y=7: closest beacon is at x=2, y=10')
         c.Deploy('Sensor at x=14, y=3: closest beacon is at x=15, y=3')
+
+        expect(c.CoverageAtLine(4)).toBe(13)
+        expect(c.CoverageAtLine(2)).toBe(10)
+    })
+
+    it('have coverage for three sensors', () => {
+        let c = new Cave()
+        c.Deploy('Sensor at x=8, y=7: closest beacon is at x=2, y=10')
+        c.Deploy('Sensor at x=14, y=3: closest beacon is at x=15, y=3')
+        c.Deploy('Sensor at x=0, y=11: closest beacon is at x=2, y=10')
 
         expect(c.CoverageAtLine(4)).toBe(13)
         expect(c.CoverageAtLine(2)).toBe(10)
