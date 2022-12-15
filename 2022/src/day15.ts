@@ -80,23 +80,28 @@ export class Cave {
 
     private addCoverage(sensor:Sensor, y:number) {
         let range = (2 * sensor.range + 1) - 2 *Math.abs(sensor.y - y)
-        let begin = sensor.x - sensor.range + Math.abs(sensor.y - y)
+        let start = sensor.x - sensor.range + Math.abs(sensor.y - y)
+        let end = start + range
         let checked: {start: number, end: number}[] = []
-        if (range < 1) return
-        if (this.coverage.length == 0) {
-            this.coverage.push({start: begin, end: begin + range})
-            return
-        }
+
+        if (range < 0) return
+
         while(this.coverage.length > 0 ) {
             let c = this.coverage.shift() as {start: number, end: number}
-            if (begin < c.end) {
-                checked.push({start: c.start, end: begin})
-                checked.push({start: begin, end: begin + range})
+            if (start <= c.start && end >= c.end) {
+                continue
+            }
+            if (start < c.start && end > c.start && end < c.end) {
+                checked.push({start: end, end: c.end})
+                continue
+            }
+            if (start > c.start && start < c.end && end >= c.end) {
+                checked.push({start: c.start, end: start})
                 continue
             }
             checked.push(c)
-            checked.push({start: begin, end: begin + range})
         }
+        checked.push({start: start, end: start + range})
         checked.forEach(c => this.coverage.push(c))
     }
 
