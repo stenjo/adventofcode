@@ -112,14 +112,22 @@ describe('Cave should', () => {
         
         expect(c.SandResting()).toBe(964)
     })
-    it('drop sand until overflow', () => {
+    it('drop sand until top', () => {
         let input = new LoadLines('../test/input/day14.txt').lines
         let c = new Cave(input)
 
         c.DropUntilTop()
         
-        expect(c.SandResting()).toBe(24)
+        expect(c.SandResting()).toBe(93)
         expect(c.SandAt(499,8)).toBe(true)
         expect(c.SandAt(501,8)).toBe(true)
+    })
+    it.skip('drop sand until top for real data', () => {
+        let input = new LoadLines('../input/day14.txt').lines
+        let c = new Cave(input)
+
+        c.DropUntilTop()
+        
+        expect(c.SandResting()).toBe(32041)
     })
 })

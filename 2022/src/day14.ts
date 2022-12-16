@@ -31,7 +31,9 @@ class Sand {
 }
 export class Cave {
     DropUntilTop() {
-        let sands = -1
+        while(!this.SandAt(500,0)) {
+            this.DropSand(true)
+        }
     }
     DropUntilOverflow() {
         let sands = -1
@@ -45,12 +47,15 @@ export class Cave {
         if (this.sand.length == 0) { return 0}
         return this.sand.length
     }
-    DropSand() {
+    DropSand(floor:boolean = false) {
         let s = new Sand(500, 0)
-        let maxY = this.mountain.map(r => r.y).sort((a, b) => a - b).pop() as number
+        let maxY = this.mountain.map(r => r.y).sort((a, b) => a - b).pop() as number + 2
 
         while (s.resting == false && s.y < maxY) {
-            if (!this.RockAt(s.x, s.y + 1) && !this.SandAt(s.x, s.y + 1)) {
+            if (floor && s.y >= maxY-1) {
+                s.resting = true
+            }
+            else if (!this.RockAt(s.x, s.y + 1) && !this.SandAt(s.x, s.y + 1)) {
                 s.y++
             }
             else if (!this.RockAt(s.x - 1, s.y + 1) && !this.SandAt(s.x - 1, s.y + 1)) {
@@ -65,15 +70,20 @@ export class Cave {
                 s.resting = true
             }
         }
-        if (s.y < maxY) this.sand.push(s)
+        if (s.y < maxY || (s.y < maxY + 1) && floor) this.sand.push(s)
     }
     PrintCave():string[] {
 
-        let minX = this.mountain.map(r => r.x).sort((a, b) => a - b).shift() as number
-        let maxX = this.mountain.map(r => r.x).sort((a, b) => a - b).pop() as number
+        let minXRock = this.mountain.map(r => r.x).sort((a, b) => a - b).shift() as number
+        let minXSand = this.sand.map(r => r.x).sort((a, b) => a - b).shift() as number
+        let minX = Math.min(minXRock, minXSand)
+
+        let maxXRock = this.mountain.map(r => r.x).sort((a, b) => a - b).pop() as number
+        let maxXSand = this.sand.map(r => r.x).sort((a, b) => a - b).pop() as number
+        let maxX = Math.max(maxXRock, maxXSand)
 
         let minY = 0
-        let maxY = this.mountain.map(r => r.y).sort((a, b) => a - b).pop() as number
+        let maxY = this.mountain.map(r => r.y).sort((a, b) => a - b).pop() as number + 2
 
         let line = ''
         let map:string[] = []
