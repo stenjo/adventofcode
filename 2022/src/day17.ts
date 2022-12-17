@@ -26,26 +26,18 @@ export class Chamber {
         return this.lineHeight
     }
     DownWithJet(jet: string) {
-        if (jet === '>') {
-            this.PushRight();
-            this.lineHeight --
-            return
-        }
-        if (jet === '<') {
-            this.PushLeft();
-            this.lineHeight --
-        }
+        this.lineHeight --
+        if (jet === '>') this.PushRight();
+        if (jet === '<') this.PushLeft();
     }
     PushLeft() {
         if (this.line.charAt(0) === ' ') {
-            this.line += ' '
-            this.line = this.line.slice(1, this.line.length);
+            this.line = this.line.slice(1, this.line.length) + ' ';
         }
     }
     PushRight() {
         if (this.line.charAt(this.line.length-1) === ' ') {
-            this.line = ' ' + this.line
-            this.line = this.line.slice(0, -1);
+            this.line = ' ' + this.line.slice(0, -1);
         }
     }
     line!: string;
