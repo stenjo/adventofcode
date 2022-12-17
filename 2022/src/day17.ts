@@ -21,11 +21,19 @@ export class Rock {
     }
 }
 export class Chamber {
+    Floor(): any {
+        return '####   '
+    }
     lineHeight!: number;
     LineHeight(): any {
         return this.lineHeight
     }
     DownWithJet(jet: string) {
+        if (this.lineHeight == 1 && this.Floor() === '####   ') {
+            this.lineHeight = 0
+            return
+        }
+
         this.lineHeight --
         if (jet === '>') this.PushRight();
         if (jet === '<') this.PushLeft();

@@ -89,4 +89,32 @@ describe('Chamber should', () => {
         expect(c.Line()).toBe(' ####  ')
         expect(c.LineHeight()).toBe(3)
     })
+    it('have first rock fall with left jet until floor', () => {
+        let c = new Chamber()
+
+        c.DropRock();
+        while(c.LineHeight() > 0) {
+            c.DownWithJet('<')
+        }
+
+        expect(c.Line()).toBe('####   ')
+        expect(c.Floor()).toBe('####   ')
+        expect(c.LineHeight()).toBe(0)
+    })
+    it('have second rock fall with right jet until floor', () => {
+        let c = new Chamber()
+
+        c.DropRock();
+        while(c.LineHeight() > 0) {
+            c.DownWithJet('<')
+        }
+        c.DropRock();
+        while(c.LineHeight() > 0) {
+            c.DownWithJet('>')
+        }
+
+        expect(c.Line()).toBe('   ####')
+        expect(c.Floor()).toBe('####   ')
+        expect(c.LineHeight()).toBe(0)
+    })
 })
