@@ -90,7 +90,7 @@ describe('Chamber should', () => {
         c.DownWithJet('>')
 
         expect(c.Line()).toBe('   ####')
-        expect(c.LineHeight()).toBe(3)
+        expect(c.LineHeight()).toBe(2)
     })
     it('have first rock fall one unit with left jet', () => {
         let c = new Chamber()
@@ -99,7 +99,7 @@ describe('Chamber should', () => {
         c.DownWithJet('<')
 
         expect(c.Line()).toBe(' ####  ')
-        expect(c.LineHeight()).toBe(3)
+        expect(c.LineHeight()).toBe(2)
     })
     it('have first rock fall with left jet until floor', () => {
         let c = new Chamber()
@@ -155,5 +155,60 @@ describe('Chamber should', () => {
         c.DownWithJet('>')
 
         expect(c.Line()).toBe('     # ')
+    })
+    it('have second rock moved three left hitting wall', () => {
+        let c = new Chamber()
+        c.NewRock(1)
+
+        c.DownWithJet('<')
+        c.DownWithJet('<')
+        c.DownWithJet('<')
+
+        expect(c.Line()).toBe(' #     ')
+    })
+    it('have height of 1 when first rock moved 3 down', () => {
+        let c = new Chamber()
+        c.NewRock(0)
+
+        c.DownWithJet('>')
+        c.DownWithJet('>')
+        c.DownWithJet('>')
+
+        expect(c.Height()).toBe(1)
+        expect(c.Floor()).toBe('   ####')
+    })
+    it('have height of 3 when second rock moved 3 down on top of first', () => {
+        let c = new Chamber()
+        c.NewRock(0)
+
+        c.DownWithJet('>')
+        c.DownWithJet('>')
+        c.DownWithJet('>')
+
+        c.NewRock(1)
+
+        c.DownWithJet('<')
+        c.DownWithJet('<')
+        c.DownWithJet('<')
+
+        expect(c.Height()).toBe(3)
+        expect(c.Floor()).toBe(' # ####')
+    })
+    it('have height of 2 when first rock moved 3 down on top of first', () => {
+        let c = new Chamber()
+        c.NewRock(0)
+
+        c.DownWithJet('>')
+        c.DownWithJet('>')
+        c.DownWithJet('>')
+
+        c.NewRock(0)
+
+        c.DownWithJet('<')
+        c.DownWithJet('<')
+        c.DownWithJet('<')
+
+        expect(c.Height()).toBe(2)
+        expect(c.Floor()).toBe('   ####')
     })
 })

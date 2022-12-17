@@ -21,32 +21,64 @@ export class Rock {
     }
 }
 export class Chamber {
+    height!: number;
+    floor!: string;
+    Height(): number {
+        return this.height;
+    }
     Floor(): any {
-        return '####   '
+        return this.floor
     }
     lineHeight!: number;
     LineHeight(): any {
         return this.lineHeight
     }
     DownWithJet(jet: string) {
-        if (this.lineHeight == 1 && this.Floor() === '####   ') {
-            this.lineHeight = 0
-            return
-        }
-
         this.lineHeight --
         if (jet === '>') this.PushRight();
         if (jet === '<') this.PushLeft();
+
+        if (this.lineHeight == 1 && this.Floor() === '') {
+            this.lineHeight = 0
+            this.floor = this.line[0]
+            this.height = this.line.length
+            return
+        }
+        if (this.lineHeight == 1) {
+            let fits:boolean = true;
+            for (let i = 0; i < this.line[0].length; i++) {
+                if (this.line[0].charAt(i) == '#' && this.floor.charAt(i) == '#') fits = false;
+            }
+
+            if (fits) {
+                let result = '';
+                for (let i = 0; i < this.line[0].length; i++) {
+                    if (this.line[0].charAt(i) === '#' || this.floor.charAt(i) === '#') {
+                        result += '#'
+                    }
+                    else {
+                        result += ' '
+                    }
+                }
+                this.floor = result
+                this.height += this.line.length -1
+            }
+            else {
+                this.height += this.line.length
+            }
+        }
+
     }
     PushLeft() {
-        if (this.line[0].charAt(0) === ' ') {
-            for (let i = 0; this.line[i] !== undefined && i < this.line[i].length; i++) {
-                this.line[i] = this.line[i].slice(1, this.line[i].length) + ' ';
-            }
+        for (let i = 0; i < this.line.length; i++) {
+            if (this.line[i].charAt(0) !== ' ') return
+        }
+
+        for (let i = 0; this.line[i] !== undefined && i < this.line[i].length; i++) {
+            this.line[i] = this.line[i].slice(1, this.line[i].length) + ' ';
         }
     }
     PushRight() {
-        
         for (let i = 0; i < this.line.length; i++) {
             if (this.line[i].charAt(this.line[i].length-1) !== ' ') return
         }
@@ -78,12 +110,14 @@ export class Chamber {
             }
 
         })
-        this.lineHeight = 4
+        this.lineHeight = 3
     }
 
     constructor() {
         this.AddRock(['####']);
         this.AddRock([' # ','###',' # '])
+
+        this.floor = ''
     }
 
     AddRock(pattern: string[]) {
