@@ -21,21 +21,36 @@ export class Rock {
     }
 }
 export class Chamber {
+    lineHeight!: number;
+    LineHeight(): any {
+        return this.lineHeight
+    }
+    DownWithJet(jet: string) {
+        if (jet === '>') {
+            this.PushRight();
+            this.lineHeight --
+            return
+        }
+        if (jet === '<') {
+            this.PushLeft();
+            this.lineHeight --
+        }
+    }
     PushLeft() {
-        if (this.floor.charAt(0) === ' ') {
-            this.floor += ' '
-            this.floor = this.floor.slice(1, this.floor.length);
+        if (this.line.charAt(0) === ' ') {
+            this.line += ' '
+            this.line = this.line.slice(1, this.line.length);
         }
     }
     PushRight() {
-        if (this.floor.charAt(this.floor.length-1) === ' ') {
-            this.floor = ' ' + this.floor
-            this.floor = this.floor.slice(0, -1);
+        if (this.line.charAt(this.line.length-1) === ' ') {
+            this.line = ' ' + this.line
+            this.line = this.line.slice(0, -1);
         }
     }
-    floor!: string;
-    Floor(): string {
-        return this.floor
+    line!: string;
+    Line(): string {
+        return this.line
     }
     rocks: Rock[] = [];
     current!: Rock;
@@ -45,7 +60,8 @@ export class Chamber {
     }
     DropRock() {
         this.current = this.rocks[0]
-        this.floor = '  '+this.current.shape+' '
+        this.line = '  '+this.current.shape+' '
+        this.lineHeight = 4
     }
 
     constructor() {

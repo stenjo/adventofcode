@@ -34,7 +34,7 @@ describe('Chamber should', () => {
 
         c.DropRock();
 
-        expect(c.Floor()).toBe('  #### ')
+        expect(c.Line()).toBe('  #### ')
     })
     it('have first rock pushed righ', () => {
         let c = new Chamber()
@@ -42,7 +42,7 @@ describe('Chamber should', () => {
         c.DropRock();
         c.PushRight();
 
-        expect(c.Floor()).toBe('   ####')
+        expect(c.Line()).toBe('   ####')
     })
     it('have first rock pushed righ again hitting wall', () => {
         let c = new Chamber()
@@ -51,7 +51,7 @@ describe('Chamber should', () => {
         c.PushRight();
         c.PushRight();
 
-        expect(c.Floor()).toBe('   ####')
+        expect(c.Line()).toBe('   ####')
     })
     it('have first rock pushed left', () => {
         let c = new Chamber()
@@ -59,7 +59,7 @@ describe('Chamber should', () => {
         c.DropRock();
         c.PushLeft();
 
-        expect(c.Floor()).toBe(' ####  ')
+        expect(c.Line()).toBe(' ####  ')
     })
     it('have first rock pushed left until hitting wall', () => {
         let c = new Chamber()
@@ -69,6 +69,24 @@ describe('Chamber should', () => {
         c.PushLeft();
         c.PushLeft();
 
-        expect(c.Floor()).toBe('####   ')
+        expect(c.Line()).toBe('####   ')
+    })
+    it('have first rock fall one unit with right jet', () => {
+        let c = new Chamber()
+
+        c.DropRock();
+        c.DownWithJet('>')
+
+        expect(c.Line()).toBe('   ####')
+        expect(c.LineHeight()).toBe(3)
+    })
+    it('have first rock fall one unit with left jet', () => {
+        let c = new Chamber()
+
+        c.DropRock();
+        c.DownWithJet('<')
+
+        expect(c.Line()).toBe(' ####  ')
+        expect(c.LineHeight()).toBe(3)
     })
 })
