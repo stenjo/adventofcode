@@ -39,18 +39,25 @@ export class Chamber {
         if (jet === '<') this.PushLeft();
     }
     PushLeft() {
-        if (this.line.charAt(0) === ' ') {
-            this.line = this.line.slice(1, this.line.length) + ' ';
+        if (this.line[0].charAt(0) === ' ') {
+            for (let i = 0; this.line[i] !== undefined && i < this.line[i].length; i++) {
+                this.line[i] = this.line[i].slice(1, this.line[i].length) + ' ';
+            }
         }
     }
     PushRight() {
-        if (this.line.charAt(this.line.length-1) === ' ') {
-            this.line = ' ' + this.line.slice(0, -1);
+        
+        for (let i = 0; i < this.line.length; i++) {
+            if (this.line[i].charAt(this.line[i].length-1) !== ' ') return
+        }
+
+        for (let i = 0; this.line[i] != undefined && i < this.line[i].length; i++){
+            this.line[i] = ' ' + this.line[i].slice(0, -1);
         }
     }
-    line!: string;
+    line: string[] = [];
     Line(): string {
-        return this.line
+        return this.line[0]
     }
     rocks: Rock[] = [];
     current!: Rock;
@@ -58,13 +65,28 @@ export class Chamber {
     Rock(): string {
         return this.rocks[0].shape[0];
     }
-    DropRock() {
-        this.current = this.rocks[0]
-        this.line = '  '+this.current.shape+' '
+    NewRock(rockNo:number = 0) {
+        this.current = this.rocks[rockNo]
+        this.line = new Array(this.current.shape.length)
+        this.current.shape.forEach((line, index, shape) => {
+            let i = shape.length-1
+            if (line.length == 4) {
+                this.line[i-index] = '  '+ line +' '
+            }
+            if (line.length == 3) {
+                this.line[i-index] = '  '+ line +'  '
+            }
+
+        })
         this.lineHeight = 4
     }
 
     constructor() {
-        this.rocks.push(new Rock(['####']))
+        this.AddRock(['####']);
+        this.AddRock([' # ','###',' # '])
+    }
+
+    AddRock(pattern: string[]) {
+        this.rocks.push(new Rock(pattern));
     }
 }

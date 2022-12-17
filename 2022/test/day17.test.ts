@@ -14,6 +14,18 @@ describe('Rock should', () => {
 
         expect(r).not.toBeNull()
     })
+    
+    it('have shape added', () => {
+        const shape = [
+            ' # ',
+            '###',
+            ' # '
+        ]
+        let r = new Rock(shape);
+
+        expect(r.shape[2]).toBe(' # ')
+    })
+    
 })
 
 describe('Chamber should', () => {
@@ -25,21 +37,21 @@ describe('Chamber should', () => {
     it('have first rock', () => {
         let c = new Chamber()
 
-        c.DropRock();
+        c.NewRock();
 
         expect(c.Rock()).toBe('####')
     })
     it('have first rock at floor', () => {
         let c = new Chamber()
 
-        c.DropRock();
+        c.NewRock();
 
         expect(c.Line()).toBe('  #### ')
     })
     it('have first rock pushed righ', () => {
         let c = new Chamber()
 
-        c.DropRock();
+        c.NewRock();
         c.PushRight();
 
         expect(c.Line()).toBe('   ####')
@@ -47,7 +59,7 @@ describe('Chamber should', () => {
     it('have first rock pushed righ again hitting wall', () => {
         let c = new Chamber()
 
-        c.DropRock();
+        c.NewRock();
         c.PushRight();
         c.PushRight();
 
@@ -56,7 +68,7 @@ describe('Chamber should', () => {
     it('have first rock pushed left', () => {
         let c = new Chamber()
 
-        c.DropRock();
+        c.NewRock();
         c.PushLeft();
 
         expect(c.Line()).toBe(' ####  ')
@@ -64,7 +76,7 @@ describe('Chamber should', () => {
     it('have first rock pushed left until hitting wall', () => {
         let c = new Chamber()
 
-        c.DropRock();
+        c.NewRock();
         c.PushLeft();
         c.PushLeft();
         c.PushLeft();
@@ -74,7 +86,7 @@ describe('Chamber should', () => {
     it('have first rock fall one unit with right jet', () => {
         let c = new Chamber()
 
-        c.DropRock();
+        c.NewRock();
         c.DownWithJet('>')
 
         expect(c.Line()).toBe('   ####')
@@ -83,7 +95,7 @@ describe('Chamber should', () => {
     it('have first rock fall one unit with left jet', () => {
         let c = new Chamber()
 
-        c.DropRock();
+        c.NewRock();
         c.DownWithJet('<')
 
         expect(c.Line()).toBe(' ####  ')
@@ -92,7 +104,7 @@ describe('Chamber should', () => {
     it('have first rock fall with left jet until floor', () => {
         let c = new Chamber()
 
-        c.DropRock();
+        c.NewRock();
         while(c.LineHeight() > 0) {
             c.DownWithJet('<')
         }
@@ -104,11 +116,11 @@ describe('Chamber should', () => {
     it('have second rock fall with right jet until floor', () => {
         let c = new Chamber()
 
-        c.DropRock();
+        c.NewRock();
         while(c.LineHeight() > 0) {
             c.DownWithJet('<')
         }
-        c.DropRock();
+        c.NewRock();
         while(c.LineHeight() > 0) {
             c.DownWithJet('>')
         }
@@ -116,5 +128,32 @@ describe('Chamber should', () => {
         expect(c.Line()).toBe('   ####')
         expect(c.Floor()).toBe('####   ')
         expect(c.LineHeight()).toBe(0)
+    })
+    it('have second rock moved right', () => {
+        let c = new Chamber()
+        c.NewRock(1)
+
+        c.DownWithJet('>')
+
+        expect(c.Line()).toBe('    #  ')
+    })
+    it('have second rock moved two right hitting wall', () => {
+        let c = new Chamber()
+        c.NewRock(1)
+
+        c.DownWithJet('>')
+        c.DownWithJet('>')
+
+        expect(c.Line()).toBe('     # ')
+    })
+    it('have second rock moved three right hitting wall', () => {
+        let c = new Chamber()
+        c.NewRock(1)
+
+        c.DownWithJet('>')
+        c.DownWithJet('>')
+        c.DownWithJet('>')
+
+        expect(c.Line()).toBe('     # ')
     })
 })
