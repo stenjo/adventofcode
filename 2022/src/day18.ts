@@ -35,7 +35,7 @@ export class Scanner {
                         let cube = this.cubes.findIndex(c=>c.x==x && c.y==y && c.z==z)
                         if (cube > -1) {
                             if (this.hasOneGapSideCommon(cube, g))
-                            common += 1
+                                common += 1
                         }
                     })
                 })
@@ -55,7 +55,7 @@ export class Scanner {
 
         for (let x = minX+1; x < maxX; x++) {
             for (let y = minY+1; y < maxY; y++) {
-                let cubesInZ = this.cubes.filter(c => c.x == x && c.y == y)
+                let cubesInZ:Cube[] = this.cubes.filter(c => c.x == x && c.y == y)
                 let minZ = cubesInZ.map(c=> c.z).sort((a, b) => b - a).pop() as number
                 let maxZ = cubesInZ.map(c=> c.z).sort((a, b) => a - b).pop() as number
                 for (let z = minZ+1; z < maxZ; z++) {
