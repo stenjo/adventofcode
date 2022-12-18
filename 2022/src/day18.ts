@@ -25,6 +25,50 @@ export class Cube {
 }
 
 export class Scanner {
+    ExternalExposedSides(): any {
+
+        let commonGapSides = this.GapCubes().map(g => {
+            let common: number = 0;
+            [g.x-1, g.x, g.x+1].forEach(x=> {
+                [g.y-1, g.y, g.y+1].forEach(y=> {
+                    [g.z-1, g.z, g.z+1].forEach(z=>{
+                        let cube = this.cubes.findIndex(c=>c.x==x && c.y==y && c.z==z)
+                        if (cube > -1) {
+                            if (this.hasOneGapSideCommon(cube, g))
+                            common += 1
+                        }
+                    })
+                })
+            })
+            return common
+        })
+        let sides = commonGapSides.reduce((acc, s) => acc + s)
+
+        return this.ExposedSides() - sides
+    }
+    GapCubes():Cube[] {
+        let gapCubes:Cube[] = []
+        let minX = this.cubes.map(c=> c.x).sort((a, b) => b - a).pop() as number
+        let minY = this.cubes.map(c=> c.y).sort((a, b) => b - a).pop() as number
+        let maxX = this.cubes.map(c=> c.x).sort((a, b) => a - b).pop() as number
+        let maxY = this.cubes.map(c=> c.y).sort((a, b) => a - b).pop() as number
+
+        for (let x = minX+1; x < maxX; x++) {
+            for (let y = minY+1; y < maxY; y++) {
+                let cubesInZ = this.cubes.filter(c => c.x == x && c.y == y)
+                let minZ = cubesInZ.map(c=> c.z).sort((a, b) => b - a).pop() as number
+                let maxZ = cubesInZ.map(c=> c.z).sort((a, b) => a - b).pop() as number
+                for (let z = minZ+1; z < maxZ; z++) {
+                    let notFound = cubesInZ.findIndex(c=> c.z == z) < 0;
+                    if (notFound) {
+                        gapCubes.push(new Cube(x,y,z))
+                    }
+                }
+            }
+        }
+
+        return gapCubes
+    }
     ExposedSides(): number {
 
         if (this.cubes.length === 0) {return 0}
@@ -38,13 +82,16 @@ export class Scanner {
                     cubeSides -= 1
                 }
             }
-            
             sides += cubeSides
-
         }
         return sides
     }
 
+    private hasOneGapSideCommon(c1: number, gap: Cube): boolean {
+        return (Math.abs(this.cubes[c1].x - gap.x)
+            + Math.abs(this.cubes[c1].y - gap.y)
+            + Math.abs(this.cubes[c1].z - gap.z)) == 1;
+    }
     private hasOneSideCommon(c1: number, c2: number): boolean {
         return (Math.abs(this.cubes[c1].x - this.cubes[c2].x)
             + Math.abs(this.cubes[c1].y - this.cubes[c2].y)
