@@ -211,4 +211,37 @@ describe('Chamber should', () => {
         expect(c.Height()).toBe(2)
         expect(c.Floor()).toBe('   ####')
     })
+    it.skip('have height of 6 when first rock moved 3 down on top of first', () => {
+        let c = new Chamber()
+        c.NewRock(0)
+
+        c.DownWithJet('>')
+        c.DownWithJet('>')
+        c.DownWithJet('>')
+
+        c.NewRock(1)
+
+        c.DownWithJet('<')
+        c.DownWithJet('<')
+        c.DownWithJet('<')
+
+        c.NewRock(2)
+
+        c.DownWithJet('>')
+        c.DownWithJet('>')
+        c.DownWithJet('>')
+
+        expect(c.Height()).toBe(4)
+        expect(c.Floor()).toBe('   ####')
+    })
+    
+    it('have third rock moved down until resting', () => {
+        let c = new Chamber()
+        c.NewRock(1)
+
+        c.DownWithJet('>>>>>>>>')
+
+        expect(c.Height()).toBe(3)
+        expect(c.RockResting()).toBe(true)
+    })
 })

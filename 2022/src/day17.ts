@@ -21,54 +21,85 @@ export class Rock {
     }
 }
 export class Chamber {
+    RockResting(): boolean {
+        return this.floor.length == 1;
+    }
     height!: number;
-    floor!: string;
+    floor!: string[];
     Height(): number {
         return this.height;
     }
-    Floor(): any {
-        return this.floor
+    Floor(): string {
+        return this.floor[0]
     }
-    lineHeight!: number;
+    rockHeight!: number;
     LineHeight(): any {
-        return this.lineHeight
+        return this.rockHeight
     }
-    DownWithJet(jet: string) {
-        this.lineHeight --
-        if (jet === '>') this.PushRight();
-        if (jet === '<') this.PushLeft();
+    DownWithJet(jetStream: string) {
+        let jets = jetStream.split('')
+        jets.forEach(jet => {
+            if (jet === '>') this.PushRight();
+            if (jet === '<') this.PushLeft();
+            
+            let floorTop = this.floor.length - 1
 
-        if (this.lineHeight == 1 && this.Floor() === '') {
-            this.lineHeight = 0
-            this.floor = this.line[0]
-            this.height = this.line.length
-            return
-        }
-        if (this.lineHeight == 1) {
-            let fits:boolean = true;
-            for (let i = 0; i < this.line[0].length; i++) {
-                if (this.line[0].charAt(i) == '#' && this.floor.charAt(i) == '#') fits = false;
-            }
-
-            if (fits) {
-                let result = '';
-                for (let i = 0; i < this.line[0].length; i++) {
-                    if (this.line[0].charAt(i) === '#' || this.floor.charAt(i) === '#') {
-                        result += '#'
-                    }
-                    else {
-                        result += ' '
-                    }
+            if (this.rockHeight <= floorTop) {
+                if (this.fitsFloor(this.rockHeight-1)) {
+                    this.rockHeight --
+                    return
                 }
-                this.floor = result
-                this.height += this.line.length -1
+                else {
+                    
+                }
+            }
+            this.rockHeight--
+            return
+            if (this.rockHeight == 1 && this.Floor() === '') {
+                this.rockHeight = 0
+                this.floor[0] = this.line[0]
+                this.height = this.floor.length
+                return
+            }
+            if (this.rockHeight == 1) {
+    
+                if (this.fitsFloor(0)) {
+                    this.mergeLines(0);
+                    for (let i = 1; i < this.line.length; i++) {
+                        if (this.floor.length < i + 1) {
+                            this.floor.push(this.line[i]);
+                        }
+                    }
+                    this.height += this.line.length -1
+                }
+                else {
+    
+                    this.height += this.line.length
+                }
+            }
+        })
+    }
+    private fitsFloor(lineNo: number): boolean {
+        for (let i = 0; i < this.line[lineNo].length; i++) {
+            if (this.line[lineNo].charAt(i) == '#' && this.floor[lineNo].charAt(i) == '#')
+                return false;
+        }
+        return true;
+    }
+
+    private mergeLines(lineNo: number): void {
+        let result = '';
+        for (let i = 0; i < this.line[lineNo].length; i++) {
+            if (this.line[lineNo].charAt(i) === '#' || this.floor[lineNo].charAt(i) === '#') {
+                result += '#';
             }
             else {
-                this.height += this.line.length
+                result += ' ';
             }
         }
-
+        this.floor[lineNo] = result;
     }
+
     PushLeft() {
         for (let i = 0; i < this.line.length; i++) {
             if (this.line[i].charAt(0) !== ' ') return
@@ -110,14 +141,15 @@ export class Chamber {
             }
 
         })
-        this.lineHeight = 3
+        this.rockHeight = 3 + this.floor.length
     }
 
     constructor() {
         this.AddRock(['####']);
         this.AddRock([' # ','###',' # '])
+        this.AddRock(['  #','  #','###'])
 
-        this.floor = ''
+        this.floor = ['       ']
     }
 
     AddRock(pattern: string[]) {
