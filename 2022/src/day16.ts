@@ -17,6 +17,21 @@ export class Valve {
     PressureRelease(time:number): any {
         return time * this.rate * (this.open ? 1 : 0);
     }
+    Flow(time:number, visited:Valve[]): number {
+        if (visited.includes(this)) return 0
+        visited.push(this);
+
+        let flow = (time - 2) * this.rate
+
+        let subtrees = this.children.map(c => {
+            return {v:c, f: c.Flow(time-4, visited)}
+        })
+
+        let vals = subtrees.sort((a, b) => b.f - a.f)
+        .map((s,i)=> s.v.Flow(time-2*(i+2), visited))
+        
+        return 0
+    }
     Open() {
         this.open = true
     }
