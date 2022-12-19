@@ -183,13 +183,22 @@ describe('Scanner should', () => {
         expect(s.ExternalExposedSides()).toBe(58)
 
     })
-    it('get externally exposed sides for real data', () => {
+    it.skip('get externally exposed sides for real data', () => {
         let s = new Scanner()
         let lines = new LoadLines('../input/day18.txt').lines
 
         s.LoadCubes(lines)
 
         expect(s.ExternalExposedSides()).toBe(2556)
+
+    })
+    it('print map', () => {
+        let s = new Scanner()
+        let lines = new LoadLines('../test/input/day18.txt').lines
+
+        s.LoadCubes(lines)
+
+        console.log(s.PrintMap(s.ObsidianMap()))
 
     })
 })

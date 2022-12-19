@@ -17,6 +17,7 @@ export class Cube {
     x: number
     y: number
     z: number
+    has: string = ''
     constructor(x: number, y: number, z: number) {
         this.x = x
         this.y = y
@@ -25,8 +26,52 @@ export class Cube {
 }
 
 export class Scanner {
-    ExternalExposedSides(): any {
 
+    ObsidianMap() {
+        let obsMap: string[][][] = []
+        let minX = this.cubes.map(c=> c.x).sort((a, b) => b - a).pop() as number
+        let minY = this.cubes.map(c=> c.y).sort((a, b) => b - a).pop() as number
+        let minZ = this.cubes.map(c=> c.z).sort((a, b) => b - a).pop() as number
+        let maxX = this.cubes.map(c=> c.x).sort((a, b) => a - b).pop() as number
+        let maxY = this.cubes.map(c=> c.y).sort((a, b) => a - b).pop() as number
+        let maxZ = this.cubes.map(c=> c.z).sort((a, b) => a - b).pop() as number
+
+        let gaps = this.GapCubes()
+        // Get lava and air cubes
+        for (let x = 0; x < maxX - minX + 1; x++) {
+            obsMap[x] = new Array(maxX - minX + 1)
+            for (let y = 0; y < maxY - minY + 1; y++) {
+                obsMap[x][y] = new Array(maxY - minY + 1)
+                for (let z = 0; z < maxZ - minZ + 1; z++) {
+                    obsMap[x][y][z] = '.'
+                    if (gaps.findIndex(g=> g.x === x + minX && g.y === y + minY && g.z === z + minZ) > -1) {
+                        obsMap[x][y][z] = ' '
+                    }
+    
+                    if (this.cubes.findIndex(c=>c.x == x+minX && c.y == y+minY && c.z == z+minZ) > -1) {
+                        obsMap[x][y][z] = 'X'
+                    }
+                }
+            }
+        }
+
+        return obsMap
+    }
+    PrintMap(m: string[][][]) {
+        let map = []
+
+        for (let x = 0; x < m.length; x++) {
+            let block = ''
+            for (let y = 0; y < m[x].length; y++) {
+                block += m[x][y].join('')+'\n'
+            }
+            map.push(block)
+        }
+
+        return map
+    }
+
+    ExternalExposedSides(): any {
         let commonGapSides = this.GapCubes().map(g => {
             let common: number = 0;
             [g.x-1, g.x, g.x+1].forEach(x=> {
