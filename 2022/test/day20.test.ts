@@ -56,6 +56,20 @@ describe('Decryptor should', () => {
 
         expect(d.Print(result)).toBe('1,2,-3,0,3,4,-2')
     })
+    it('8 moves between 1 and 2', () => {
+        let d = new Decryptor('1, 2, -3, 0, 3, 4, 8'.split(', '))
+
+        let result = d.Move(8, d.numbers)
+
+        expect(d.Print(result)).toBe('1,8,2,-3,0,3,4')
+    })
+    it('7 does not move', () => {
+        let d = new Decryptor('1, 2, -3, 7, 3, 4, -2'.split(', '))
+
+        let result = d.Move(7, d.numbers)
+
+        expect(d.Print(result)).toBe('1,2,-3,7,3,4,-2')
+    })
     it('mix numbers', () => {
         let nums = new LoadLines('../test/input/day20.txt').lines
         let d = new Decryptor(nums)
@@ -74,6 +88,6 @@ describe('Decryptor should', () => {
 
         d.Mix()
 
-        expect(d.GroveCoordinateSum()).toBe(3345)
+        expect(d.GroveCoordinateSum()).toBe(17490)
     })
 })

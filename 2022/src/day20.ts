@@ -29,14 +29,22 @@ export class Decryptor {
         }
     }
     Move(num: number, list:number[]):number[] {
+        if (num == list.length) { return list; }
         let pos = list.indexOf(num)
-        list.splice(pos, 1);
         let len = list.length
-        let newPos = (len + pos+num) % len
+        list.splice(pos, 1);
+        let newPos = (pos+num) % len
+        if (newPos < 0) {
+            newPos = newPos + len - 1
+        }
+        if ((pos+num) > len) {
+            newPos +=1
+        }
         if (newPos == 0) {
             list.push(num)
             return list
         }
+
         let first = list.slice(0, newPos)
         let second = list.slice(newPos)
         return first.concat(num, second)
