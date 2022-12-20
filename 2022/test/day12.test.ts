@@ -49,7 +49,7 @@ describe('ElevationMap should', () => {
         expect(p?.elev).toBe('b')
         expect(p?.steps).toBe(2)
     })
-    it('move 3 positions', () => {
+    it.skip('move 3 positions', () => {
         let l = new LoadLines('../test/input/day12.txt').lines
         let e = new ElevationMap(l)
 
@@ -114,7 +114,7 @@ describe('ElevationMap should', () => {
         expect(p?.elev).toBe('E')
         expect(p?.steps).toBe(412)
     })
-    it.only('find shortest path to a', () => {
+    it.skip('find shortest path to a', () => {
         let l = new LoadLines('../test/input/day12.txt').lines
         let e = new ElevationMap(l)
 

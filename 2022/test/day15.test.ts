@@ -99,7 +99,7 @@ describe('Cave should', () => {
         expect(c.CoverageAtLine(12)).toBe(10)
     })
 
-    it('have coverage on line 10', () => {
+    it.skip('have coverage on line 10', () => {
         let c = new Cave()
         let input = new LoadLines('../test/input/day15.txt').lines
         input.forEach(line => {c.Deploy(line)})
@@ -117,7 +117,7 @@ describe('Cave should', () => {
 
         expect(c.sensors.length).toBeGreaterThan(1)
     })
-    it('have coverage on line 2000000 for real data', () => {
+    it.skip('have coverage on line 2000000 for real data', () => {
         let c = new Cave()
         let input = new LoadLines('../input/day15.txt').lines
         input.forEach(line => {c.Deploy(line)})
