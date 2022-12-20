@@ -95,7 +95,7 @@ describe('Scanner should', () => {
 
         expect(s.ExposedSides()).toBe(16)
     })
-    it('load cubes', () => {
+    it('get exposed sides for test data', () => {
         let s = new Scanner()
         let lines = new LoadLines('../test/input/day18.txt').lines
 
@@ -104,13 +104,101 @@ describe('Scanner should', () => {
         expect(s.ExposedSides()).toBe(64)
 
     })
-    it('load cubes', () => {
+    it('get exposed sides for real data', () => {
         let s = new Scanner()
         let lines = new LoadLines('../input/day18.txt').lines
 
         s.LoadCubes(lines)
 
         expect(s.ExposedSides()).toBe(4504)
+
+    })
+    it('get air pockets cubes given max and min cubes', () => {
+        let s = new Scanner()
+        const cubes = [
+            '1,1,1',
+            '1,4,1'
+        ]
+        s.LoadCubes(cubes)
+
+        expect(s.GapCubes().length).toBe(0)
+    })
+    it('get air pocket cubes in 3 directions', () => {
+        let s = new Scanner()
+        const cubes = [
+            '1,1,1',
+            '2,1,1',
+            '3,1,1',
+            '1,2,1',
+            '2,2,1',
+            '3,2,1',
+            '1,3,1',
+            '2,3,1',
+            '3,3,1',
+            '1,1,2',
+            '2,1,2',
+            '3,1,2',
+            '1,2,2',
+            '3,2,2',
+            '1,3,2',
+            '2,3,2',
+            '3,3,2',
+            '1,1,3',
+            '2,1,3',
+            '3,1,3',
+            '1,2,3',
+            '2,2,3',
+            '3,2,3',
+            '1,3,3',
+            '2,3,3',
+            '3,3,3',
+            '1,1,3',
+            '2,1,3',
+            '3,1,3',
+            '1,2,3',
+            '2,2,3',
+            '3,2,3',
+            '1,3,3',
+            '2,3,3',
+            '3,3,3'
+        ]
+        s.LoadCubes(cubes)
+
+        expect(s.GapCubes().length).toBe(1)
+    })
+    it('get exposed sides of four adjasing cubes in different order', () => {
+        let s = new Scanner()
+        let lines = new LoadLines('../test/input/day18.txt').lines
+
+        s.LoadCubes(lines)
+
+        expect(s.GapCubes().length).toBe(1)
+    })
+    it('get externally exposed sides for test data', () => {
+        let s = new Scanner()
+        let lines = new LoadLines('../test/input/day18.txt').lines
+
+        s.LoadCubes(lines)
+
+        expect(s.ExternalExposedSides()).toBe(58)
+
+    })
+    it.skip('get externally exposed sides for real data', () => {
+        let s = new Scanner()
+        let lines = new LoadLines('../input/day18.txt').lines
+
+        s.LoadCubes(lines)
+
+        expect(s.ExternalExposedSides()).toBe(2556)
+
+    })
+    it('print map', () => {
+        let s = new Scanner()
+        let lines = new LoadLines('../test/input/day18.txt').lines
+
+        s.LoadCubes(lines)
+
+        console.log(s.PrintMap(s.ObsidianMap()))
 
     })
 })
