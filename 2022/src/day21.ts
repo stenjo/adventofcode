@@ -74,7 +74,7 @@ export class MonkeyYeller {
     Monkey(monkeyId: string): Monkey {
         let monkey = this.monkeys.find(m => m.name == monkeyId);
         if (monkey == undefined) {
-            return new Monkey('')
+            throw new Error('Monkey ' + monkeyId + ' not found');
         }
         return monkey as Monkey
     }
