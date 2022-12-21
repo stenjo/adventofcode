@@ -24,7 +24,16 @@ export class Monkey {
     Yell(): number {
         if (this.op !== undefined) {
             if (this.op == '-') {
-                return this.LeftMonkey().Yell() - this.RightMonkey().Yell();
+                return (this.Left() as number) - (this.Right() as number);
+            }
+            if (this.op == '*') {
+                return (this.Left() as number) * (this.Right() as number);
+            }
+            if (this.op == '+') {
+                return (this.Left() as number) + (this.Right() as number);
+            }
+            if (this.op == '/') {
+                return (this.Left() as number) / (this.Right() as number);
             }
         }
         return this.Left() as number;
@@ -47,12 +56,21 @@ export class Monkey {
     Name(): string {
         return this.name
     }
-    Right(): string {
+    Right(): string | number {
+        if (Number.isNaN(Number(this.right)) === false) {
+            return Number(this.right);
+        }
+        if (this.rightMonkey != undefined) {
+            return this.RightMonkey().Yell()
+        }
         return this.right
     }
     Left(): string | number {
         if (Number.isNaN(Number(this.left)) === false) {
             return Number(this.left);
+        }
+        if (this.leftMonkey != undefined) {
+            return this.LeftMonkey().Yell()
         }
         return this.left
     }

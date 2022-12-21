@@ -47,4 +47,25 @@ describe('MonkeyYeller should', () => {
 
         expect(my.Monkey('drzm').Yell()).toBe(30)
     })
+    it('get yell from monkey with multiply and uneven children tree', () => {
+
+        let configs = new LoadLines('../test/input/day21.txt').lines
+        let my = new MonkeyYeller(configs)
+
+        expect(my.Monkey('sjmn').Yell()).toBe(150)
+    })
+    it('get yell from root', () => {
+
+        let configs = new LoadLines('../test/input/day21.txt').lines
+        let my = new MonkeyYeller(configs)
+
+        expect(my.Monkey('root').Yell()).toBe(152)
+    })
+    it('get yell from root from live data', () => {
+
+        let configs = new LoadLines('../input/day21.txt').lines
+        let my = new MonkeyYeller(configs)
+
+        expect(my.Monkey('root').Yell()).toBe(379578518396784)
+    })
 })
