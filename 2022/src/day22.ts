@@ -21,15 +21,14 @@ export enum Facing {
 export class MonkeyMap {
     Move(pos: number, rotate: string) {
         if (this.facing == Facing.Down) {
-            let wallRow = this.map.map(r => r.charAt(this.column-1)).join();
-            let wc = wallRow.indexOf('#') + 1;
-            this.row += Math.min(pos, wc-pos-1)
-            this.facing = Facing.Right
-            return
+            let wallRow = this.map.map(r => r.charAt(this.column-1)).join().indexOf('#') + 1;
+            this.row += Math.min(pos, wallRow-pos-1)
         }
-        let walColumn = this.map[this.row-1].indexOf('#')+1
-        this.column += Math.min(pos, walColumn-this.column-1)
-        this.facing = Facing.Down
+        if (this.facing == Facing.Right) {
+            let walColumn = this.map[this.row-1].indexOf('#')+1
+            this.column += Math.min(pos, walColumn-this.column-1)
+        }
+        this.facing = (rotate == 'R' ? this.facing + 1 : this.facing + 3) % 4 
     }
 
     column: number;
