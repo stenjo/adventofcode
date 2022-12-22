@@ -50,4 +50,17 @@ describe('MonkeyMap should', () => {
         expect(mp.facing).toBe(Facing.Right)
 
     })
+    it('move right 5 wrapping around to the start of the row', () => {
+        let lines = new LoadLines('../test/input/day22.txt').lines
+        let mp = new MonkeyMap(lines)
+
+        mp.Move(10,'R')
+        mp.Move(5,'L')
+        mp.Move(5,'R')
+
+        expect(mp.row).toBe(6)
+        expect(mp.column).toBe(4)
+        expect(mp.facing).toBe(Facing.Down)
+
+    })
 })
