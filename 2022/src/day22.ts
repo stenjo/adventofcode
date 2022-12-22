@@ -12,23 +12,23 @@ export class LoadLines {
     }
 }
 
+export enum Facing {
+    Right = 0,
+    Down,
+    Left,
+    Up
+}
 export class MonkeyMap {
     Move(pos: number, rotate: string) {
 
         let walColumn = this.map[this.row-1].indexOf('#')+1
-        if (walColumn > 0) {
-            this.column += Math.min(pos, walColumn-this.column-1)
-            this.facing = 1
-            return
-        }
-        this.column += pos
-
-        this.facing = 1
-        return
+        this.column += Math.min(pos, walColumn-this.column-1)
+        this.facing = Facing.Down
     }
-    column: any;
-    facing: any;
-    row: any;
+
+    column: number;
+    facing: Facing;
+    row: number;
     map: string[];
     directions: string;
     constructor(instructions: string[]) {
@@ -39,7 +39,7 @@ export class MonkeyMap {
 
         this.row = 1
         this.column = this.map[0].indexOf('.') + 1
-        this.facing = 0
+        this.facing = Facing.Right
 
     }
 

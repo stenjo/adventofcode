@@ -1,4 +1,4 @@
-import { LoadLines, MonkeyMap} from '../src/day22'
+import { Facing, LoadLines, MonkeyMap} from '../src/day22'
 
 describe('LoadLines should', () => {
     it('load all lines', () => {
@@ -23,7 +23,7 @@ describe('MonkeyMap should', () => {
 
         expect(mp.row).toBe(1)
         expect(mp.column).toBe(9)
-        expect(mp.facing).toBe(0)
+        expect(mp.facing).toBe(Facing.Right)
 
     })
 
@@ -35,7 +35,19 @@ describe('MonkeyMap should', () => {
 
         expect(mp.row).toBe(1)
         expect(mp.column).toBe(11)
-        expect(mp.facing).toBe(1)
+        expect(mp.facing).toBe(Facing.Down)
+
+    })
+    it('move down 5 and rotate left after first', () => {
+        let lines = new LoadLines('../test/input/day22.txt').lines
+        let mp = new MonkeyMap(lines)
+
+        mp.Move(10,'R')
+        mp.Move(5,'L')
+
+        expect(mp.row).toBe(1)
+        expect(mp.column).toBe(11)
+        expect(mp.facing).toBe(Facing.Down)
 
     })
 })
