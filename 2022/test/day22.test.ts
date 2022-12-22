@@ -45,9 +45,9 @@ describe('MonkeyMap should', () => {
         mp.Move(10,'R')
         mp.Move(5,'L')
 
-        expect(mp.row).toBe(1)
+        expect(mp.row).toBe(6)
         expect(mp.column).toBe(11)
-        expect(mp.facing).toBe(Facing.Down)
+        expect(mp.facing).toBe(Facing.Right)
 
     })
 })
