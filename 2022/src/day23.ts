@@ -35,7 +35,7 @@ class Pos {
 
 export class Elf extends Pos {
     Move() {
-        
+
         if (this.direction == Direction.North) {
             this.y -= 1
         }
@@ -96,17 +96,17 @@ export class Grove {
     Propose() {
         this.elves.forEach(e => {
 
-            let proposeX = e.x
-            let proposeY = e.y - 1
+            let pX = e.x
+            let pY = e.y - 1
 
-            if (!this.IsElfAt(proposeX, proposeY)) {
-                this.addProposal(proposeX, proposeY);
+            if (!this.IsElfAt(pX, pY)) {
+                this.addProposal(pX, pY);
                 return
             }
             
-            proposeY = e.y + 1
-            if (!this.IsElfAt(proposeX, proposeY)) {
-                this.addProposal(proposeX, proposeY);
+            pY = e.y + 1
+            if (!this.IsElfAt(pX, pY)) {
+                this.addProposal(pX, pY);
                 return
             }
         });
