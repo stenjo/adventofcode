@@ -20,7 +20,8 @@ export enum Direction {
     NorthEast,
     NorthWest,
     SouthEast,
-    SouthWest 
+    SouthWest, 
+    None = 100
 }
 
 class Pos {
@@ -33,8 +34,28 @@ class Pos {
 }
 
 export class Elf extends Pos {
+    Move() {
+        
+        if (this.direction == Direction.North) {
+            this.y -= 1
+        }
+        if (this.direction == Direction.South) {
+            this.y += 1
+        }
+        if (this.direction == Direction.West) {
+            this.x -= 1
+        }
+        if (this.direction == Direction.East) {
+            this.x += 1
+        }
+
+        this.direction += 1
+        this.direction %= 4
+    }
+    direction: Direction
     constructor(x: number, y: number) {
         super(x, y);
+        this.direction = Direction.North
     }
 }
 
@@ -47,7 +68,25 @@ export class Proposal extends Pos {
 }
 
 export class Grove {
-    ProposesAt(x: number, y: number): any {
+    MoveAll() {
+        this.elves.forEach(e => {
+            if (this.ProposesAt(e.x, e.y, e.direction) == 1)
+                e.Move();
+        });
+    }
+    ProposesAt(x: number, y: number, dir:Direction = Direction.None): number {
+        if (dir == Direction.North) {
+            y -= 1
+        }
+        if (dir == Direction.South) {
+            y += 1
+        }
+        if (dir == Direction.West) {
+            x -= 1
+        }
+        if (dir == Direction.East) {
+            x += 1
+        }
         let p = this.proposes.find(p => p.x === x && p.y === y)
         if (p !== undefined) {
             return ( p as Proposal).count;
@@ -60,32 +99,41 @@ export class Grove {
             let proposeX = e.x
             let proposeY = e.y - 1
 
-            if (!this.elfAt(proposeX, proposeY)) {
-                if (this.ProposesAt(proposeX, proposeY)) {
-                    (this.proposes.find(p => p.x === proposeX && p.y === proposeY) as Proposal).count++
-                }
-                else 
-                    this.proposes.push(new Proposal(proposeX, proposeY));
+            if (!this.IsElfAt(proposeX, proposeY)) {
+                this.addProposal(proposeX, proposeY);
                 return
             }
             
             proposeY = e.y + 1
-            if (!this.elfAt(proposeX, proposeY)) {
-                if (this.ProposesAt(proposeX, proposeY)) {
-                    (this.proposes.find(p => p.x === proposeX && p.y === proposeY) as Proposal).count++
-                }
-                else 
-                    this.proposes.push(new Proposal(proposeX, proposeY));
+            if (!this.IsElfAt(proposeX, proposeY)) {
+                this.addProposal(proposeX, proposeY);
                 return
             }
         });
     }
-    elfAt(x: number, y: number): boolean {
+    private addProposal(x: number, y: number) {
+
+        if (this.ProposesAt(x, y) > 0) {
+            (this.proposes.find(p => p.x === x && p.y === y) as Proposal).count++;
+            return
+        }
+
+        this.proposes.push(new Proposal(x, y));
+    }
+
+    IsElfAt(x: number, y: number): boolean {
         let elf = this.elves.find(e => e.x === x && e.y === y)
         if (elf != undefined) {
             return true
         }
         return false;
+    }
+    GetElfAt(x: number, y: number): Elf | undefined {
+        let elf = this.elves.find(e => e.x === x && e.y === y)
+        if (elf != undefined) {
+            return elf
+        }
+        return undefined;
     }
     elves: Elf[] = [];
     proposes: Proposal[] = [];

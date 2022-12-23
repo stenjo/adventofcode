@@ -40,7 +40,7 @@ describe('Grove should', () => {
 
         g.Propose()
 
-        expect(g.proposes.length).toBe(5)
+        expect(g.proposes.length).toBe(4)
     })
     it('propose new position north', () => {
         const elves = [
@@ -87,5 +87,25 @@ describe('Grove should', () => {
         g.Propose()
 
         expect(g.ProposesAt(2,3)).toBe(2)
+    })
+    it('move all elves according to propsed', () => {
+        const elves = [
+            '.....',
+            '..##.',
+            '..#..',
+            '.....',
+            '..##.',
+            '.....'
+        ]
+        let g = new Grove(elves);
+
+        g.Propose()
+        g.MoveAll()
+
+        expect(g.IsElfAt(2,0)).toBe(true)
+        expect(g.IsElfAt(3,0)).toBe(true)
+        expect(g.IsElfAt(2,2)).toBe(true)
+        expect(g.IsElfAt(3,3)).toBe(true)
+        expect(g.IsElfAt(2,4)).toBe(true)
     })
 })
