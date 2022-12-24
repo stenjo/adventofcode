@@ -22,9 +22,42 @@ class Pos {
 }
 
 export class Blizzard extends Pos {
-    Move(w: number = 100) {
-        this.x += 1
+    NextPos(w: number, h: number): Pos {
+        if (this.dir == '<') {
+            if (this.x == 0) 
+                return new Pos((this.x-1+w) % w, this.y)
+            return new Pos(this.x-1, this.y)
+        }
+        if (this.dir == '>') {
+            return new Pos((this.x+1) % w, this.y)
+        }
+
+        if (this.dir == '^') {
+            if (this.y == 0) 
+                return new Pos((this.x) % w, (this.y - 1 + h) % h)
+            return new Pos(this.x, this.y-1)
+        }
+        if (this.dir == 'v') {
+            return new Pos(this.x, (this.y + 1) % h)
+        }
+
+        return new Pos(this.x, this.y)
+    }
+    Move(w: number = 100, h: number = 100) {
+        if (this.dir == '>')
+            this.x += 1
+        if (this.dir == '<') {
+            if (this.x == 0) this.x += w
+            this.x -= 1
+        }
+        if (this.dir == 'v')
+            this.y += 1
+        if (this.dir == '^') {
+            if (this.y == 0) this.y += h
+            this.y -= 1
+        }
         this.x %= w
+        this.y %= h
     }
     dir: string;
     constructor(x: number, y: number, dir:string) {
