@@ -22,6 +22,10 @@ class Pos {
 }
 
 export class Blizzard extends Pos {
+    Move(w: number = 100) {
+        this.x += 1
+        this.x %= w
+    }
     dir: string;
     constructor(x: number, y: number, dir:string) {
         super(x, y);
@@ -30,7 +34,6 @@ export class Blizzard extends Pos {
 }
 
 export class Valley {
-    valley: string[]
     width: number;
     height: number;
     start: Pos;
@@ -38,16 +41,13 @@ export class Valley {
     blizzards: Blizzard[] = [];
 
     constructor(lines: string[]) {
-        this.valley = []
         this.width = lines[0].length-2
         this.height = lines.length-2
 
         lines.forEach((line, y) =>{
             line.split('').forEach((c,x)=>{
-                if (c === '>') 
-                    this.blizzards.push(new Blizzard(x-1, y-1, '>'))
-                if (c === 'v') 
-                    this.blizzards.push(new Blizzard(x-1, y-1, 'v'))
+                if (['<', '>', 'v', '^'].includes(c))
+                    this.blizzards.push(new Blizzard(x-1, y-1, c))
             })
         })
 
