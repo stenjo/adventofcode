@@ -14,6 +14,18 @@ export class LoadLines {
 }
 
 export class Snafu {
+    toSnafu(num: number): any {
+        if (num === 3) {
+            return '1='
+        }
+        if (num === 4) {
+            return '1-'
+        }
+        if (num === 5) {
+            return '10'
+        }
+        return String(num)
+    }
     toNum(snafu:string): number {
         let digit = snafu.split('')
         let num = 0
@@ -29,6 +41,5 @@ export class Snafu {
     }
     numbers: string[] = [];
     constructor(snafu: string[] = []) {
-        snafu.forEach(s => this.numbers.push(s))
     }
 }
