@@ -46,11 +46,11 @@ export class Snafu {
         }        
         return num
 
-        function getValue(digit: string) {
+        function getValue(digit: string): number {
             return digit === '=' ? -2 : digit === '-' ? -1 : Number(digit);
         }
     }
-    
+
     numbers: string[] = [];
     constructor(snafu: string[] = []) {
         this.numbers = snafu
