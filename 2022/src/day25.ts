@@ -19,17 +19,13 @@ export class Snafu {
         let num = 0
         for (let i = 0; i < digit.length; i++) {
             num *= 5
-            if (digit[i] === '=') {
-                num -= 2
-                continue
-            }
-            if (digit[i] === '-') {
-                num -= 1
-                continue
-            }
-            num += Number(digit[i])
+            num += getValue(digit[i])
         }        
         return num
+
+        function getValue(digit: string) {
+            return digit === '=' ? -2 : digit === '-' ? -1 : Number(digit);
+        }
     }
     numbers: string[] = [];
     constructor(snafu: string[] = []) {
