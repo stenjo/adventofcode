@@ -66,4 +66,47 @@ describe('Snafu should', () => {
         expect(s.toSnafu(5)).toBe('10')
     })
 
+    it('convert snafu 2=01 to 201', () =>{
+        let s = new Snafu()
+
+        expect(s.toNum('2=01')).toBe(201)
+    })
+    it('convert 201 to snafu 2=01', () =>{
+        let s = new Snafu()
+
+        expect(s.toSnafu(201)).toBe('2=01')
+    })
+
+    it('convert snafu 1=-0-2 to 1747', () =>{
+        let s = new Snafu()
+
+        expect(s.toNum('1=-0-2')).toBe(1747)
+    })
+    it('convert 1747 to snafu 1=-0-2', () =>{
+        let s = new Snafu()
+
+        expect(s.toSnafu(1747)).toBe('1=-0-2')
+    })
+
+    it('sum snafu test numbers to 4890', () =>{
+        let nums = new LoadLines('../test/input/day25.txt').lines
+        let s = new Snafu(nums)
+
+        expect(s.Sum()).toBe(4890)
+    })
+
+    it('sum snafu test numbers to snafu 2=-1=0', () =>{
+        let nums = new LoadLines('../test/input/day25.txt').lines
+        let s = new Snafu(nums)
+
+        expect(s.SumSnafu()).toBe('2=-1=0')
+    })
+
+    it('sum snafu real numbers to snafu 2----0=--1122=0=0021', () =>{
+        let nums = new LoadLines('../input/day25.txt').lines
+        let s = new Snafu(nums)
+
+        expect(s.SumSnafu()).toBe('2----0=--1122=0=0021')
+    })
+
 })

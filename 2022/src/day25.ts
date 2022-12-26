@@ -14,17 +14,27 @@ export class LoadLines {
 }
 
 export class Snafu {
-    toSnafu(num: number): any {
-        if (num === 3) {
-            return '1='
+    SumSnafu(): any {
+        return this.toSnafu(this.Sum())
+    }
+    Sum(): number {
+        
+        return this.numbers.map(n => this.toNum(n)).reduce((sum, n) => sum + n)
+    }
+
+    toSnafu(num: number): string {
+        const translate:string[] = ['0', '1', '2', '=', '-']
+        let snafu = ''
+
+        while (num > 0) {
+            let digit = num % 5
+
+            snafu = translate[digit] + snafu
+            num += digit === 3 ? 2 : digit === 4 ? 1 : 0
+            num = Math.floor(num/5)
         }
-        if (num === 4) {
-            return '1-'
-        }
-        if (num === 5) {
-            return '10'
-        }
-        return String(num)
+
+        return snafu
     }
     toNum(snafu:string): number {
         let digit = snafu.split('')
@@ -41,5 +51,6 @@ export class Snafu {
     }
     numbers: string[] = [];
     constructor(snafu: string[] = []) {
+        this.numbers = snafu
     }
 }
