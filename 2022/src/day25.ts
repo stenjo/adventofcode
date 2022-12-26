@@ -14,11 +14,11 @@ export class LoadLines {
 }
 
 export class Snafu {
-    SumSnafu(): any {
+    SumSnafu(): string {
         return this.toSnafu(this.Sum())
     }
+
     Sum(): number {
-        
         return this.numbers.map(n => this.toNum(n)).reduce((sum, n) => sum + n)
     }
 
@@ -36,6 +36,7 @@ export class Snafu {
 
         return snafu
     }
+
     toNum(snafu:string): number {
         let digit = snafu.split('')
         let num = 0
@@ -49,6 +50,7 @@ export class Snafu {
             return digit === '=' ? -2 : digit === '-' ? -1 : Number(digit);
         }
     }
+    
     numbers: string[] = [];
     constructor(snafu: string[] = []) {
         this.numbers = snafu
