@@ -124,6 +124,15 @@ describe('Cave should', () => {
 
         let coverage = c.CoverageAtLine(2000000)
 
-        expect(coverage).toBe(26)
+        expect(coverage).toBe(4811413)
+    })
+    it.skip('have tuning frequency of correct beacon for real data', () => {
+        let c = new Cave()
+        let input = new LoadLines('../input/day15.txt').lines
+        input.forEach(line => {c.Deploy(line)})
+
+        let tuningFreq = c.TuningFreq(2000000)
+
+        expect(tuningFreq).toBe(13171855019123)
     })
 })

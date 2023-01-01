@@ -30,7 +30,7 @@ describe("CaloriesCounter should", () => {
     it('should return correct answer for Part2', () => {
         let s = new CaloriesCounter('../input/day01.txt')
 
-        expect(s.GetTop3Calories()).toBe(200116         )
+        expect(s.GetTop3Calories()).toBe(200116)
     })
 
 

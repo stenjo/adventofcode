@@ -35,6 +35,9 @@ export class Beacon {
 }   
 
 export class Cave {
+    TuningFreq(arg0: number) {
+        throw new Error('Method not implemented.');
+    }
     CoverageAtLine(line: number):number {
         this.coverage = []
         this.sensors.forEach(s => this.addCoverage(s, line));
