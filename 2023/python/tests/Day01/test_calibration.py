@@ -30,8 +30,10 @@ def test_calibration():
 
 def test_spell_out():
     assert spell_out("two1nine") == "219"
-    assert spell_out("eightwothree") == "8wo3"
-    assert spell_out("abcone2threexyz") == "abc123xyz"
+    assert spell_out("eightwothree") == "823"
+    assert spell_out("abcone2threexyz") == "123"
+    assert spell_out("sevenine") == "79"
+    assert spell_out("eighthree") == "83"
 
 
 def test_spelled_out_calibration():
@@ -46,4 +48,4 @@ def test_spelled_out_calibration():
 
 def test_spelled_out_calibration_sum():
     assert spelled_out_calibration_sum(test2InputData) == 281
-    assert spelled_out_calibration_sum(inputData2) == 55241
+    assert spelled_out_calibration_sum(inputData2) == 55260
