@@ -1,6 +1,5 @@
 # pyproject.toml
 [tool.coverage.run]
-source = ["Day01"]
-
+source = ["Day01", "Day02"]
 [tool.pytest.ini_options]
 addopts = "--cov --cov-report=lcov:lcov.info --cov-report=term"
