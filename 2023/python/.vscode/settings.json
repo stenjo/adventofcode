@@ -1,9 +1,4 @@
 {
-    "python.testing.pytestArgs": [
-        "tests"
-    ],
-    "python.testing.unittestEnabled": false,
-    "python.testing.pytestEnabled": true,
     "runItOn": {
         "commands": [
             {
@@ -13,4 +8,11 @@
                 "cmd": "testing.runAll"
             },
         ],
-    },}
+    },
+    "python.testing.pytestArgs": [
+        "tests"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true,
+    "testing.automaticallyOpenPeekViewDuringAutoRun": true,
+}
