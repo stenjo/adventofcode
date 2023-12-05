@@ -17,4 +17,6 @@ def test_SourceDestination():
     assert sd.items() == {}
     sd.parseInput("0 69 1")
     assert sd.items() == {69:0}
+    assert sd.getMapped(69) == 0
+    assert sd.getMapped(10) == 10
     

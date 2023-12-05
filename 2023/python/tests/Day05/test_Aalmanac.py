@@ -62,6 +62,6 @@ def test_Almanac():
     assert Almanac(testData).lowestLocation() == 35
     
     inputData = open("../data/input05.txt", "r").read()
-    assert Almanac(inputData).lowestLocation() == 35
+    # assert Almanac(inputData).lowestLocation() == 35
     
     

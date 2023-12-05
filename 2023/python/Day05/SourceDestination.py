@@ -14,4 +14,9 @@ class SourceDestination:
                     
     def items(self):
         return self.itemsMap
-        
+    
+    def getMapped(self, source):
+        if source in self.itemsMap.keys():
+            return self.itemsMap[source]
+
+        return source
