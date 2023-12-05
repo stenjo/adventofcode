@@ -35,33 +35,34 @@ humidity-to-location map:
 56 93 4
 """
 
+
 def test_Almanac():
-    
     assert Almanac("").lowestLocation() == 0
     assert Almanac("seeds: 79 14 55 13").seeds == [79, 14, 55, 13]
-    
-    
+
     assert Almanac(testInput).seeds == [79, 14, 55, 13]
     assert len(Almanac(testInput).maps) == 7
     assert len(Almanac(testInput).sourceMap) == 7
-    assert len(Almanac(testInput).sourceMap[("temperature","humidity")].items()) == 70
-    
+    assert Almanac(testInput).sourceMap[("temperature", "humidity")].getMapped(50) == 51
+
     assert Almanac(testInput).getMap("seed", 79, "soil") == 81
     assert Almanac(testInput).getMap("seed", 14, "soil") == 14
     assert Almanac(testInput).getMap("seed", 55, "soil") == 57
     assert Almanac(testInput).getMap("seed", 13, "soil") == 13
-    
+
     assert Almanac(testInput).getChainedMap("seed", 13, "soil") == 13
     assert Almanac(testInput).getChainedMap("seed", 13, "location") == 35
     assert Almanac(testInput).getChainedMap("seed", 55, "location") == 86
     assert Almanac(testInput).getChainedMap("seed", 79, "location") == 82
-    
+
     assert Almanac(testInput).lowestLocation() == 35
-    
+
     testData = open("../data/testInput05.txt", "r").read()
     assert Almanac(testData).lowestLocation() == 35
-    
+
     inputData = open("../data/input05.txt", "r").read()
-    # assert Almanac(inputData).lowestLocation() == 35
-    
-    
+    assert Almanac(inputData).lowestLocation() == 621354867
+
+    assert Almanac("seeds: 79 14 55 13").seedRange == [(79, 14), (55, 13)]
+    assert Almanac(testData).lowestSeedRangeLocation() == 46
+    assert Almanac(inputData).lowestSeedRangeLocation() == 46
