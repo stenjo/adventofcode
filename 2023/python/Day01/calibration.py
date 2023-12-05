@@ -43,12 +43,6 @@ def spell_out(line):
             
     return out
 
-    # for i in range(0, len(line)):
-    #     for index, number in enumerate(numbers):
-    #         if line[0 : i + 1].find(number) > -1:
-    #             line = line.replace(number, str(index + 1))
-    # return line
-
 
 def spelled_out_calibration_sum(str_list):
     sum = 0
