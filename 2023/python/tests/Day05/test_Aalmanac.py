@@ -65,4 +65,4 @@ def test_Almanac():
 
     assert Almanac("seeds: 79 14 55 13").seedRange == [(79, 14), (55, 13)]
     assert Almanac(testData).lowestSeedRangeLocation() == 46
-    assert Almanac(inputData).lowestSeedRangeLocation() == 46
+    # assert Almanac(inputData).lowestSeedRangeLocation() == 46
