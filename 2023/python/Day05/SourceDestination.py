@@ -1,7 +1,6 @@
 class SourceDestination:
     def __init__(self, input=""):
         self.input = input
-        # self.itemsMap = {}
         self.mapping = {}
         if len(input.strip()) == 0:
             return
@@ -10,8 +9,6 @@ class SourceDestination:
 
     def parseInput(self, input):
         dest, source, count = [int(n) for n in input.split(" ") if n != ""]
-        # for n in range(count):
-        #     self.itemsMap[source + n] = dest + n
         self.mapping[source] = (dest, count)
 
     def getMapped(self, source):
