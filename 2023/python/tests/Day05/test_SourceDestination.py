@@ -14,6 +14,11 @@ def test_SourceDestination():
     sd.parseInput("0 69 1")
     assert sd.getMapped(69) == 0
     assert sd.getMapped(99) == 51
+    assert sd.getSource(50) == 98
+    assert sd.getSource(0) == 69
+    assert sd.getSource(51) == 99
+    assert sd.getSource(40) == 40
+    assert sd.getDestRange() == [0,50,51]
 
     sd = SourceDestination()
     sd.parseInput("0 69 1")

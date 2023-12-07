@@ -27,6 +27,9 @@ class Almanac:
                 sdMap.parseInput(n)
             self.sourceMap[(source, dest)] = sdMap
 
+    def inSeeds(self, val):
+        return True
+    
     def getMap(self, source, num, dest):
         return self.sourceMap[(source, dest)].getMapped(num)
 
@@ -55,11 +58,29 @@ class Almanac:
     def lowestSeedRangeLocation(self):
         if len(self.sourceMap) == 0:
             return 0
-        lowerLocation = None
-        for start, length in self.seedRange:
-            for s in range(length):
-                location = self.getChainedMap("seed", start + s, "location")
-                if lowerLocation is None or location < lowerLocation:
-                    lowerLocation = location
+        
+        for location in self.sourceMap[("humidity","location")].getDestRange():
+            if self.getChainedSeed(location):
+                return location
 
-        return lowerLocation
+        return None
+    
+    
+    def getChainedSeed(self, location):
+        seedNo = self.getChainedSource("seed", location, "location")
+        if self.inSeeds(seedNo):
+            return True
+        return False
+    
+    def getChainedSource(self, source, num, dest):
+        pairs = {d: s for (s, d) in self.sourceMap.keys()}
+        s = pairs[dest]
+        val = self.reverseMap(s, num, dest)
+        while s != source:
+            val = self.reverseMap(pairs[s], val, s)
+            s = pairs[s]
+        return val
+    
+    def reverseMap(self, source, num, dest):
+        return self.sourceMap[(source, dest)].getSource(num)
+        

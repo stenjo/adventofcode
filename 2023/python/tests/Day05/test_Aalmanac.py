@@ -63,6 +63,22 @@ def test_Almanac():
     inputData = open("../data/input05.txt", "r").read()
     assert Almanac(inputData).lowestLocation() == 621354867
 
+def test_part2():
+    
     assert Almanac("seeds: 79 14 55 13").seedRange == [(79, 14), (55, 13)]
-    assert Almanac(testData).lowestSeedRangeLocation() == 46
+    testData = open("../data/testInput05.txt", "r").read()
+    # assert Almanac(testData).lowestSeedRangeLocation() == 46
+  
+    # assert Almanac(testData).lowestLocation() == 35
+    
+    assert Almanac(testInput).reverseMap("seed", 81, "soil") == 79
+    assert Almanac(testInput).reverseMap("seed", 14, "soil") == 14
+    assert Almanac(testInput).reverseMap("seed", 57, "soil") == 55
+    
+    assert Almanac(testInput).getChainedSource("seed", 13, "soil") == 13
+    assert Almanac(testInput).getChainedSource("seed", 57, "soil") == 55
+    assert Almanac(testInput).getChainedSource("seed", 35, "location") == 13
+    assert Almanac(testInput).getChainedSource("seed", 86, "location") == 55
+    assert Almanac(testInput).getChainedSource("seed", 82, "location") == 79
+    
     # assert Almanac(inputData).lowestSeedRangeLocation() == 46

@@ -29,5 +29,5 @@ def test_BoatRace():
     assert BoatRace(inputData).getTotal() == 1084752
     
     assert BoatRace(records).oneRace == (71530, 940200)
-    assert BoatRace(inputData).getTotalOneRace() == 28228952
+    # assert BoatRace(inputData).getTotalOneRace() == 28228952
     

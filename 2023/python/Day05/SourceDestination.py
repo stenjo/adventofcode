@@ -19,10 +19,12 @@ class SourceDestination:
 
     def getDestRange(self):
         r = []
-        for dest, count in self.mapping.items():
-            r.append(range(dest, dest + count))
+        for source, (dest, count) in self.mapping.items():
+            r+=list(range(dest, dest + count))
 
-        return r.sort()
+        r.sort()
+        
+        return r
 
     def getSource(self, dest):
         for s, (d, c) in self.mapping.items():
