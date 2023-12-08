@@ -26,6 +26,7 @@ def test_isFourOfaKind():
 def test_isFullHouse():
     assert Hand("AA3AA 765").isFullHouse() == False
     assert Hand("AA333 765").isFullHouse() == True
+    assert Hand("A3A3A 765").isFullHouse() == True
     assert Hand("77788 765").isFullHouse() == True
     assert Hand("77888 765").isFullHouse() == True
     assert Hand("T55J5 684").isFullHouse() == False
@@ -62,10 +63,14 @@ def test_cardIsGreater():
     assert Hand("KK677 28").cardIsGreater('K', 'K') == 0
     assert Hand("KK677 28").cardIsGreater('K', 'K') == 0
 
+def test_highestCard():
+    assert Hand("32T37K 75").highestCard() == 12
+    assert Hand("22345 77").highestCard() == 4    
+
 def test_score():
-    assert Hand("12345 77").score() == 0
+    assert Hand("23456 77").score() == 5
     assert Hand("AAAAA 765").score() == 1000000
-    assert Hand("12345 77").score() == 0    
+    assert Hand("2345A 77").score() == 13    
     assert Hand("T55J5 684").score() == 1000
     assert Hand("QQQJA 483").score() == 1000
     assert Hand("KTJJT 220").score() == 100

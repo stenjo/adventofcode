@@ -1,8 +1,9 @@
 
 class Hand:
     def __init__(self, handStr):
-        self.cards = handStr.split(' ')[0]
-        self.bid = int(handStr.split(' ')[1])
+        self.cards = handStr.strip().split(' ')[0]
+        self.bid = int(handStr.strip().split(' ')[1])
+        self.rank = ['A', 'K', 'Q', 'J', 'T', '9', '8', '7', '6', '5', '4', '3', '2']
     
     def isFiveOfaKind(self):
         return len(list(set(list(self.cards)))) == 1
@@ -39,19 +40,27 @@ class Hand:
         if self.isFullHouse():      return 10000
         if self.isThreeOfaKind():   return 1000
         if self.isTwoPairs():       return 100
-        if self.isOnePair():        return 10
-        return 0
+        if self.isOnePair():        return 20
+        
+        return self.highestCard()
+    
+    def highestCard(self):
+        cards = sorted(list(self.cards))
+        return max([(len(self.rank) - self.rank.index(c)) for c in cards])
         
     def isStrongerThan(self, hand):
         for i, c in enumerate(self.cards):
             if self.cardIsGreater(c, hand.cards[i]) > 0: return True
             if self.cardIsGreater(c, hand.cards[i]) < 0: return False
             
-        return None       
+        return False       
         
     def cardIsGreater(self, card1, card2):
-        rank = ['A', 'K', 'Q', 'J', 'T', '9', '8', '7', '6', '5', '4', '3', '2', '1', '0']
-        return rank.index(card2) - rank.index(card1)
+        if card1 not in self.rank: 
+            raise Exception("Not a valid card; ", card1)
+        if card2 not in self.rank: 
+            raise Exception("Not a valid card; ", card2)
+        return self.rank.index(card2) - self.rank.index(card1)
     
     def getPairs(self):
         cards = sorted(list(self.cards))
