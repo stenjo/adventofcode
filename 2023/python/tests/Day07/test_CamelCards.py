@@ -34,5 +34,8 @@ def test_getRanking():
 def test_part1():
     assert CamelCards(hands).totalWinnings() == 6440
     inputData = open("../data/input07.txt", "r").readlines()
-    # assert CamelCards(inputData).totalWinnings() == 246379933
+    # assert CamelCards(inputData).totalWinnings() == 250474325
+
+def test_part2():
+    248909434
     
