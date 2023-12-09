@@ -8,6 +8,9 @@ class CamelCards:
     def __init__(self, handsList):
         self.hands = [Hand(hand) for hand in handsList if len(hand) > 6]
         
+    def getSortedHands(self):
+        hands = sorted( self.hands, key=functools.cmp_to_key(self.compare))
+        return [(h.cards, h.bid) for h in hands]
         
     def totalWinnings(self):
         hands = sorted( self.hands, key=functools.cmp_to_key(self.compare))

@@ -1,5 +1,6 @@
 from Day07.CamelCards import CamelCards
 from Day07.Hand import Hand
+from Day07.day_07_part_1 import playlist
 
 hands = [
 "32T3K 765",
@@ -7,6 +8,16 @@ hands = [
 "KK677 28 ",
 "KTJJT 220",
 "QQQJA 483"
+]
+
+hands2 = [
+"32T3K 765",
+"T55J5 684",
+"KK677 28 ",
+"KTJJT 220",
+"QQQJA 483",
+"22322 709",
+"2346J 689"
 ]
 
 def test_CamelCards():
@@ -29,12 +40,16 @@ def test_getRanking():
     assert CamelCards(hands).getRanking()["KK677"] == (3,100)
     assert CamelCards(hands).getRanking()["T55J5"] == (4,1000)
     assert CamelCards(hands).getRanking()["QQQJA"] == (5,1000)
+    # assert CamelCards(hands).getRanking()["22322"] == (3,100)
     
     
 def test_part1():
     assert CamelCards(hands).totalWinnings() == 6440
     inputData = open("../data/input07.txt", "r").readlines()
+    
+    assert CamelCards(inputData).getSortedHands() == playlist()
     # assert CamelCards(inputData).totalWinnings() == 250474325
+    
 
 def test_part2():
     248909434
