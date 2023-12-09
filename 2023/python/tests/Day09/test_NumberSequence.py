@@ -5,18 +5,16 @@ def test_part1():
     assert len(NumberSequence(["1 2 3"]).sequences[0]) == 3
     assert NumberSequence(["1 2 3"]).sequences[0][2] == 3
 
-    assert NumberSequence(["1 2 3"]).newSequence([1, 2, 3]) == [1, 1]
+    assert NumberSequence().newSequence([1, 2, 3]) == [1, 1]
 
-    assert NumberSequence(["1 2 3"]).allZeros([1, 2, 3]) == False
-    assert NumberSequence(["1 2 3"]).allZeros([0, 2, 0]) == False
-    assert NumberSequence(["1 2 3"]).allZeros([0, 0, 0]) == True
+    assert NumberSequence().allZeros([1, 2, 3]) == False
+    assert NumberSequence().allZeros([0, 2, 0]) == False
+    assert NumberSequence().allZeros([0, 0, 0]) == True
 
-    assert NumberSequence(["1 2 3"]).nextNumber([1, 2, 3]) == 4
-    assert NumberSequence(["0 3 6 9 12 15"]).nextNumber([0, 3, 6, 9, 12, 15]) == 18
-    assert NumberSequence(["1 3 6 10 15 21"]).nextNumber([1, 3, 6, 10, 15, 21]) == 28
-    assert (
-        NumberSequence(["10 13 16 21 30 45"]).nextNumber([10, 13, 16, 21, 30, 45]) == 68
-    )
+    assert NumberSequence().nextNumber([1, 2, 3]) == 4
+    assert NumberSequence().nextNumber([0, 3, 6, 9, 12, 15]) == 18
+    assert NumberSequence().nextNumber([1, 3, 6, 10, 15, 21]) == 28
+    assert NumberSequence().nextNumber([10, 13, 16, 21, 30, 45]) == 68
 
     assert (
         NumberSequence(
