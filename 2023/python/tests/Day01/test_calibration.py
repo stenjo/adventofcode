@@ -1,5 +1,4 @@
-
-from Day01.Calibration import (
+from Day01.calibration import (
     calibration,
     calibration_sum,
     spell_out,
@@ -18,12 +17,14 @@ def test_Calibration():
     assert calibration("") == 0
     assert calibration("abcdefgh") == 0
 
+
 def test_Calibration_sum():
     testInputData = open("../data/test_input01.txt", "r")
     assert calibration_sum(testInputData) == 142
-    
+
     inputData = open("../data/input01.txt", "r")
     assert calibration_sum(inputData) == 55123
+
 
 def test_SpellOut():
     assert spell_out("two1nine") == "219"
@@ -31,6 +32,7 @@ def test_SpellOut():
     assert spell_out("abcone2threexyz") == "123"
     assert spell_out("sevenine") == "79"
     assert spell_out("eighthree") == "83"
+
 
 def test_spelled_out_calibration():
     assert spelled_out_calibration("two1nine") == 29
