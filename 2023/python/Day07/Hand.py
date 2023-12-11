@@ -4,14 +4,27 @@ class Hand:
         self.cards = handStr.strip().split(' ')[0]
         self.bid = int(handStr.strip().split(' ')[1])
         self.rank = ['A', 'K', 'Q', 'J', 'T', '9', '8', '7', '6', '5', '4', '3', '2']
+        self.rankWithJoker = ['A', 'K', 'Q', 'T', '9', '8', '7', '6', '5', '4', '3', '2', 'J']
     
     def isFiveOfaKind(self):
         return len(list(set(list(self.cards)))) == 1
     
+    def isFiveOfaKindWithJoker(self):
+        return (len(list(set(list(self.cards)))) == 2 and 'J' in self.cards) or self.isFiveOfaKind()
+        
+    
     def isFourOfaKind(self):
         cards = list(self.cards)
         cards.sort()
-        return len(list(set(cards[:5]))) == 1 or len(list(set(cards[1:]))) == 1
+        firstSet = len(list(set(cards[:4])))
+        lastSet = len(list(set(cards[1:])))
+        return firstSet == 1 or lastSet == 1
+    
+    def isFourOfaKindWithJoker(self):
+        cards = sorted(list(self.cards))
+        firstSet = len(list(set(cards[:4])))
+        lastSet = len(list(set(cards[1:])))
+        return ((firstSet == 2 or lastSet == 2) and 'J' in self.cards) or self.isFourOfaKind()
     
     def isFullHouse(self):
         cards = list(self.cards)
@@ -42,12 +55,8 @@ class Hand:
         if self.isTwoPairs():       return 100
         if self.isOnePair():        return 20
         
-        return self.highestCard()
+        return 0
     
-    def highestCard(self):
-        cards = sorted(list(self.cards))
-        return max([(len(self.rank) - self.rank.index(c)) for c in cards])
-        
     def isStrongerThan(self, hand):
         for i, c in enumerate(self.cards):
             if self.cardIsGreater(c, hand.cards[i]) > 0: return True
@@ -69,4 +78,9 @@ class Hand:
             if self.cards.count(c) == 2:
                 pairs += 1
         return pairs
+    
+    def getCardRanking(self, rank=None):
+        if rank is None:
+            rank = self.rankWithJoker
+        return [len(rank) - rank.index(c) for c in self.cards]
         

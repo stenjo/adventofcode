@@ -31,6 +31,7 @@ def test_compare():
     assert CamelCards(hands).compare(Hand("T55J5 684"),Hand("QQQJA 483")) == -1
     assert CamelCards(hands).compare(Hand("QQQJA 483"), Hand("KK677 28")) == 1
     assert CamelCards(hands).compare(Hand("KK677 28"), Hand("QQQJA 483")) == -1
+    assert CamelCards(hands).compare(Hand("53426 776"), Hand("2346J 689")) == 1
 
 
 def test_getRanking():
@@ -40,15 +41,15 @@ def test_getRanking():
     assert CamelCards(hands).getRanking()["KK677"] == (3,100)
     assert CamelCards(hands).getRanking()["T55J5"] == (4,1000)
     assert CamelCards(hands).getRanking()["QQQJA"] == (5,1000)
-    # assert CamelCards(hands).getRanking()["22322"] == (3,100)
+    assert CamelCards(hands2).getRanking()["22322"] == (7,100000)
     
     
 def test_part1():
     assert CamelCards(hands).totalWinnings() == 6440
     inputData = open("../data/input07.txt", "r").readlines()
     
-    assert CamelCards(inputData).getSortedHands() == playlist()
-    # assert CamelCards(inputData).totalWinnings() == 250474325
+    assert CamelCards(inputData).getSortedHands() == playlist(inputData)
+    assert CamelCards(inputData).totalWinnings() == 250474325
     
 
 def test_part2():
