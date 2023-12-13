@@ -9,11 +9,11 @@
             },
         ],
     },
-    "python.testing.pytestArgs": [
-        "tests"
-    ],
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true,
     "testing.automaticallyOpenPeekViewDuringAutoRun": true,
     "python.languageServer": "Pylance",
+    "python.testing.pytestArgs": [
+        "tests"
+    ],
 }
