@@ -10,9 +10,7 @@
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
-            "env": { 
-                "PYTEST_ADDOPTS": "--no-cov"
-            }
+            "env": { "PYTEST_ADDOPTS": "--no-cov"}
         }
     ]
 }

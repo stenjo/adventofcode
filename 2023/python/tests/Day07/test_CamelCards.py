@@ -27,6 +27,7 @@ def test_compare():
     assert CamelCards(hands).compare(Hand("T55J5 684"), Hand("QQQJA 483")) == -1
     assert CamelCards(hands).compare(Hand("QQQJA 483"), Hand("KK677 28")) == 1
     assert CamelCards(hands).compare(Hand("KK677 28"), Hand("QQQJA 483")) == -1
+    assert CamelCards(hands).compare(Hand("53426 776"), Hand("2346J 689")) == 1
 
 
 def test_getRanking():

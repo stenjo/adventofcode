@@ -19,14 +19,17 @@ class CamelCards:
             score += hand.bid * (i + 1)
 
         return score
-
+    
     def getRanking(self):
-        hands = sorted(self.hands, key=functools.cmp_to_key(self.compare))
+        hands = sorted(self.hands, key=self.rank)
         handsRank = {}
         for i, hand in enumerate(hands):
             handsRank[hand.cards] = (i + 1, hand.score())
 
         return handsRank
+
+    def rank(self, hand):
+        return hand.score(), hand.getCardRanking()
 
     def compare(self, a, b):
         if a.score() < b.score():
