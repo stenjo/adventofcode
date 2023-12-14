@@ -1,4 +1,8 @@
 
+from collections import Counter, defaultdict
+from itertools import zip_longest
+
+
 class Valley:
     def __init__(self, input):
         self.patterns = []
@@ -15,7 +19,6 @@ class Valley:
     def rowsByColumnsSum(self):
         rows = [Pattern(r).findMirrorRow() for r in self.patterns]
         cols = [Pattern(c).findMirrorCol() for c in self.patterns]
-                
         return sum(rows) + sum(cols)*100
         
 
@@ -24,14 +27,17 @@ class Pattern:
         self.map = [line.strip() for line in input]
         
     def findMirror(self, notes):
-        mirrorLines=[[i for i in range(len(line)) if self.isMirror(line,i)] for line in notes]
+        mirrorLines = self.findMirrorLines(notes)
         return list(set.intersection(*map(set,mirrorLines)))
+
+    def findMirrorLines(self, notes = None, transpose=False):
+        if notes is None: notes = self.map
+        t = list(map(list, zip(*notes))) if transpose else notes
+        mirrorLines=[[i for i in range(len(line)) if self.isMirror(line,i) and i > 0] for line in t]
+        return mirrorLines
     
     def findMirrorRow(self):
-        t = list(map(list, zip(*self.map)))
-        r = list(map(list, zip(*t)))
-        
-        lines = self.findMirror(r)
+        lines = self.findMirror(self.map)
         return lines[-1] if len(lines) > 0 else 0
 
     def findMirrorCol(self):
@@ -42,4 +48,14 @@ class Pattern:
     def isMirror(self, line, p):
         mRange = min([len(line) - p, p])
         return line[p-mRange:p] == line[p:p+mRange][::-1]
+    
+    def findSmudgedPixel(self, notes):
+        ml = self.findMirrorLines(notes)
+        counts = defaultdict(int)
+        for i,l in enumerate(ml):
+            if i in l: counts[i] += 1
+            
+        other = list(map(list, zip_longest(*ml, fillvalue=None)))
+        options = map(tuple, other)
         
+        return True

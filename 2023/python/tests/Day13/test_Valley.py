@@ -59,3 +59,6 @@ def test_Patten():
     assert Pattern(testPattern2).findMirrorRow() == 0
     assert Pattern(testPattern2).findMirrorCol() == 2
     
+    # assert Pattern(testPatterns[8:]).findMirrorLines(transpose=True) == 2
+    
+    Pattern(testPattern2).findSmudgedPixel(testPattern2) == True
