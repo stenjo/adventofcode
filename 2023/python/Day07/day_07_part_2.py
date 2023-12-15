@@ -19,7 +19,7 @@ def get_type(hand):
             return 2
     if len(counts) == 4:
         return 1
-    return 0
+    return
 
 
 def find_all_combinations(hand):
