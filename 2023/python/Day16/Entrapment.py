@@ -26,60 +26,43 @@ class Entrapment:
             case ".":
                 if dir == ">":
                     return [(dir, (x + 1, y))]
-                    self.beam(dir, (x + 1, y))
                 if dir == "V":
                     return [(dir, (x, y + 1))]
-                    self.beam(dir, (x, y + 1))
                 if dir == "<":
                     return [(dir, (x - 1, y))]
-                    self.beam(dir, (x - 1, y))
                 if dir == "^":
                     return [(dir, (x, y - 1))]
-                    self.beam(dir, (x, y - 1))
             case "\\":
                 if dir == ">":
                     return [("V", (x, y + 1))]
-                    self.beam("V", (x, y + 1))
                 if dir == "V":
                     return [(">", (x + 1, y))]
-                    self.beam(">", (x + 1, y))
                 if dir == "<":
                     return [("^", (x, y - 1))]
-                    self.beam("^", (x, y - 1))
                 if dir == "^":
                     return [("<", (x - 1, y))]
-                    self.beam("<", (x - 1, y))
             case "/":
                 if dir == ">":
                     return [("^", (x, y - 1))]
-                    self.beam("^", (x, y - 1))
                 if dir == "V":
                     return [("<", (x - 1, y))]
-                    self.beam("<", (x - 1, y))
                 if dir == "<":
                     return [("V", (x, y + 1))]
-                    self.beam("V", (x, y + 1))
                 if dir == "^":
                     return [(">", (x + 1, y))]
-                    self.beam(">", (x + 1, y))
 
             case "|":
                 if dir == "V":
                     return [("V", (x, y + 1))]
-                    self.beam(dir, (x, y + 1))
                 if dir == "^":
                     return [("^", (x, y - 1))]
-                    self.beam(dir, (x, y - 1))
                 if dir in ["<", ">"]:
                     return [("^", (x, y - 1)), ("V", (x, y + 1))]
-                    self.beam("^", (x, y - 1))
             case "-":
                 if dir == ">":
                     return [(">", (x + 1, y))]
-                    self.beam(dir, (x + 1, y))
                 if dir == "<":
                     return [("<", (x - 1, y))]
-                    self.beam(dir, (x - 1, y))
                 if dir in ["^", "V"]:
                     return [("<", (x - 1, y)), (">", (x + 1, y))]
         return
@@ -95,6 +78,28 @@ class Entrapment:
             tiles = m
 
         return len(self.energized)
+
+    def getStarters(self):
+        entries = {}
+        entries[(">", (0, 0))] = self.countEnergized()
+
+        for y in [0, self.dim[1] - 1]:
+            for x in range(self.dim[0] - 1):
+                self.updateEntries(entries, (dir, (x, y)))
+
+        return max([c for c in entries.values()])
+
+    def updateEntries(self, entries, key):
+        if key not in entries.keys():
+            (dir, (x, y)) = key
+            if y == 0 and "V" not in self.energized[(x, y)]:
+                entries[("V", (x, y))] = self.countEnergized(("V", (x, y)))
+            if y == self.dim[1] - 1 and "^" not in self.energized[(x, y)]:
+                entries[("^", (x, y))] = self.countEnergized(("^", (x, y)))
+            if x == 0 and ">" not in self.energized[(x, y)]:
+                entries[(">", (x, y))] = self.countEnergized((">", (x, y)))
+            if x == self.dim[0] - 1 and "<" not in self.energized[(x, y)]:
+                entries[("<", (x, y))] = self.countEnergized(("<", (x, y)))
 
     def printMap(self):
         for y, r in enumerate(self.tiles):

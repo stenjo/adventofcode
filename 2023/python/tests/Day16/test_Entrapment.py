@@ -11,3 +11,7 @@ def test_Entrapment():
 
     inputData = open("../data/input16.txt", "r").readlines()
     assert Entrapment(inputData).countEnergized() == 6978
+
+    assert Entrapment(testData).countEnergized(("V", (3, 0))) == 51
+
+    # assert Entrapment(testData).getStarters() == 51
