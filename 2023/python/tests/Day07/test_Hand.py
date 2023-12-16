@@ -82,5 +82,25 @@ def test_score():
     assert Hand("53426 776").score() == 0
     assert Hand("2346J 689").score() == 0
 
-def test_getCarRanking():
-    assert Hand("2346J 987").getCardRanking() == [2,3,4,6,1]    
+def test_getCardRanking():
+    assert Hand("2346J 987").getCardRankingWithJoker() == [2,3,4,6,1]    
+    
+def test_scoreWithJoker():
+    assert Hand("2346J 987").scoreWithJoker() == 20    
+    assert Hand("79J27 987").scoreWithJoker() == 1000    
+    assert Hand("8933J 987").scoreWithJoker() == 1000    
+    assert Hand("553JQ 987").scoreWithJoker() == 1000    
+    assert Hand("8J8QQ 987").scoreWithJoker() == 10000    
+    assert Hand("J4999 987").scoreWithJoker() == 100000    
+    assert Hand("4TJT6 987").scoreWithJoker() == 1000    
+    assert Hand("KJ46J 987").scoreWithJoker() == 1000    
+    assert Hand("8KJJJ 987").scoreWithJoker() == 100000    
+    assert Hand("6J778 987").scoreWithJoker() == 1000    
+    assert Hand("4JJ2K 987").scoreWithJoker() == 1000    
+    assert Hand("57ATJ 987").scoreWithJoker() == 20    
+    assert Hand("QQQJ6 987").scoreWithJoker() == 100000    
+    assert Hand("JK646 987").scoreWithJoker() == 1000    
+    assert Hand("94J64 987").scoreWithJoker() == 1000
+    assert Hand("JKJJJ 987").scoreWithJoker() == 1000000 
+    assert Hand("2346J 987").scoreWithJoker() == 20   
+        

@@ -1,5 +1,7 @@
 from Day07.CamelCards import CamelCards
 from Day07.Hand import Hand
+from Day07.day_07_part_1 import playlist
+from Day07.day_07_part_2 import playlist2
 
 # from Day07.day_07_part_1 import playlist
 
@@ -49,4 +51,9 @@ def test_part1():
 
 
 def test_part2():
-    248909434
+    inputData = open("../data/input07.txt", "r").readlines()
+
+    # assert CamelCards(inputData).getSortedHandsWithJoker() == playlist2(inputData)
+
+    # assert CamelCards(inputData).totalWinningsWithJoker() ==  248909434
+    

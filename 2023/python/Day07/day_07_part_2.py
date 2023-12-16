@@ -19,7 +19,7 @@ def get_type(hand):
             return 2
     if len(counts) == 4:
         return 1
-    return 0
+    return
 
 
 def find_all_combinations(hand):
@@ -52,6 +52,14 @@ def get_order(hand):
 def sorting(hand):
     return find_max_type(hand), get_order(hand)
 
+def playlist2(data):
+    plays = []
+    for line in data:
+        hand, bid = line.split()
+        plays.append((hand, int(bid)))
+
+    plays.sort(key=lambda play: sorting(play[0]))
+    return plays
 
 plays = []
 with open("../data/input07.txt") as file:

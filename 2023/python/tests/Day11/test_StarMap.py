@@ -21,7 +21,7 @@ def test_StarMap():
     
     assert len(StarMap(testMap).getGalaxyPairs()) == 36
     assert StarMap(testMap).getGalaxyPairs()[(1,5),(4,9)] == 9
-    assert StarMap(testMap).getGalaxyPairs()[(0, 9), (4, 9)] == 5
+    assert StarMap(testMap).getGalaxyPairs()[(0,9),(4,9)] == 5
     assert StarMap(testMap).getGalaxyPairs(10)[(1,5),(4,9)] == 25
     
     assert StarMap(testMap).sumOfGalaxyDistances() == 374

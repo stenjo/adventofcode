@@ -10,7 +10,7 @@ class Hand:
         return len(list(set(list(self.cards)))) == 1
     
     def isFiveOfaKindWithJoker(self):
-        return (len(list(set(list(self.cards)))) == 2 and 'J' in self.cards) or self.isFiveOfaKind()
+        return  (self.isFourOfaKind() and self.cards.count('J') in [1,4]) or (self.isFullHouse() and self.cards.count('J') == 2) or self.isFiveOfaKind()
         
     
     def isFourOfaKind(self):
@@ -21,15 +21,17 @@ class Hand:
         return firstSet == 1 or lastSet == 1
     
     def isFourOfaKindWithJoker(self):
-        cards = sorted(list(self.cards))
-        firstSet = len(list(set(cards[:4])))
-        lastSet = len(list(set(cards[1:])))
-        return ((firstSet == 2 or lastSet == 2) and 'J' in self.cards) or self.isFourOfaKind()
+        return self.isFourOfaKind() or (self.isTwoPairs() and self.cards.count('J') == 2) or (self.isThreeOfaKind() and self.cards.count('J') == 1) or self.cards.count('J') == 3
     
     def isFullHouse(self):
         cards = list(self.cards)
         cards.sort()
         return (len(list(set(cards[:3]))) == 1 and len(list(set(cards[3:]))) == 1) or (len(list(set(cards[:2]))) == 1 and len(list(set(cards[2:]))) == 1)
+
+    def isFullHouseWithJoker(self):
+        cards = list(self.cards)
+        cards.sort()
+        return self.cards.count('J') == 1 and self.isTwoPairs()
             
     def isThreeOfaKind(self):
         cards = list(self.cards)
@@ -39,22 +41,38 @@ class Hand:
                 return True      
             
         return False  
-            
+
+    def isThreeOfaKindWithJoker(self):
+        return (self.getPairs() == 1 and 'J' in self.cards) or self.isThreeOfaKind()
+                    
     def isTwoPairs(self):
+        return self.getPairs() == 2
+
+    def isTwoPairsWithJoker(self):
         return self.getPairs() == 2
 
     def isOnePair(self):
         return self.getPairs() == 1
     
+    def isOnePairWithJoker(self):
+        return self.isOnePair() or 'J' in self.cards
+    
     def score(self):
-        
         if self.isFiveOfaKind():    return 1000000
         if self.isFourOfaKind():    return 100000
         if self.isFullHouse():      return 10000
         if self.isThreeOfaKind():   return 1000
         if self.isTwoPairs():       return 100
         if self.isOnePair():        return 20
-        
+        return 0
+    
+    def scoreWithJoker(self):
+        if self.isFiveOfaKindWithJoker():    return 1000000
+        if self.isFourOfaKindWithJoker():    return 100000
+        if self.isFullHouseWithJoker():      return 10000
+        if self.isThreeOfaKindWithJoker():   return 1000
+        if self.isTwoPairsWithJoker():       return 100
+        if self.isOnePairWithJoker():        return 20
         return 0
     
     def isStrongerThan(self, hand):
@@ -79,8 +97,10 @@ class Hand:
                 pairs += 1
         return pairs
     
-    def getCardRanking(self, rank=None):
-        if rank is None:
-            rank = self.rankWithJoker
+    def getCardRanking(self):
+        return [len(self.rank) - self.rank.index(c) for c in self.cards]
+
+    def getCardRankingWithJoker(self):
+        rank = self.rankWithJoker
         return [len(rank) - rank.index(c) for c in self.cards]
         
