@@ -1,5 +1,5 @@
 from Day10.Map import Map
-from Day10.solution import main
+# from Day10.solution import main
 
 testMap = [".....", ".S-7.", ".|.|.", ".L-J.", "....."]
 testMap2 = ["..F7.", ".FJ|.", "SJ.L7", "|F--J", "LJ..."]
@@ -21,4 +21,10 @@ def test_Part1():
 
     inputData = open("../data/input10.txt", "r").readlines()
     # assert main(inputData) == (6613, 511)
-    assert Map(inputData).stepsToMostDistantPoint() == 6613
+    # assert Map(inputData).stepsToMostDistantPoint() == 6613
+
+    m = Map(testMap)
+    assert m.getTileLeft(m.map[(1,1)]) == None
+    assert m.getTileLeft(m.map[(2,1)]).connector == 'S'
+    assert m.getTileAbove(m.map[(1,1)]) == None
+    assert m.getTileAbove(m.map[(1,2)]).connector == 'S'

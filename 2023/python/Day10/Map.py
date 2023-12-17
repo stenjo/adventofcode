@@ -69,3 +69,50 @@ class Map:
 
     def stepsToMostDistantPoint(self):
         return self.countSteps()
+    
+    def trackPipes(self, previous:Tile, tile: Tile):
+        if tile == None: return None
+        if tile == self.start: return 1
+        steps = 0
+        match tile.connector:
+            case "S":
+                self.trackPipes(tile, self.map[(tile.x - 1, tile.y)])
+            case "-":
+                left = self.getTileLeft(tile)
+                if left == previous:
+                    right = self.getTileRight(tile)
+                    steps = self.trackPipes(tile, right)
+                else: 
+                    steps = self.trackPipes(tile, left)
+
+        if steps != None: return steps + 1
+        else: return None
+                
+    def getTileLeft(self, tile):
+        if tile.x == 0: return None
+        leftTile = (tile.x-1, tile.y)
+        if leftTile in self.map.keys():
+            return self.map[leftTile] 
+        else: return None
+        
+    def getTileRight(self, tile):
+        if tile.x == len(self.tileMap[0]) - 1: return None
+        rightTile = (tile.x+1, tile.y)
+        if rightTile in self.map.keys():
+            return self.map[rightTile] 
+        else: return None
+        
+    def getTileAbove(self, tile):
+        if tile.y == 0: return None
+        aboveTile = (tile.x, tile.y-1)
+        if aboveTile in self.map.keys():
+            return self.map[aboveTile] 
+        else: return None
+        
+    def getTileBelow(self, tile):
+        if tile.y == len(self.tileMap) - 1: return None
+        aboveTile = (tile.x, tile.y+1)
+        if aboveTile in self.map.keys():
+            return self.map[aboveTile] 
+        else: return None
+        
