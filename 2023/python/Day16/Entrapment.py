@@ -79,27 +79,40 @@ class Entrapment:
 
         return len(self.energized)
 
-    def getStarters(self):
+    def getMaxStarters(self):
         entries = {}
         entries[(">", (0, 0))] = self.countEnergized()
 
-        for y in [0, self.dim[1] - 1]:
-            for x in range(self.dim[0] - 1):
-                self.updateEntries(entries, (dir, (x, y)))
+        for x in range(self.dim[0]):
+            self.updateEntries(entries, ("V", (x, 0)))
+        for x in range(self.dim[0]):
+            self.updateEntries(entries, ("^", (x, self.dim[1] - 1)))
+        for y in range(self.dim[1]):
+            self.updateEntries(entries, (">", (0, y)))
+        for y in range(self.dim[1]):
+            self.updateEntries(entries, (">", (self.dim[1] - 1, y)))
 
         return max([c for c in entries.values()])
 
     def updateEntries(self, entries, key):
         if key not in entries.keys():
-            (dir, (x, y)) = key
-            if y == 0 and "V" not in self.energized[(x, y)]:
-                entries[("V", (x, y))] = self.countEnergized(("V", (x, y)))
-            if y == self.dim[1] - 1 and "^" not in self.energized[(x, y)]:
-                entries[("^", (x, y))] = self.countEnergized(("^", (x, y)))
-            if x == 0 and ">" not in self.energized[(x, y)]:
-                entries[(">", (x, y))] = self.countEnergized((">", (x, y)))
-            if x == self.dim[0] - 1 and "<" not in self.energized[(x, y)]:
-                entries[("<", (x, y))] = self.countEnergized(("<", (x, y)))
+            (_, (x, y)) = key
+            self.energized = {}
+            entries[key] = self.countEnergized(key)
+            for x in range(self.dim[0]):
+                y = 0
+                if ("V", (x, y)) in self.energized.keys():
+                    entries[("V", (x, y))] = entries[key]
+                y = self.dim[1] - 1
+                if ("^", (x, y)) in self.energized.keys():
+                    entries[("^", (x, y))] = entries[key]
+            for y in range(self.dim[1]):
+                x = 0
+                if (">", (x, y)) in self.energized.keys():
+                    entries[(">", (x, y))] = entries[key]
+                x = self.dim[0] - 1
+                if ("<", (x, y)) in self.energized.keys():
+                    entries[("<", (x, y))] = entries[key]
 
     def printMap(self):
         for y, r in enumerate(self.tiles):

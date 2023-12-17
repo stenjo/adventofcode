@@ -14,4 +14,5 @@ def test_Entrapment():
 
     assert Entrapment(testData).countEnergized(("V", (3, 0))) == 51
 
-    # assert Entrapment(testData).getStarters() == 51
+    assert Entrapment(testData).getMaxStarters() == 51
+    assert Entrapment(inputData).getMaxStarters() == 7315
