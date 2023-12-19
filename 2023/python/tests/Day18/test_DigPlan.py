@@ -29,9 +29,9 @@ def test_DigPlan():
 
     inputData = open("../data/input18.txt", "r").readlines()
     dp = DigPlan(testData)
-    dp.trench()
-    dp.print()
-    dp.plotFilled()
+    # dp.trench()
+    # dp.print()
+    # dp.plotFilled()
     
     assert DigPlan(testData).trench() == 62
     

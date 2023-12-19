@@ -42,4 +42,6 @@ class Parabolic:
             print(n)
             
     def rotate(self, notes):
-        return list(map(str, zip(notes)))
+        l = list(map(list, zip(notes)))
+        return [str(ln) for ln in l]
+    
