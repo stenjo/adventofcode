@@ -1,3 +1,4 @@
+from functools import reduce
 from Day19.Part import Part
 
 
@@ -17,9 +18,9 @@ class Sorter:
         for part in self.parts:
             workflow = "in"
             rules = self.workflows[workflow]
-            workflow = part.validate(rule)
-            while workflow == None:
-                workflow = part.validate(rule)
+            workflow = part.validate(rules)
+            while workflow in self.workflows.keys():
+                workflow = part.validate(self.workflows[workflow])
 
             if workflow == "A":
                 self.A.append(part)
@@ -27,3 +28,10 @@ class Sorter:
                 self.R.append(part)
 
         return self.A
+
+    def ratingsOfAccepted(self):
+        partRatings = [sum(p.rating.values()) for p in self.run()]
+        return sum(partRatings)
+
+    def getDistinctCombinations(self):
+        return 0

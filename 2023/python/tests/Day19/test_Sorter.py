@@ -32,4 +32,11 @@ def test_Sorter():
     assert len(Sorter(testData).workflows) == 11
     assert Sorter(testData).workflows["in"] == ["s<1351:px", "qqz"]
 
-    assert Sorter(testData).run() == []
+    assert len(Sorter(testData).run()) == 3
+
+    assert Sorter(testData).ratingsOfAccepted() == 19114
+
+    inputData = open("../data/input19.txt", "r").read()
+    assert Sorter(inputData).ratingsOfAccepted() == 397134
+
+    assert Sorter(inputData).getDistinctCombinations() == 167409079868000

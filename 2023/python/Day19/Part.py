@@ -6,17 +6,17 @@ class Part:
             key, value = rating.split("=")
             self.rating[key] = int(value)
 
-    def validate(self, rule):
-        if "," not in rule:
-            return rule
-        param = rule[0]
-        op = rule[1]
-        value = int(rule.split(":")[0][2:])
-        workflow = rule.split(":")[1]
-        first, second = workflow.split(",")
-        if op == ">":
-            return first if self.rating[param] > value else second
-        if op == "<":
-            return first if self.rating[param] < value else second
-        else:
-            return None
+    def validate(self, rules):
+        for rule in rules:
+            if ":" not in rule:
+                return rule
+
+            comp, workflow = rule.split(":")
+
+            param = comp[0]
+            op = comp[1]
+            value = int(comp[2:])
+            if (op == ">" and self.rating[param] > value) or (
+                op == "<" and self.rating[param] < value
+            ):
+                return workflow
