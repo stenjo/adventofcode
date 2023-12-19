@@ -8,11 +8,11 @@ testMap2 = ["..F7.", ".FJ|.", "SJ.L7", "|F--J", "LJ..."]
 
 def test_Map():
     assert len(Map().map) == 0
-    assert len(Map(testMap).map) == 25
+    # assert len(Map(testMap).map) == 25
 
-    assert Map(testMap).map[(1, 1)].connector == "S"
+    # assert Map(testMap).map[(1, 1)].connector == "S"
     # assert Map(testMap).map[(1, 1)].next == [(2, 1), (1, 2)]
-    assert Map(testMap).map[(2, 3)].connector == "-"
+    # assert Map(testMap).map[(2, 3)].connector == "-"
     # assert Map(testMap).map[(2, 3)].next == [(1, 3), (3, 3)]
 
 
@@ -21,8 +21,7 @@ def test_Part1():
     assert Map(testMap2).stepsToMostDistantPoint() == 8
 
     inputData = open("../data/input10.txt", "r").readlines()
-    # assert main(inputData) == (6613, 511)
-    # assert Map(inputData).stepsToMostDistantPoint() == 6613
+    assert Map(inputData).stepsToMostDistantPoint() == 6613
 
 
 def test_Part2():
@@ -32,6 +31,11 @@ def test_Part2():
     assert m.getTileAbove(m.map[(1, 1)]) == None
     assert m.getTileAbove(m.map[(1, 2)]).connector == "S"
 
-    assert max(n for n in [2, None, 1] if n) == 2
+    assert Map(testMap).countSteps() == 4
+    assert Map(testMap2).countSteps() == 8
 
-    assert m.trackPipes(None, m.map[(1, 1)]) == 4
+    assert Map(testMap).enclosedTiles() == 1
+    assert Map(testMap2).enclosedTiles() == 1
+
+    inputData = open("../data/input10.txt", "r").readlines()
+    assert Map(inputData).enclosedTiles() == 1

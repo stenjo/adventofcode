@@ -9,40 +9,25 @@ class Map:
         self.maxSteps = 0
         for y, line in enumerate(input):
             for x, c in enumerate(line.strip()):
-                # if c != ".":
-                self.map[(x, y)] = Tile(x, y, c)
+                if c != ".":
+                    self.map[(x, y)] = Tile(x, y, c)
                 if c == "S":
                     self.start = (x, y)
 
+        neighbors = {
+            "S": [(-1, 0), (1, 0), (0, -1), (0, 1)],
+            "-": [(-1, 0), (1, 0)],
+            "|": [(0, -1), (0, 1)],
+            "7": [(-1, 0), (0, 1)],
+            "J": [(-1, 0), (0, -1)],
+            "L": [(1, 0), (0, -1)],
+            "F": [(1, 0), (0, 1)],
+            ".": [],
+        }
         for (x, y), t in self.map.items():
-            match t.connector:
-                case "S":
-                    self.addNextIfExists(t, x - 1, y)
-                    self.addNextIfExists(t, x + 1, y)
-                    self.addNextIfExists(t, x, y - 1)
-                    self.addNextIfExists(t, x, y + 1)
-                case "-":
-                    self.addNextIfExists(t, x - 1, y)
-                    self.addNextIfExists(t, x + 1, y)
-                case "|":
-                    self.addNextIfExists(t, x, y - 1)
-                    self.addNextIfExists(t, x, y + 1)
-                case "7":
-                    self.addNextIfExists(t, x - 1, y)
-                    self.addNextIfExists(t, x, y + 1)
-                case "J":
-                    self.addNextIfExists(t, x - 1, y)
-                    self.addNextIfExists(t, x, y - 1)
-                case "L":
-                    self.addNextIfExists(t, x + 1, y)
-                    self.addNextIfExists(t, x, y - 1)
-                case "F":
-                    self.addNextIfExists(t, x + 1, y)
-                    self.addNextIfExists(t, x, y + 1)
-                case ".":
-                    continue
-                case _:
-                    raise ValueError("Unknown connector: ", t.connector)
+            for dX, dY in neighbors[self.map[(x, y)].connector]:
+                self.addNextIfExists(t, x + dX, y + dY)
+        return
 
     def addNextIfExists(self, t, nx, ny):
         if (nx, ny) in self.map.keys():
@@ -50,21 +35,21 @@ class Map:
 
     def countSteps(self):
         t = self.map[self.start]
-        step = 0
-        next = t.next
-        while len(next) > 0:
-            step += 1
-            newNext = []
-            for n in next:
+        self.map[self.start].steps = 1
+        stepCounts = []
+        for n in t.next:
+            step = 1
+            while n != self.start:
+                step += 1
                 self.map[n].steps = step
-                newNext += [
-                    nt
-                    for nt in self.map[n].next
-                    if self.map[nt].steps == None or self.map[nt].steps < step - 1
-                ]
-            next = newNext
+                next = [nt for nt in self.map[n].next if self.map[nt].steps == None]
+                if len(next) > 0:
+                    n = next[0]
+                else:
+                    n = self.start
 
-        return step
+            stepCounts.append(step)
+        return max(stepCounts) / 2
 
     def updateMaxSteps(self, steps):
         if steps > self.maxSteps:
@@ -72,6 +57,39 @@ class Map:
 
     def stepsToMostDistantPoint(self):
         return self.countSteps()
+
+    def removeTrashed(self):
+        (maxX, maxY) = self.dim
+        for y in range(maxY):
+            for x in range(maxX):
+                if (x, y) in self.map.keys() and self.map[(x, y)].steps == None:
+                    self.map[(x, y)].connector = "."
+                elif (x, y) not in self.map.keys():
+                    self.map[(x, y)] = Tile(x, y, ".")
+
+        count = len(self.map.keys())
+        return count
+
+    def countInside(self, y):
+        (maxX, _) = self.dim
+        inside = False
+        count = 0
+        for x in range(maxX):
+            c = self.map[(x, y)].connector
+            if c in "|JL":
+                inside = not inside
+            else:
+                count += 1 if inside and c not in "F-" else 0
+
+        return count
+
+    def enclosedTiles(self):
+        self.countSteps()
+        self.removeTrashed()
+
+        (maxX, maxY) = self.dim
+        rowSum = [self.countInside(y) for y in range(maxY)]
+        return sum(rowSum)
 
     def trackPipes(self, previous: Tile, tile: Tile):
         if tile == None:
