@@ -53,3 +53,26 @@ class HeatLoss:
         )
         self.lossMap[(x, y)] = newLoss
         return newLoss
+
+    def getMinimumHeatLoss(self, start=(0,0)):
+        # directions = [(1, 0), (0, 1), (-1, 0), (0, -1)]
+        directions = [(1, 0), (0, 1)]
+        blocks = [(start, 0)]
+        for block,loss in blocks:
+            (x, y) = block
+            (dimX, dimY) = self.dim
+            if x < 0 or y < 0:
+                continue
+            if x >= dimX or y >= dimY:
+                continue
+
+            if (x, y) not in self.lossMap.keys():
+                self.lossMap[block] = loss + int(self.city[y][x])
+                nextBlocks = [(x + dx, y + dy) for (dx, dy) in directions]
+                for b in nextBlocks:
+                    blocks.append((b, loss + int(self.city[y][x])))
+            else:
+                if loss < self.lossMap[block]:
+                    self.lossMap[block] = loss
+            
+        return self.lossMap[(12,12)] - self.lossMap[start]
