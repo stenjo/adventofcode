@@ -29,4 +29,9 @@ def test_heatLoss():
     assert HeatLoss(testData).heatLoss(0, (12, -1), (1, 0), 0) == None
     assert HeatLoss(testData).heatLoss(0, (-1, 12), (1, 0), 0) == None
     # assert HeatLoss(testData).minHeatLoss((11, 12)) == 3
-    assert HeatLoss(testData).minHeatLoss((11, 10)) == 9
+    # assert HeatLoss(testData).minHeatLoss((11, 10)) == 9
+
+def test_getMinimumHeatLoss():
+    
+    assert HeatLoss(testData).getMinimumHeatLoss((11,12)) == 3
+    assert HeatLoss(testData).getMinimumHeatLoss((10,12)) == 6

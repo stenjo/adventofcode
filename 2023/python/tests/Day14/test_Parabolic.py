@@ -33,6 +33,6 @@ def test_Parabolic():
     p.rolledNorth()
 
     p.printMap(p.tiltedMap)    
-    # assert p.tiltedMap[-1] == "OOOO.#.O.."
+    assert p.tiltedMap[-1] == "OOOO.#.O.."
     
     
