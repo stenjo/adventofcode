@@ -11,12 +11,16 @@ class Part:
             if ":" not in rule:
                 return rule
 
-            comp, workflow = rule.split(":")
-
-            param = comp[0]
-            op = comp[1]
-            value = int(comp[2:])
+            workflow, param, op, value = self.splitRule(rule)
             if (op == ">" and self.rating[param] > value) or (
                 op == "<" and self.rating[param] < value
             ):
                 return workflow
+
+    def splitRule(self, rule):
+        comp, workflow = rule.split(":")
+
+        param = comp[0]
+        op = comp[1]
+        value = int(comp[2:])
+        return workflow, param, op, value
