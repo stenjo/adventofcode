@@ -30,4 +30,6 @@ def test_Machine():
     assert Machine(inputData).sumHighsAndLows(1000) == 883726240
     
     assert Machine(inputData).minButtonPresses() == 883726240
+    # Brute force takes a long time
+    # need to see sequences bb sources and get lcd
     
