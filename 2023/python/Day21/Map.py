@@ -16,8 +16,11 @@ class Map:
                     self.map[(x, y)] = Tile(x, y, c)
                 if c == "S":
                     self.start = (x, y)
-
-        return
+        (maxX, maxY) = self.dim
+        for y in [-1,maxY+1]:
+            for x in [-1,maxX+1]:
+                self.map[(x, y)] = Tile(x, y, ".")
+                
 
     def countSteps(self, steps):
         t = self.map[self.start]
@@ -42,5 +45,6 @@ class Map:
 
     def tilesReachedInSteps(self, steps):
         self.countSteps(steps)
+        
         l = {pos for pos,t in self.map.items() if t.isReachedBySteps(steps)}
         return len(l)

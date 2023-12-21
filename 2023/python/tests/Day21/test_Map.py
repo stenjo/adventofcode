@@ -12,9 +12,10 @@ testMap = """...........
 .##..##.##.
 ..........."""
 
+inputData = open("../data/input21.txt", "r").read()
 
 def test_Map():
-    assert len(Map().map) == 0
+    assert len(Map().map) == 4
 
 
 def test_Part1():
@@ -23,8 +24,16 @@ def test_Part1():
     assert Map(testMap).tilesReachedInSteps(3) == 6
     assert Map(testMap).tilesReachedInSteps(6) == 16
 
-    inputData = open("../data/input21.txt", "r").read()
     assert Map(inputData).tilesReachedInSteps(64) == 3658
 
 
-# def test_Part2():
+def test_Part2():
+    
+    assert Map(testMap).tilesReachedInSteps(6) == 16
+    assert Map(testMap).tilesReachedInSteps(10) == 50
+    assert Map(testMap).tilesReachedInSteps(50) == 1594
+    assert Map(testMap).tilesReachedInSteps(100) == 6536
+    assert Map(testMap).tilesReachedInSteps(500) == 167004
+    
+    assert Map(inputData).tilesReachedInSteps(64) == 3658
+    
