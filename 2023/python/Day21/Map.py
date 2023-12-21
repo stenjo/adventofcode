@@ -19,10 +19,6 @@ class Map:
 
         return
 
-    def addNextIfExists(self, t, nx, ny):
-        if (nx, ny) in self.map.keys():
-            t.next.append((nx, ny))
-
     def countSteps(self, steps):
         t = self.map[self.start]
         self.map[self.start].steps = 0
@@ -46,41 +42,5 @@ class Map:
 
     def tilesReachedInSteps(self, steps):
         self.countSteps(steps)
-
-        return len([t for t in self.map.values() if t.isReachedBySteps(steps)])
-
-    def getTileLeft(self, tile):
-        if tile.x == 0:
-            return None
-        leftTile = (tile.x - 1, tile.y)
-        if leftTile in self.map.keys():
-            return self.map[leftTile]
-        else:
-            return None
-
-    def getTileRight(self, tile):
-        if tile.x == self.dim[0] - 1:
-            return None
-        rightTile = (tile.x + 1, tile.y)
-        if rightTile in self.map.keys():
-            return self.map[rightTile]
-        else:
-            return None
-
-    def getTileAbove(self, tile):
-        if tile.y == 0:
-            return None
-        aboveTile = (tile.x, tile.y - 1)
-        if aboveTile in self.map.keys():
-            return self.map[aboveTile]
-        else:
-            return None
-
-    def getTileBelow(self, tile):
-        if tile.y == self.dim[1] - 1:
-            return None
-        aboveTile = (tile.x, tile.y + 1)
-        if aboveTile in self.map.keys():
-            return self.map[aboveTile]
-        else:
-            return None
+        l = {pos for pos,t in self.map.items() if t.isReachedBySteps(steps)}
+        return len(l)

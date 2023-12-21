@@ -10,9 +10,9 @@ class Tile:
     def isReachedBySteps(self, steps):
         if (
             self.steps is not None
-            and steps <= self.steps
+            and steps >= self.steps
             and (steps - self.steps) % 2 == 0
         ):
-            True
+            return True
         else:
-            False
+            return False
