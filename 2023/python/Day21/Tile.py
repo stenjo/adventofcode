@@ -16,3 +16,6 @@ class Tile:
             return True
         else:
             return False
+
+    def position(self):
+        return self.pos
