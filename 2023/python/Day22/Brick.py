@@ -33,7 +33,7 @@ class Brick:
     def setHeight(self, height):
         (_, _, dimZ) = self.dim
         self.z[0] = height + 1
-        self.z[1] = height + dimZ
+        self.z[1] = height + 1 + dimZ
 
     def top(self):
         return self.z[1]
