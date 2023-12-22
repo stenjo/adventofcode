@@ -16,15 +16,18 @@ def test_Brick():
     assert Brick("1,0,1~1,2,1\n").x == [1, 1]
     assert Brick("1,0,1~1,2,1").y == [0, 2]
     assert Brick("1,0,1~1,2,1").z == [1, 1]
+    
+    assert Brick(b[0]).overlaps(Brick(b[1])) == True
+    assert Brick(b[1]).overlaps(Brick(b[2])) == False
 
     assert (
-        Brick(b[0]).willSupport(Brick(b[1])) == True
+        Brick(b[0]).isSupporting(Brick(b[1])) == True
     )  # Brick A is the only brick supporting bricks B and C.
     assert (
-        Brick(b[0]).willSupport(Brick(b[2])) == True
+        Brick(b[0]).isSupporting(Brick(b[2])) == True
     )  # Brick A is the only brick supporting bricks B and C.
 
-    assert Brick(b[3]).willSupport(Brick(b[5])) == True  # Brick D supports brick F.
+    assert Brick(b[3]).isSupporting(Brick(b[5])) == True  # Brick D supports brick F.
     assert (
-        Brick(b[6]).willSupport(Brick(b[5])) == False
+        Brick(b[6]).isSupporting(Brick(b[5])) == False
     )  # Brick G isn't supporting any bricks
