@@ -22,12 +22,21 @@ def test_Pile():
 
     assert len(Pile(testData).bricks[0].supports) == 2
     assert len(Pile(testData).bricks[1].supportedBy) == 1
+    assert len(Pile(testData).bricks[2].supportedBy) == 1
+    assert len(Pile(testData).bricks[1].supports) == 2
+    assert len(Pile(testData).bricks[2].supports) == 2
     assert len(Pile(testData).bricks[5].supportedBy) == 2 # F
     assert len(Pile(testData).bricks[6].supports) == 0
     
+    assert Pile(testData).bricks[0].canDisintegrate() == False # A
+    assert Pile(testData).bricks[1].canDisintegrate() == True # B
+    assert Pile(testData).bricks[2].canDisintegrate() == True # C
+    assert Pile(testData).bricks[3].canDisintegrate() == True # D
     assert Pile(testData).bricks[4].canDisintegrate() == True # E
     assert Pile(testData).bricks[5].canDisintegrate() == False # F
     assert Pile(testData).bricks[6].canDisintegrate() == True # G
 
 def test_part1():
-    assert Pile(testData).getBricksToSafelyDisintegrate() == 6
+    assert Pile(testData).getBricksToSafelyDisintegrate() == 5
+    inputData = open("../data/input22.txt", "r").read()
+    assert Pile(inputData).getBricksToSafelyDisintegrate() == 471

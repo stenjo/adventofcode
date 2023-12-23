@@ -20,14 +20,15 @@ def test_Brick():
     assert Brick(b[0]).overlaps(Brick(b[1])) == True
     assert Brick(b[1]).overlaps(Brick(b[2])) == False
 
+
     assert (
         Brick(b[0]).isSupporting(Brick(b[1])) == True
     )  # Brick A is the only brick supporting bricks B and C.
     assert (
-        Brick(b[0]).isSupporting(Brick(b[2])) == True
+        Brick(b[0]).isSupporting(Brick(b[2])) == False
     )  # Brick A is the only brick supporting bricks B and C.
 
-    assert Brick(b[3]).isSupporting(Brick(b[5])) == True  # Brick D supports brick F.
+    assert Brick(b[3]).isSupporting(Brick(b[5])) == False  # Brick D supports brick F.
     assert (
         Brick(b[6]).isSupporting(Brick(b[5])) == False
     )  # Brick G isn't supporting any bricks

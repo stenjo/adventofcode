@@ -13,8 +13,16 @@ class Pile:
         for brick in self.bricks:
             below = self.getLandingOn(brick)
             brick.setHeight(below.top())
-            below.isSupporting(brick)
+        
+        for brick in self.bricks:
+            above = self.getRestingOn(brick)
+            for b in above:
+                brick.setSupports(b)
+                b.setSupportedBy(brick)
 
+    def getRestingOn(self,brick):
+        return filter(lambda b: b.z[0]==(brick.z[1]+1) and b.overlaps(brick), self.bricks)
+        
     def getLandingOn(self, brick):
         supporting = None
         for under in self.bricks:
@@ -22,7 +30,7 @@ class Pile:
                 break
             if under.overlaps(brick):
                 supporting = under
-
+                
         return Brick("0,0,0~0,0,0") if supporting is None else supporting
 
     def getBricksToSafelyDisintegrate(self):
