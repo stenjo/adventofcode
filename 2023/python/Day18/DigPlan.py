@@ -1,5 +1,8 @@
+from itertools import pairwise
 from rich import print
 import matplotlib.pyplot as plt
+
+Point = tuple[int,int]
 
 class DigPlan:
     def __init__(self,input):
@@ -11,66 +14,118 @@ class DigPlan:
     def dig(self, start, inst):
         directions = {"R": (1,0), "L":(-1,0), "U":(0,-1), "D": (0,1)}
         (x,y) = start
-        (dir, length, color) = inst
+        holes: list[Point] = []
+        (dir, length, _) = inst
         (dX,dY) = directions[dir]
-        xPlot = []
-        yPlot = []
-        for n in range(length):
-            self.map[(x+(dX*n), y+(dY*n))] = color
-            xPlot.append(x+(dX*n))
-            yPlot.append(y+(dY*n))
+        for n in range(1,length+1):
+            holes.append((x+(dX*n), y+(dY*n)))
             
-        self.plot.append((xPlot, yPlot, color[1:-1]))
-        return (x+(dX*n + dX), y+(dY*n+dY))
+        return holes
             
-    def trench(self):
+    def hexDig(self, start, inst):
+        directions = [(1,0), (0,1), (-1,0), (0,-1)]
+        (x,y) = start
+        holes: list[Point] = []
+        (_, _, hexStr) = inst
+        length = int(hexStr[2:-2], 16)
+        dir = int(hexStr[-2])
+        (dX,dY) = directions[dir]
+        for n in range(1,length+1):
+            holes.append((x+(dX*n), y+(dY*n)))
+            
+        return holes
+            
+    def trench(self) -> list[Point]:
+        
         pos = (0,0)
+        points: list[Point] = []
         for inst in self.plan:
-            (x,y) = self.dig(pos, inst)
-            if x > self.dim["maxX"]: self.dim["maxX"] = x
-            if y > self.dim["maxY"]: self.dim["maxY"] = y
-            if x < self.dim["minX"]: self.dim["minX"] = x
-            if y < self.dim["minY"]: self.dim["minY"] = y
-            pos = (x,y)
-            
-        self.fill()
+            points+=self.dig(pos, inst)
+            pos = points[-1]
         
-        return len(list(self.map.keys()))
+        points.append((0,0))
+        return points
             
+    def hexTrench(self) -> list[Point]:
+        trenchLength = 0
+        pos = (0,0)
+        points: list[Point] = []
+        for inst in self.plan:
+            points+=self.hexDig(pos, inst)
+            pos = points[-1]
+        
+        points.append((0,0))
+        return points, trenchLength
+            
+    def getArea(self, trench):
+        # Shoelace formula. Get the area from outline of points
+        parts = [x1*y2 - x2*y1 for (x1,y1),(x2,y2) in pairwise(trench)]
+        return sum(parts) / 2
+    
     def fill(self):
-        for y in range(self.dim["minY"], self.dim["maxY"]+1):
-            color = None
-            firstTrench = False
-            trenchesFull = set([(xX,y) for xX in range(self.dim["minX"],self.dim["maxX"]+1)]).intersection(set(self.map.keys())) # ALl trenches on the line
-            trenches = []
-            for (x,y) in list(trenchesFull):
-                if (x-1,y) not in self.map.keys() or self.map[(x-1,y)] != self.map[(x,y)]:
-                    trenches.append((x,y))
-            for x in range(self.dim["minX"], self.dim["maxX"]+1):
-                if (x,y) in self.map.keys():
-                    color = self.map[(x,y)]
-                    if (x,y) in trenches:
-                        trenches.remove((x,y))
-                    firstTrench = True
-                else:
-                    if len(trenches) > 0 and len(trenches)%2 == 1 and firstTrench == True:
-                        self.map[(x,y)] = color
+        trench = self.trench()
+        area = self.getArea(trench)
+
+        # pick's theorem - find the number of points in a shape given its area
+        fill = int(abs(area) - 0.5*len(trench) +1) + len(trench)
         
+        return fill
+    
+    def hexFill(self):
+        trench, trenchLength = self.hexTrench()
+        area = self.getArea(trench)
+
+        # pick's theorem - find the number of points in a shape given its area
+        fill = int(abs(area) - 0.5*trenchLength +1) + trenchLength
+        
+        return fill
+                
     def print(self):
         for (xPoints, yPoints, color) in self.plot:
             plt.plot(xPoints, yPoints, 'o', color=color)
         plt.show()
-    
-    def plotFilled(self):
+                        
+GridPoint = tuple[int, int]
+OFFSETS: dict[str, GridPoint] = {
+    "R": (0, 1),
+    "D": (1, 0),
+    "L": (0, -1),
+    "U": (-1, 0),
+}
+
+class Solution:
+    def __init__(self, input):
+        self.input = input
         
-        xPoints = []
-        yPoints = []
-        for y in range(self.dim["minY"], self.dim["maxY"]+1):
-            for x in range(self.dim["minX"], self.dim["maxX"]+1):
-                if (x,y) in self.map.keys():
-                    (color) = self.map[(x,y)]
-                    xPoints.append(x)
-                    yPoints.append(y)
-        plt.plot(xPoints, yPoints, 'o')
-        plt.show()
-                    
+    def num_points(self, outline: list[GridPoint]) -> int:
+        """
+        the number of the points inside an outline plus the number of points in the outline
+        """
+        # shoelace - find the float area in a shape
+        area = (
+            sum(
+                row1 * col2 - row2 * col1
+                for (row1, col1), (row2, col2) in pairwise(outline)
+            )
+            / 2
+        )
+        # pick's theorem - find the number of points in a shape given its area
+        return int(abs(area) - 0.5 * len(outline) + 1) + len(outline)
+
+
+    def part_1(self) -> int:
+        points: list[GridPoint] = [(0, 0)]
+
+        for line in self.input:
+            direction, distance_str, _ = line.split()
+
+            for _ in range(int(distance_str)):
+                points.append(self.add_points(OFFSETS[direction], points[-1]))
+
+        return self.num_points(points)
+    
+    def add_points(self, a: GridPoint, b: GridPoint) -> GridPoint:
+        """
+        add a pair of 2-tuples together. Useful for calculating a new position from a location and an offset
+        """
+        return a[0] + b[0], a[1] + b[1]

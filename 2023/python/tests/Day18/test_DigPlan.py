@@ -1,5 +1,5 @@
 
-from Day18.DigPlan import DigPlan
+from Day18.DigPlan import DigPlan, Solution
 
 
 testData = [
@@ -18,22 +18,20 @@ testData = [
 "L 2 (#015232)",
 "U 2 (#7a21e3)"
 ]
-
+#[(0, 0), (0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (0, 6), (1, 6), (2, 6), (3, 6), (4, 6), (5, 6), (5, 5), (5, 4), ...]
+#[(0, 0), (1, 0), (2, 0), (3, 0), (4, 0), (5, 0), (5, 0), (5, 1), (5, 2), (5, 3), (5, 4), (5, 4), (4, 4), (4, 4), ...]
 
 def test_DigPlan():
  
     assert DigPlan(testData).plan[0] == ("R", 6, "(#70c710)")
-    
-    assert DigPlan(testData).dig((0,0), ("R", 6, "(#70c710")) == (6,0)
-    assert DigPlan(testData).dig((0,0), ("U", 3, "(#a77fa3)")) == (0,-3)
 
+    # assert Solution(testData).part_1() == 62
+    assert DigPlan(testData).fill() == 62
+    
     inputData = open("../data/input18.txt", "r").readlines()
-    dp = DigPlan(testData)
-    # dp.trench()
-    # dp.print()
-    # dp.plotFilled()
+    assert DigPlan(inputData).fill() == 39194
     
-    assert DigPlan(testData).trench() == 62
     
-    # assert DigPlan(inputData).trench() == 62
+    assert DigPlan(testData).hexFill() == 952408144115
+    assert DigPlan(inputData).hexFill() == 78242031808225
     
