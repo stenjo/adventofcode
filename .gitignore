@@ -9,3 +9,4 @@
 .DS_Store
 2023/python/.coverage
 2023/python/lcov.info
+**/target/**

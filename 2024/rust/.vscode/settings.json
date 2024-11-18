@@ -1,0 +1,9 @@
+{
+  "files.readonlyInclude": {
+    "**/.cargo/registry/src/**/*.rs": true,
+    "**/lib/rustlib/src/rust/library/**/*.rs": true,
+  },
+  "rust-analyzer.cargo.target": "x86_64-unknown-linux-gnu",
+  "rust-analyzer.checkOnSave.command": "clippy",
+  "editor.formatOnSave": true
+}
