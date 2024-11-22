@@ -1,0 +1,18 @@
+[package]
+name = "rust"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+day01 = { path = "day01" } # Fixed quotes
+
+[[bin]]
+name = "main" # Changed binary name to avoid conflict
+path = "src/main.rs"
+
+[workspace]
+members = [
+    ".",       # Root crate
+    "day01",   # Add the day01 crate
+    "day02",   # Add the day01 crate
+]

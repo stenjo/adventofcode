@@ -1,0 +1,9 @@
+{
+    "rust-analyzer.lens.enable": true,
+    "editor.defaultFormatter": "rust-lang.rust-analyzer",
+    "editor.defaultFoldingRangeProvider": "Swellaby.vscode-rust-test-adapter",
+    "rust-analyzer.testExplorer": true,
+    "rust-analyzer.debug.buildBeforeRestart": true,
+    "rust-analyzer.interpret.tests": true,
+    "testExplorer.onReload": "reset"
+}
