@@ -24,8 +24,11 @@ pub fn part2(measures: String) -> i64 {
 }
 
 pub fn main() {
-    let input = std::env::args().nth(1).expect("Expected input argument");
-    println!("{}", part1(input));
+    // let path = std::env::args().nth(1).expect("Expected input argument");
+    let path = "../../day02.txt";
+    let file_content = fs::read_to_string(&path);
+
+    println!("{}", part1(file_content.unwrap()));
 }
 
 #[cfg(test)]
