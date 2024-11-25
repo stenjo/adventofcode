@@ -4,33 +4,46 @@ pub fn part1(measures: String) -> i64 {
     let measure_list: Vec<&str> = measures.split("\n").collect();
     let mut paper_length = 0;
     for measure in measure_list {
-
+        if measure.is_empty() {
+            continue;
+        }
         let parts: Vec<i64> = measure.split('x').map(|x| x.parse().expect("Invalid number")).collect();
         let (l, w, h) = (parts[0], parts[1], parts[2]);
         
         let f = l * w;
         let s = w * h;
         let t = h * l;
-        paper_length = 2 * f + 2 * s + 2 * t + f.min(s).min(t);
+        paper_length += 2 * f + 2 * s + 2 * t + f.min(s).min(t);
     }
     return  paper_length;
 }
 
 pub fn part2(measures: String) -> i64 {
-    let parts: Vec<i64> = measures.split('x').map(|x| x.parse().expect("Invalid number")).collect();
-    let (l, w, h) = (parts[0], parts[1], parts[2]);
+    let measure_list: Vec<&str> = measures.split("\n").collect();
+    let mut ribbon_length = 0;
+    for measure in measure_list {
+        if measure.is_empty() {
+            continue;
+        }
+        let parts: Vec<i64> = measure.split('x').map(|x| x.parse().expect("Invalid number")).collect();
+        let (l, w, h) = (parts[0], parts[1], parts[2]);
 
-    return 2*l + 2*w + 2 * h + l*w*h;
+        ribbon_length += 2*l + 2*w + 2 * h + l*w*h;
+    }
+    return ribbon_length;
 }
 
 pub fn main() {
     // let path = std::env::args().nth(1).expect("Expected input argument");
     let path = "../../day02.txt";
-    let file_content = fs::read_to_string(&path);
-
-    println!("{}", part1(file_content.unwrap()));
+    let input = match 
+    fs::read_to_string(&path) {
+        Ok(input) => input,
+        Err(e) => panic!("Error reading file: {}", e),
+    };
+    println!("{}", part1(input.clone()));
+    println!("{}", part2(input));
 }
-
 #[cfg(test)]
 mod tests {
     use rstest::rstest;
