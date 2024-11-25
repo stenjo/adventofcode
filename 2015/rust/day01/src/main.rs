@@ -1,4 +1,4 @@
-    pub fn part1(floors: &str) -> i64 {
+    pub fn part1(floors: String) -> i64 {
         let _ = floors;
         let mut level:i64 = 0;
         for c in floors.chars()  {
@@ -12,7 +12,7 @@
         return level;
     }
     
-    pub fn part2(floors: &str) ->usize {
+    pub fn part2(floors: String) ->usize {
         let _ = floors;
         let mut level:i64 = 0;
         for (i,c) in floors.chars().enumerate()  {
@@ -40,7 +40,7 @@ mod tests {
     #[case("())", -1)]
     #[case(")))", -3)]
     #[case(")())())", -3)]
-    fn day01_1(#[case] input:&str, #[case] expected: i64) {
+    fn day01_1(#[case] input:String, #[case] expected: i64) {
         let result: i64 = part1(input);
         assert_eq!(result, expected);
     }
@@ -49,8 +49,13 @@ mod tests {
     #[case::one_floor(")", 1)]
     #[case::five_floors("()())", 5)]
     #[case::nine_floors("()()()())", 9)] // Case name: stair_training
-    fn day01_2(#[case] input:&str, #[case] expected: usize) {
+    fn day01_2(#[case] input:String, #[case] expected: usize) {
         assert_eq!(expected, part2(input));
     }
 
+}
+
+pub fn main() {
+    let input = std::env::args().nth(1).expect("Expected input argument");
+    println!("{}", part1(input));
 }
