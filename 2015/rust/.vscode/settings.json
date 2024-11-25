@@ -5,5 +5,8 @@
     "rust-analyzer.testExplorer": true,
     "rust-analyzer.debug.buildBeforeRestart": true,
     "rust-analyzer.interpret.tests": true,
-    "testExplorer.onReload": "reset"
+    "testExplorer.onReload": "reset",
+    "cSpell.words": [
+        "rstest"
+    ]
 }
