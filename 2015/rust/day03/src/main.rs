@@ -1,5 +1,21 @@
+use std::collections::HashSet;
+
 pub fn part1(input: String) -> usize {
-    return input.len()
+    let mut x = 0;
+    let mut y: usize = 0;
+    let tup: (usize, usize) = (x,y);
+    let mut houses  = HashSet::new();
+    houses.insert(tup);
+    for c in input.chars() {
+        match c {
+            '>' => x += 1,
+            'v' => y +=1, 
+            _ => ()
+        }
+        let tup: (usize, usize) = (x,y);
+        houses.insert(tup);
+    }
+    return houses.len()
 }
 
 pub fn part2(input:String) -> usize {
@@ -19,7 +35,7 @@ mod tests {
     use super::*;
 
     #[rstest]
-    #[case::first("data", 4)]
+    #[case::first(">", 2)]
     fn it_works(#[case] input: String, #[case]result : usize) {
         assert_eq!(result, part1(input));
     }
