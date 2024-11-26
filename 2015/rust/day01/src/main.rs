@@ -1,4 +1,6 @@
-    pub fn part1(floors: String) -> i64 {
+use std::fs;
+
+pub fn part1(floors: String) -> i64 {
         let _ = floors;
         let mut level:i64 = 0;
         for c in floors.chars()  {
@@ -56,6 +58,12 @@ mod tests {
 }
 
 pub fn main() {
-    let input = std::env::args().nth(1).expect("Expected input argument");
-    println!("{}", part1(input));
+    let path = std::env::args().nth(1).expect("Expected input argument");
+    let input = match 
+    fs::read_to_string(&path) {
+        Ok(input) => input,
+        Err(e) => panic!("Error reading file: {}", e),
+    };
+    println!("{}", part1(input.clone()));
+    println!("{}", part2(input));
 }

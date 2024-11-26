@@ -34,8 +34,7 @@ pub fn part2(measures: String) -> i64 {
 }
 
 pub fn main() {
-    // let path = std::env::args().nth(1).expect("Expected input argument");
-    let path = "../../day02.txt";
+    let path = std::env::args().nth(1).expect("Expected input argument");
     let input = match 
     fs::read_to_string(&path) {
         Ok(input) => input,

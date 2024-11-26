@@ -19,22 +19,20 @@ fn run_day_binaries() -> Result<(), Box<dyn Error>> {
                 if let Some(day_no) = captures.get(1) {
                     let day_number = day_no.as_str();
 
-                    // Read the content of the file
-                    let file_content = fs::read_to_string(&path)?;
-
                     // Construct the binary name (e.g., "day01")
-                    let binary_name = format!("day{}::main", day_number);
+                    let binary_name = format!("day{}", day_number);
 
                     // Execute the corresponding binary with the file content as input
                     let output = Command::new("cargo")
-                        .args(&["run", "--bin", &binary_name, "--"])
-                        .arg(file_content.trim())
+                        .args(&["run", "-p", &binary_name, "--"])
+                        .arg(file_name.trim())
                         .output();
 
                     match output {
                         Ok(result) if result.status.success() => {
                             let output_str = String::from_utf8_lossy(&result.stdout);
-                            println!("Day {}, part 1: {}", day_number, output_str.trim());
+                            println!("Day {}, part 1: {}", day_number, output_str.trim().split("\n").nth(0).unwrap()); 
+                            println!("Day {}, part 2: {}", day_number, output_str.trim().split("\n").nth(1).unwrap()); 
                         }
                         Ok(result) => {
                             eprintln!(
@@ -54,7 +52,7 @@ fn run_day_binaries() -> Result<(), Box<dyn Error>> {
 }
 
 fn main() {
-    // if let Err(e) = run_day_binaries() {
-    //     eprintln!("Error: {}", e);
-    // }
+    if let Err(e) = run_day_binaries() {
+        eprintln!("Error: {}", e);
+    }
 }
