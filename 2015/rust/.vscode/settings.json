@@ -8,5 +8,15 @@
     "testExplorer.onReload": "reset",
     "cSpell.words": [
         "rstest"
-    ]
+    ],
+    "emeraldwalk.runonsave": {
+        "commands": [
+            {
+                "match": "\\.rs$",
+                "cmd": "cargo test"
+            }
+        ]
+    },
+    "editor.formatOnSave": true
+
 }

@@ -14,6 +14,13 @@
             },
             "problemMatcher": "$rustc",
             "detail": "Runs cargo test to execute Rust tests."
+        },
+        {
+            "label": "Watch and Test",
+            "type": "shell",
+            "command": "cargo watch -x 'test --workspace'",
+            "problemMatcher": [],
+            "isBackground": true
         }
     ]
 }
