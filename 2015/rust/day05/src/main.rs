@@ -99,6 +99,7 @@ mod tests {
 
     #[rstest]
     #[case::a("aei", true)]
+    #[case::a("aaa", true)]
     #[case::x("xazegov", true)]
     #[case::ae("aeiouaeiouaeiou", true)]
     #[case::ae("dvszwmarrgswjxmb", true)]
@@ -115,6 +116,7 @@ mod tests {
 
     #[rstest]
     #[case::first("xxyxx", 1)]
+    #[case::first("yyaaaxx", 0)]
     #[case::first("qjhvhtzxzqqjkmpb", 1)]
     #[case::first("uurcxstgmygtbstg", 0)]
     #[case::first("ieodomkazucvgmuy", 0)]
