@@ -1,6 +1,7 @@
 use std::fs;
 
-struct Pos {
+#[derive(Debug, PartialEq)]
+pub struct Pos {
     x: i64,
     y: i64,
 }
@@ -17,7 +18,7 @@ impl Pos {
     }
 }
 
-struct Grid {
+pub struct Grid {
     width: i64,
     height: i64,
     grid: Vec<Vec<char>>,
@@ -48,15 +49,51 @@ impl Grid {
             println!();
         }
     }
+    fn on(&mut self, from: Pos, to: Pos) {
+        for y in from.y..=to.y {
+            for x in from.x..=to.x {
+                self.set(Pos::new(x, y), '#');
+            }
+        }
+    }
+    fn off(&mut self, from: Pos, to: Pos) {
+        for y in from.y..=to.y {
+            for x in from.x..=to.x {
+                self.set(Pos::new(x, y), '.');
+            }
+        }
+    }
+    fn toggle(&mut self, from: Pos, to: Pos) {
+        for y in from.y..=to.y {
+            for x in from.x..=to.x {
+                if self.get(Pos::new(x, y)) == '#' {
+                    self.set(Pos::new(x, y), '.');
+                } else {
+                    self.set(Pos::new(x, y), '#');
+                }
+            }
+        }
+    }
+    fn count(&self) -> i64 {
+        let mut count = 0;
+        for row in &self.grid {
+            for cell in row {
+                if *cell == '#' {
+                    count += 1;
+                }
+            }
+        }
+        return count;
+    }
 }
 
 pub fn parse_cmnd(cmnd: &str) -> (char, Pos, Pos) {
-    let mut cmd: char;
-    let mut from: Pos;
-    let mut to: Pos;
+    let cmd: char;
+    let mut from: Pos = Pos::new(0, 0);
+    let mut to: Pos = Pos::new(0, 0);
     if cmnd.starts_with("turn on") {
         cmd = '1';
-        let from = Pos::from_coords(
+        from = Pos::from_coords(
             cmnd.split(" ")
                 .nth(2)
                 .unwrap()
@@ -64,10 +101,52 @@ pub fn parse_cmnd(cmnd: &str) -> (char, Pos, Pos) {
                 .map(|s| s.parse().unwrap())
                 .collect::<Vec<i64>>(),
         );
+        to = Pos::from_coords(
+            cmnd.split(" ")
+                .nth(4)
+                .unwrap()
+                .split(",")
+                .map(|s| s.parse().unwrap())
+                .collect::<Vec<i64>>(),
+        );
     } else if cmnd.starts_with("turn off") {
         cmd = '0';
+        from = Pos::from_coords(
+            cmnd.split(" ")
+                .nth(2)
+                .unwrap()
+                .split(",")
+                .map(|s| s.parse().unwrap())
+                .collect::<Vec<i64>>(),
+        );
+        to = Pos::from_coords(
+            cmnd.split(" ")
+                .nth(4)
+                .unwrap()
+                .split(",")
+                .map(|s| s.parse().unwrap())
+                .collect::<Vec<i64>>(),
+        );
     } else if cmnd.starts_with("toggle") {
+        from = Pos::from_coords(
+            cmnd.split(" ")
+                .nth(1)
+                .unwrap()
+                .split(",")
+                .map(|s| s.parse().unwrap())
+                .collect::<Vec<i64>>(),
+        );
+        to = Pos::from_coords(
+            cmnd.split(" ")
+                .nth(3)
+                .unwrap()
+                .split(",")
+                .map(|s| s.parse().unwrap())
+                .collect::<Vec<i64>>(),
+        );
         cmd = 'T';
+    } else {
+        panic!("Invalid command");
     }
 
     return (cmd, from, to);
@@ -83,14 +162,30 @@ mod tests_1 {
             parse_cmnd("turn on 0,0 through 999,999"),
             ('1', Pos::new(0, 0), Pos::new(999, 999))
         );
-        // assert_eq!(parse_cmnd("U62"), ('U', 62));
-        // assert_eq!(parse_cmnd("L2"), ('L', 2));
-        // assert_eq!(parse_cmnd("D99"), ('D', 99));
+        assert_eq!(
+            parse_cmnd("toggle 0,0 through 999,0"),
+            ('T', Pos::new(0, 0), Pos::new(999, 0))
+        );
+        assert_eq!(
+            parse_cmnd("turn off 499,499 through 500,500"),
+            ('0', Pos::new(499, 499), Pos::new(500, 500))
+        );
     }
 }
 
 pub fn part1(input: String) -> i64 {
-    return input.len().try_into().unwrap();
+    let mut grid = Grid::new(1000, 1000);
+    for line in input.lines() {
+        let (cmd, from, to) = parse_cmnd(line);
+        println!("{:?} {:?} {:?}", cmd, from, to);
+        match cmd {
+            '1' => grid.on(from, to),
+            '0' => grid.off(from, to),
+            'T' => grid.toggle(from, to),
+            _ => panic!("Invalid command"),
+        }
+    }
+    return grid.count();
 }
 
 pub fn part2(input: String) -> i64 {
