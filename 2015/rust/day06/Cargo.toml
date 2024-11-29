@@ -1,0 +1,13 @@
+[package]
+name = "day06"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+
+[dev-dependencies]
+rstest = "0.23.0"
+
+[[bin]]
+name = "day06"
+path = "src/main.rs"

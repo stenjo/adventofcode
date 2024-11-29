@@ -6,3 +6,9 @@ To add another day use:
 cargo generate -p template
 ```
 
+and then, when the crate is created,
+
+```bash
+cargo add --path dayXX
+```
+
