@@ -3,15 +3,24 @@ use std::fmt::LowerHex;
 
 pub fn part1(input: String) -> i64 {
     let mut key: i64 = 0;
+    let mut hash = md5::compute(input.clone() + &key.to_string());
 
-    do {
-        hash = md5::compute(input + &key.to_string())
-    } while !format!("{:x}", hash).chars().take(5).all(|f| f == '0') 
+    while !format!("{:x}", hash).chars().take(5).all(|f| f == '0') {
+        hash = md5::compute(input.clone() + &key.to_string());
+        key += 1;
+    }
     return key;
 }
 
-pub fn part2(input: String) -> usize {
-    return input.len();
+pub fn part2(input: String) -> i64 {
+    let mut key: i64 = 0;
+    let mut hash = md5::compute(input.clone() + &key.to_string());
+
+    while !format!("{:x}", hash).chars().take(6).all(|f| f == '0') {
+        hash = md5::compute(input.clone() + &key.to_string());
+        key += 1;
+    }
+    return key;
 }
 
 pub fn main() {
@@ -26,8 +35,14 @@ mod tests {
     use rstest::rstest;
 
     #[rstest]
-    #[case::first("bgvyzdsv", 4)]
-    fn it_works(#[case] input: String, #[case] result: i64) {
+    #[case::first("bgvyzdsv", 254576)]
+    fn first(#[case] input: String, #[case] result: i64) {
         assert_eq!(result, part1(input));
+    }
+
+    #[rstest]
+    #[case::second("bgvyzdsv", 1038737)]
+    fn second(#[case] input: String, #[case] result: i64) {
+        assert_eq!(result, part2(input));
     }
 }
