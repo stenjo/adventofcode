@@ -1,5 +1,5 @@
 [package]
-name = "day01"
+name = "{{project-name}}"
 version = "0.1.0"
 edition = "2021"
 
@@ -10,5 +10,5 @@ rstest = "0.23.0"
 assert_cmd = "2.0"
 
 [[bin]]
-name = "day01"
+name = "{{project-name}}"
 path = "src/main.rs"
