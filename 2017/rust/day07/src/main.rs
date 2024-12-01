@@ -36,37 +36,35 @@ pub fn part1(input: String) -> String {
     let mut index: HashMap<String, NodeIndex> = HashMap::new();
 
     for line in input.lines() {
-        let mut root_idx: NodeIndex;
-        let mut root: &NodeData;
         let (name, weight, children) = parse_node(line);
-        if let Some(&root_idx) = index.get(&name) {
-            root = &graph[root_idx];
-
-            println!("Found node: {:?} (index: {})", root, root_idx.index());
+        let root_idx: NodeIndex = if let Some(&root_idx) = index.get(&name) {
+            graph[root_idx].weight = weight;
+            root_idx
         } else {
-            root_idx = graph.add_node(NodeData {
+            let root_idx = graph.add_node(NodeData {
                 name: name.to_string(),
                 weight: weight,
             });
             index.insert(name, root_idx);
-            if !children.is_empty() {
-                for child in children {
-                    // Retrieve or create child node
-                    let child_idx = if let Some(&child_idx) = index.get(&child) {
-                        child_idx
-                    } else {
-                        // Add new node to the graph if it doesn't exist
-                        let new_child_idx = graph.add_node(NodeData {
-                            name: child.to_string(),
-                            weight: 0,
-                        });
-                        index.insert(child.clone(), new_child_idx); // Insert the new node into the index
-                        new_child_idx
-                    };
+            root_idx
+        };
+        if !children.is_empty() {
+            for child in children {
+                // Retrieve or create child node
+                let child_idx = if let Some(&child_idx) = index.get(&child) {
+                    child_idx
+                } else {
+                    // Add new node to the graph if it doesn't exist
+                    let new_child_idx = graph.add_node(NodeData {
+                        name: child.to_string(),
+                        weight: 0,
+                    });
+                    index.insert(child.clone(), new_child_idx); // Insert the new node into the index
+                    new_child_idx
+                };
 
-                    // Add edge from root to child
-                    graph.add_edge(root_idx, child_idx, ());
-                }
+                // Add edge from root to child
+                graph.add_edge(root_idx, child_idx, ());
             }
         }
     }
