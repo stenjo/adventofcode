@@ -24,7 +24,6 @@ pub fn part1(input: String) -> i64 {
             let abs_diff = (num1 - num2).abs();
             diff += abs_diff;
         }
-        // Calculate the absolute difference
     }
     return diff;
 }
@@ -51,8 +50,6 @@ pub fn part2(input: String) -> i64 {
     while let Some(num1) = left.pop() {
         let freq = right.iter().filter(|&&n| n == num1).count() as i64;
         similarity += num1 * freq;
-
-        // Calculate the absolute difference
     }
     return similarity;
 }
