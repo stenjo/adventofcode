@@ -136,7 +136,8 @@ mod tests {
 }
 
 pub fn main() {
-    let path = "../data/".to_string() + &std::env::args().nth(1).expect("Expected input argument");
+    let path =
+        "../../data/".to_string() + &std::env::args().nth(1).expect("Expected input argument");
     let input = match fs::read_to_string(&path) {
         Ok(input) => input,
         Err(e) => panic!("Error reading file: {}", e),
