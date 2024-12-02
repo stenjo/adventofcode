@@ -35,6 +35,18 @@ pub fn part1(input: String) -> String {
     let mut graph = Graph::<NodeData, ()>::new();
     let mut index: HashMap<String, NodeIndex> = HashMap::new();
 
+    build_tree(input, index, &mut graph);
+    let roots: Vec<_> = graph.externals(petgraph::Direction::Incoming).collect();
+    let mut r = roots.iter().map(|&i| graph[i].borrow()).collect::<Vec<_>>();
+
+    return r.pop().expect("msg").name.to_string();
+}
+
+fn build_tree(
+    input: String,
+    mut index: HashMap<String, NodeIndex>,
+    graph: &mut Graph<NodeData, ()>,
+) {
     for line in input.lines() {
         let (name, weight, children) = parse_node(line);
         let root_idx: NodeIndex = if let Some(&root_idx) = index.get(&name) {
@@ -68,14 +80,25 @@ pub fn part1(input: String) -> String {
             }
         }
     }
-    let roots: Vec<_> = graph.externals(petgraph::Direction::Incoming).collect();
-    let mut r = roots.iter().map(|&i| graph[i].borrow()).collect::<Vec<_>>();
-
-    return r.pop().expect("msg").name.to_string();
 }
 
 pub fn part2(input: String) -> i64 {
-    return input.len().try_into().unwrap();
+    let mut graph = Graph::<NodeData, ()>::new();
+    let mut index: HashMap<String, NodeIndex> = HashMap::new();
+
+    build_tree(input, index, &mut graph);
+    let roots: Vec<_> = graph.externals(petgraph::Direction::Incoming).collect();
+    let mut r = roots.iter().map(|&i| graph[i].borrow()).collect::<Vec<_>>();
+
+    return r.pop().expect("msg").weight as i64;
+}
+
+fn sum_of_weights(&self) -> i32 {
+    let mut sum = self.weight;
+    for child in self.children.iter() {
+        sum += child.sum_of_weights();
+    }
+    sum
 }
 
 #[cfg(test)]
@@ -136,6 +159,27 @@ mod tests {
     )]
     fn test1(#[case] input: String, #[case] result: String) {
         assert_eq!(result, part1(input));
+    }
+
+    #[rstest]
+    #[case::second(
+        "pbga (66)
+    xhth (57)
+    ebii (61)
+    havc (66)
+    ktlj (57)
+    fwft (72) -> ktlj, cntj, xhth
+    qoyq (66)
+    padx (45) -> pbga, havc, qoyq
+    tknk (41) -> ugml, padx, fwft
+    jptl (61)
+    ugml (68) -> gyxo, ebii, jptl
+    gyxo (61)
+    cntj (57)",
+        100
+    )]
+    fn test2(#[case] input: String, #[case] result: i64) {
+        assert_eq!(result, part2(input));
     }
 }
 
