@@ -76,7 +76,7 @@ mod tests {
 
     #[test]
     fn test1() {
-        run_day_binaries();
+        let _ = run_day_binaries();
     }
 }
 

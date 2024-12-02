@@ -30,69 +30,38 @@ fn is_safe(input: String) -> bool {
 
     return true;
 }
-
-fn is_safe_dampened(input: String) -> bool {
-    let levels: Vec<i32> = input
+fn is_safe_x(input: String, x: i32) -> bool {
+    let mut levels: Vec<i32> = input
         .split_whitespace()
         .map(|s| s.parse::<i32>().expect("Invalid number"))
         .collect();
-
+    if x >= 0 && (x as usize) < levels.len() {
+        levels.remove(x as usize);
+    }
     if levels.len() < 2 {
         return false;
     }
-
-    let mut unsafe_level = get_unsafe_level(&levels);
-    if unsafe_level == -1 {
-        return true;
-    }
-
-    let dampened = {
-        let mut temp = levels.clone();
-        temp.remove(unsafe_level as usize);
-        temp
-    };
-
-    unsafe_level = get_unsafe_level(&dampened);
-    if unsafe_level == -1 {
-        return true;
-    }
-
-    if unsafe_level > 0 {
-        let dampened2 = {
-            let mut temp = levels.clone();
-            temp.remove((unsafe_level - 1) as usize);
-            temp
-        };
-
-        unsafe_level = get_unsafe_level(&dampened2);
-        if unsafe_level == -1 {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-fn get_unsafe_level(levels: &Vec<i32>) -> i32 {
     let mut direction: i32 = levels[1] - levels[0];
     if direction == 0 {
-        return 0;
+        return false;
     } else {
         direction /= direction.abs();
     }
+
     for idx in 1..levels.len() {
         let diff = levels[idx] - levels[idx - 1];
         let abs_diff = diff.abs();
         if diff.abs() == 0 {
-            return idx as i32;
+            return false;
         } else if (diff / abs_diff) != direction {
-            return idx as i32;
+            return false;
         }
         if abs_diff < 1 || abs_diff > 3 {
-            return idx as i32;
+            return false;
         }
     }
-    return -1;
+
+    return true;
 }
 
 pub fn part1(input: String) -> i64 {
@@ -108,8 +77,11 @@ pub fn part1(input: String) -> i64 {
 pub fn part2(input: String) -> i64 {
     let mut safe_lines: i64 = 0;
     for line in input.lines() {
-        if is_safe_dampened(line.to_owned()) {
-            safe_lines += 1;
+        for x in 0..line.split_whitespace().count() {
+            if is_safe_x(line.to_owned(), x as i32) {
+                safe_lines += 1;
+                break;
+            }
         }
     }
     return safe_lines;
@@ -134,16 +106,6 @@ mod tests {
     fn test_safe(#[case] input: String, #[case] result: bool) {
         assert_eq!(result, is_safe(input))
     }
-    #[rstest]
-    #[case("7 6 4 2 1", true)]
-    #[case("1 2 7 8 9", false)]
-    #[case("9 7 6 2 1", false)]
-    #[case("1 3 2 4 5", true)]
-    #[case("8 6 4 4 1", true)]
-    #[case("1 3 6 7 9", true)]
-    fn test_dampened(#[case] input: String, #[case] result: bool) {
-        assert_eq!(result, is_safe_dampened(input))
-    }
 
     #[rstest]
     #[case::first(
@@ -157,6 +119,19 @@ mod tests {
     )]
     fn test1(#[case] input: String, #[case] result: i64) {
         assert_eq!(result, part1(input));
+    }
+    #[rstest]
+    #[case::first(
+        "7 6 4 2 1
+    1 2 7 8 9
+    9 7 6 2 1
+    1 3 2 4 5
+    8 6 4 4 1
+    1 3 6 7 9",
+        4
+    )]
+    fn test2(#[case] input: String, #[case] result: i64) {
+        assert_eq!(result, part2(input));
     }
 }
 
