@@ -37,7 +37,7 @@ fn run_day_binaries() -> Result<(), Box<dyn Error>> {
                 // Execute the corresponding binary with the file content as input
                 let output = Command::new("cargo")
                     .args(&["run", "-p", &binary_name, "--"])
-                    .arg(file_name.trim())
+                    .arg("../data/".to_string() + file_name.trim())
                     .output();
 
                 match output {

@@ -76,6 +76,7 @@ dependencies = [
 name = "day03"
 version = "0.1.0"
 dependencies = [
+ "assert_cmd",
  "regex",
  "rstest",
 ]

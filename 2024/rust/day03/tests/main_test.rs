@@ -2,10 +2,10 @@ use assert_cmd::Command;
 
 #[test]
 fn test_part1_success() {
-    Command::cargo_bin("day02")
+    Command::cargo_bin("day03")
         .unwrap()
-        .arg("../../data/day02.txt")
+        .arg("../../data/day03.txt")
         .assert()
         .success()
-        .stdout("321\n386\n");
+        .stdout("169021493\n111762583\n");
 }
