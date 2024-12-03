@@ -39,7 +39,7 @@ pub fn part1(input: String) -> String {
     let mut graph = Graph::<NodeData, ()>::new();
     let mut index: HashMap<String, NodeIndex> = HashMap::new();
 
-    build_tree(input, index, &mut graph);
+    build_tree(input, &mut index, &mut graph);
     let roots: Vec<_> = graph.externals(petgraph::Direction::Incoming).collect();
     let mut r = roots.iter().map(|&i| graph[i].borrow()).collect::<Vec<_>>();
 
@@ -48,7 +48,7 @@ pub fn part1(input: String) -> String {
 
 fn build_tree(
     input: String,
-    mut index: HashMap<String, NodeIndex>,
+    index: &mut HashMap<String, NodeIndex>,
     graph: &mut Graph<NodeData, ()>,
 ) {
     for line in input.lines() {
@@ -91,7 +91,7 @@ pub fn part2(input: String) -> i64 {
     let mut index: HashMap<String, NodeIndex> = HashMap::new();
 
     // Build the tree
-    build_tree(input, index, &mut graph);
+    build_tree(input, &mut index, &mut graph);
 
     // Find root nodes (nodes with no incoming edges)
     let roots: Vec<_> = graph.externals(petgraph::Direction::Incoming).collect();
@@ -128,6 +128,29 @@ impl NodeData {
         }
         return children.windows(2).all(|w| w[0] == w[1]);
     }
+
+    fn get_odd_one(&self, graph: &Graph<NodeData, ()>, node_idx: NodeIndex) -> String {
+        let treeWeight: HashMap<i32, NodeIndex> = HashMap::new();
+        let mut children: HashMap<NodeIndex, i32> = HashMap::<NodeIndex, i32>::new();
+        for child_idx in graph.neighbors(node_idx) {
+            let child = &graph[child_idx];
+            children.insert(child_idx, child.sum_of_weights(graph, child_idx));
+        }
+
+        let mut counts = HashMap::<i32, i32>::new();
+        for (&child, &val) in children.iter() {
+            *counts.entry(val).or_insert(0) += 1;
+        }
+        let odd_one = counts.iter().find(|&(_, &v)| v == 1).unwrap().0;
+        let odd_idx = children.iter().position(|x| x == odd_one).unwrap();
+        let odd_node_idx = graph.neighbors(node_idx).nth(odd_idx).unwrap();
+        let odd_node = &graph[odd_node_idx];
+        if odd_node.is_balanced(graph, odd_node_idx) {
+            return odd_one;
+        } else {
+            return odd_node.get_odd_one(graph, odd_node_idx);
+        }
+    }
 }
 
 #[cfg(test)]
@@ -143,12 +166,49 @@ mod tests {
     fwft (72) -> ktlj, cntj, xhth
     cntj (57)",
         "fwft",
+        ""
+    )]
+    #[case(
+        "xhth (57)
+    ktlj (58)
+    fwft (72) -> ktlj, cntj, xhth
+    cntj (57)",
+        "fwft",
+        "ktlj"
+    )]
+    fn test_get_odd_node(#[case] input: String, #[case] node: String, #[case] result: String) {
+        let mut index = HashMap::<String, NodeIndex>::new();
+        let mut graph = Graph::<NodeData, ()>::new();
+        build_tree(input, &mut index, &mut graph);
+        let node_idx = index.get(&node).unwrap();
+        let node = &graph[*node_idx];
+        assert_eq!(result, node.get_odd_one(&graph, *node_idx));
+    }
+
+    #[rstest]
+    #[case(
+        "xhth (57)
+    ktlj (57)
+    fwft (72) -> ktlj, cntj, xhth
+    cntj (57)",
+        "fwft",
+        true
+    )]
+    #[case(
+        "xhth (57)
+    ktlj (58)
+    fwft (72) -> ktlj, cntj, xhth
+    cntj (57)",
+        "fwft",
         false
     )]
     fn test_is_balanced(#[case] input: String, #[case] node: String, #[case] result: bool) {
-        let mut index = HashMap::<NodeIndex, String>::new();
+        let mut index = HashMap::<String, NodeIndex>::new();
         let mut graph = Graph::<NodeData, ()>::new();
-        let tree = build_tree(input, index, &mut graph);
+        build_tree(input, &mut index, &mut graph);
+        let node_idx = index.get(&node).unwrap();
+        let node = &graph[*node_idx];
+        assert_eq!(result, node.is_balanced(&graph, *node_idx));
     }
 
     #[test]
