@@ -1,5 +1,9 @@
 use petgraph::{graph::NodeIndex, Graph};
-use std::{borrow::Borrow, collections::HashMap, fs};
+use std::{
+    borrow::Borrow,
+    collections::{HashMap, HashSet},
+    fs,
+};
 
 #[derive(Debug)]
 struct NodeData {
@@ -86,26 +90,66 @@ pub fn part2(input: String) -> i64 {
     let mut graph = Graph::<NodeData, ()>::new();
     let mut index: HashMap<String, NodeIndex> = HashMap::new();
 
+    // Build the tree
     build_tree(input, index, &mut graph);
-    let roots: Vec<_> = graph.externals(petgraph::Direction::Incoming).collect();
-    let mut r = roots.iter().map(|&i| graph[i].borrow()).collect::<Vec<_>>();
 
-    return r.pop().expect("msg").weight as i64;
+    // Find root nodes (nodes with no incoming edges)
+    let roots: Vec<_> = graph.externals(petgraph::Direction::Incoming).collect();
+
+    // There should be only one root in a tree; get the first one
+    if let Some(root_idx) = roots.first() {
+        let root = &graph[*root_idx];
+
+        return root.sum_of_weights(&graph, *root_idx) as i64;
+    } else {
+        panic!("No root node found!");
+    }
 }
 
-fn sum_of_weights(&self) -> i32 {
-    let mut sum = self.weight;
-    for child in self.children.iter() {
-        sum += child.sum_of_weights();
+impl NodeData {
+    // Recursive function to calculate the sum of weights for the node and its children
+    fn sum_of_weights(&self, graph: &Graph<NodeData, ()>, node_idx: NodeIndex) -> i32 {
+        let mut sum = self.weight;
+
+        // Traverse all children (outgoing edges)
+        for child_idx in graph.neighbors(node_idx) {
+            let child = &graph[child_idx];
+            sum += child.sum_of_weights(graph, child_idx);
+        }
+
+        sum
     }
-    sum
+
+    fn is_balanced(&self, graph: &Graph<NodeData, ()>, node_idx: NodeIndex) -> bool {
+        let mut children: Vec<i32> = Vec::<i32>::new();
+        for child_idx in graph.neighbors(node_idx) {
+            let child = &graph[child_idx];
+            children.push(child.sum_of_weights(graph, child_idx));
+        }
+        return children.windows(2).all(|w| w[0] == w[1]);
+    }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use petgraph::Graph;
+    use petgraph::{graph, Graph};
     use rstest::rstest;
+
+    #[rstest]
+    #[case(
+        "xhth (57)
+    ktlj (57)
+    fwft (72) -> ktlj, cntj, xhth
+    cntj (57)",
+        "fwft",
+        false
+    )]
+    fn test_is_balanced(#[case] input: String, #[case] node: String, #[case] result: bool) {
+        let mut index = HashMap::<NodeIndex, String>::new();
+        let mut graph = Graph::<NodeData, ()>::new();
+        let tree = build_tree(input, index, &mut graph);
+    }
 
     #[test]
     fn node_test() {
@@ -176,7 +220,7 @@ mod tests {
     ugml (68) -> gyxo, ebii, jptl
     gyxo (61)
     cntj (57)",
-        100
+        778
     )]
     fn test2(#[case] input: String, #[case] result: i64) {
         assert_eq!(result, part2(input));
