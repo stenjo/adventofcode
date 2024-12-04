@@ -13,5 +13,5 @@ path = "src/main.rs"
 [workspace]
 members = [
     ".",       # Root crate
-    "day01", "day07"
+    "day01","day06", "day07"
 ]
