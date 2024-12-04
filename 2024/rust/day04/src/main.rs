@@ -1,7 +1,7 @@
 use grid::*;
 use std::fs;
 
-pub fn part1(input: String) -> i64 {
+pub fn _part1(input: String) -> i64 {
     let mut x: Vec<Vec<char>> = Vec::new();
     for line in input.lines() {
         x.push(line.trim().chars().collect());
@@ -73,40 +73,116 @@ fn search_lines(xword: &Vec<Vec<char>>) -> i64 {
     return count;
 }
 
-pub fn part2(input: String) -> i64 {
+pub fn part1(input: String) -> i64 {
     let mut grid: Grid<char> = Grid::new(0, 0);
-    for line in input.lines() {
-        grid.push_row(line.chars().collect());
+    let lines = input.lines();
+
+    for line in lines {
+        let mut range: Vec<char> = line.trim().chars().collect();
+        range.insert(0, '.');
+        range.insert(0, '.');
+        range.push('.');
+        range.push('.');
+        grid.push_row(range.clone());
     }
+    let dots: Vec<char> = ".".repeat(grid.cols()).chars().collect();
+    grid.insert_row(0, dots.clone());
+    grid.insert_row(0, dots.clone());
+    grid.push_row(dots.clone());
+    grid.push_row(dots.clone());
 
     let mut count: i64 = 0;
-    for x:i32 in 0..grid.rows() as i32 {
-        for y:i32 in 0..grid.cols() as i32 {
+    for x in 1..grid.rows() as i32 - 1 {
+        for y in 1..grid.cols() as i32 - 1 {
             let c = grid.get(x, y).unwrap();
-            if *c == 'A' {
-                if (check('M', x + 1, y, &grid) && check('S', x - 1, y, &grid))
-                    || (check('M', x - 1, y, &grid) && check('S', x + 1, y, &grid))
-                    || (check('M', x, y + 1, &grid) && check('S', x, y - 1, &grid))
-                    || (check('M', x, y - 1, &grid) && check('S', x, y - 2, &grid))
+            let surrounding: Vec<(i32, i32)> = vec![(1, 1), (1, 0), (0, 1), (-1, 1)];
+            for p in surrounding {
+                let nx0 = p.0 * 2 + x as i32;
+                let ny0 = p.1 * 2 + y as i32;
+                let nx1 = p.0 + x as i32;
+                let ny1 = p.1 + y as i32;
+                let nx2 = -p.0 + x as i32;
+                let ny2 = -p.1 + y as i32;
+                let nx3 = -p.0 * 2 + x as i32;
+                let ny3 = -p.1 * 2 + y as i32;
+
+                // Boundary check
+                if bound_check(nx0, ny0, &grid)
+                    && bound_check(nx1, ny1, &grid)
+                    && bound_check(nx2, ny2, &grid)
+                    && bound_check(nx3, ny3, &grid)
                 {
-                    count += 1;
+                    let word = format!(
+                        "{}{}{}{}{}",
+                        grid[(nx0 as usize, ny0 as usize)],
+                        grid[(nx1 as usize, ny1 as usize)],
+                        c,
+                        grid[(nx2 as usize, ny2 as usize)],
+                        grid[(nx3 as usize, ny3 as usize)]
+                    );
+
+                    if word.contains("XMAS") || word.contains("SAMX") {
+                        count += 1;
+                    }
                 }
             }
         }
     }
 
-    return count as i64;
+    return count / 2 as i64;
 }
 
-fn check(c: char, x: usize, y: usize, grid: &Grid<char>) -> bool {
-    if (x > 0) && (y > 0) && x < grid.rows() && y < grid.cols() {
-        if let Some(c2) = grid.get(x, y) {
-            if c == *c2 {
-                return true;
+fn bound_check(nx1: i32, ny1: i32, grid: &Grid<char>) -> bool {
+    nx1 >= 0 && ny1 >= 0 && nx1 < grid.cols() as i32 && ny1 < grid.rows() as i32
+}
+pub fn part2(input: String) -> i64 {
+    let mut grid: Grid<char> = Grid::new(0, 0);
+    for line in input.lines() {
+        let range = line.trim().chars().collect();
+        grid.push_row(range);
+    }
+
+    let mut count: i64 = 0;
+    for x in 1..grid.rows() as i32 - 1 {
+        for y in 1..grid.cols() as i32 - 1 {
+            let c = grid.get(x, y).unwrap();
+            let surrounding: Vec<(i32, i32)> = vec![(1, 1), (-1, 1)];
+            let mut words: i32 = 0;
+            for p in surrounding {
+                let nx1 = p.0 + x as i32;
+                let ny1 = p.1 + y as i32;
+                let nx2 = -p.0 + x as i32;
+                let ny2 = -p.1 + y as i32;
+
+                // Boundary check
+                if nx1 >= 0
+                    && ny1 >= 0
+                    && nx1 < grid.cols() as i32
+                    && ny1 < grid.rows() as i32
+                    && nx2 >= 0
+                    && ny2 >= 0
+                    && nx2 < grid.cols() as i32
+                    && ny2 < grid.rows() as i32
+                {
+                    let word = format!(
+                        "{}{}{}",
+                        grid[(nx1 as usize, ny1 as usize)],
+                        c,
+                        grid[(nx2 as usize, ny2 as usize)]
+                    );
+
+                    if word.contains("MAS") || word.contains("SAM") {
+                        words += 1;
+                    }
+                }
+            }
+            if words > 1 {
+                count += 1;
             }
         }
     }
-    return false;
+
+    return count as i64;
 }
 
 #[cfg(test)]
@@ -237,26 +313,13 @@ M........",
     fn test_search(#[case] input: String, #[case] result: i64) {
         let mut xword: Vec<Vec<char>> = Vec::new();
         for line in input.lines() {
-            xword.push(line.chars().collect());
+            xword.push(line.trim().chars().collect());
         }
         let count = search_lines(&xword);
         assert_eq!(result, count);
     }
 
     #[rstest]
-    // #[case(vec![
-    //     vec!['A', 'B', 'X', '.'],
-    //     vec!['S', 'A', 'M', 'X'],
-    //     vec!['G', 'H', 'A', '.'],
-    //     vec!['G', 'H', 'S', '.'],
-
-    // ],  'r',
-    //  vec![
-    //     vec!['A', 'B', 'X', '.'],
-    //     vec!['A', 'M', 'X', '.'],
-    //     vec!['A', '.', '.', '.'],
-    //     vec!['.', '.', '.', '.'],
-    // ])]
     #[case(vec![
         vec!['A', 'B', 'X', '.'],
         vec!['S', 'A', 'M', 'X'],
@@ -302,45 +365,6 @@ M........",
         assert_eq!(result, diagonals(xword, dir));
     }
 
-    // #[rstest]
-    // #[case(transpose(vec![
-    //     vec!['A', 'B', 'X', '.'],
-    //     vec!['D', 'E', 'M', '.'],
-    //     vec!['G', 'H', 'A', '.'],
-    //     vec!['G', 'H', 'S', '.'],
-    // ]), 1)]
-    // #[case(vec![
-    //     vec!['A', 'B', 'X', '.'],
-    //     vec!['S', 'A', 'M', 'X'],
-    //     vec!['G', 'H', 'A', '.'],
-    //     vec!['G', 'H', 'S', '.'],
-    // ], 0)]
-    // fn test_search_lines(#[case] xword: Vec<Vec<char>>, #[case] result: i64) {
-    //     assert_eq!(1, search_lines(xword));
-    // }
-
-    // #[test]
-    // fn test_transpose() {
-    //     let xword: Vec<Vec<char>> = vec![
-    //         vec!['A', 'B', 'C'],
-    //         vec!['D', 'E', 'F'],
-    //         vec!['G', 'H', 'I'],
-    //     ];
-    //     let xword_transposed: Vec<Vec<char>> = vec![
-    //         vec!['A', 'D', 'G'],
-    //         vec!['B', 'E', 'H'],
-    //         vec!['C', 'F', 'I'],
-    //     ];
-    //     assert_eq!(xword_transposed, transpose(xword));
-    // }
-
-    // #[test]
-    // fn test_transpose_2() {
-    //     let xword: Vec<Vec<char>> = vec![vec!['A', 'B', 'C'], vec!['D', 'E', 'F']];
-    //     let xword_transposed: Vec<Vec<char>> = vec![vec!['A', 'D'], vec!['B', 'E'], vec!['C', 'F']];
-    //     assert_eq!(xword_transposed, transpose(xword));
-    // }
-
     #[rstest]
     #[case(
         "MMMSXXMASM
@@ -355,32 +379,26 @@ M........",
         MXMXAXMASX",
         18
     )]
-    //     #[case(
-    //         ".........X
-    // .........M
-    // .........A
-    // .........S
-    // .........A
-    // .........M
-    // .........X",
-    //         2
-    //     )]
-    //     #[case(
-    //         "....X
-    // ....M
-    // ....A
-    // ....S",
-    //         1
-    //     )]
-    //     #[case(
-    //         "X....
-    //         .M...
-    //         ..A..
-    //         ...S.",
-    //         1
-    //     )]
     fn test1(#[case] input: String, #[case] result: i64) {
         assert_eq!(result, part1(input));
+    }
+
+    #[rstest]
+    #[case(
+        "MMMSXXMASM
+        MSAMXMSMSA
+        AMXSXMAAMM
+        MSAMASMSMX
+        XMASAMXAMM
+        XXAMMXXAMA
+        SMSMSASXSS
+        SAXAMASAAA
+        MAMMMXMMMM
+        MXMXAXMASX",
+        9
+    )]
+    fn test2(#[case] input: String, #[case] result: i64) {
+        assert_eq!(result, part2(input));
     }
 }
 
