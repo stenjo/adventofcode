@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-
+grid = "0.15.0"
 [dev-dependencies]
 rstest = "0.23.0"
 assert_cmd = "2.0"
