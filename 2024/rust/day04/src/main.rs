@@ -14,7 +14,19 @@ mod tests {
     use rstest::rstest;
 
     #[rstest]
-    #[case::first("data", 4)]
+    #[case::first(
+        "MMMSXXMASM
+    MSAMXMSMSA
+    AMXSXMAAMM
+    MSAMASMSMX
+    XMASAMXAMM
+    XXAMMXXAMA
+    SMSMSASXSS
+    SAXAMASAAA
+    MAMMMXMMMM
+    MXMXAXMASX",
+        18
+    )]
     fn test1(#[case] input: String, #[case] result: i64) {
         assert_eq!(result, part1(input));
     }
