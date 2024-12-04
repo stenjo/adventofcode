@@ -1,4 +1,5 @@
-use petgraph::{graph::NodeIndex, Graph};
+use itertools::Itertools;
+use petgraph::{algo::toposort, graph::NodeIndex, Graph};
 use std::{
     borrow::Borrow,
     collections::{HashMap, HashSet},
@@ -9,6 +10,7 @@ use std::{
 struct NodeData {
     name: String,
     weight: i32,
+    total: i32,
 }
 
 fn parse_node(input: &str) -> (String, i32, Vec<String>) {
@@ -55,11 +57,13 @@ fn build_tree(
         let (name, weight, children) = parse_node(line);
         let root_idx: NodeIndex = if let Some(&root_idx) = index.get(&name) {
             graph[root_idx].weight = weight;
+            graph[root_idx].total = weight;
             root_idx
         } else {
             let root_idx = graph.add_node(NodeData {
                 name: name.to_string(),
                 weight: weight,
+                total: weight,
             });
             index.insert(name, root_idx);
             root_idx
@@ -74,6 +78,7 @@ fn build_tree(
                     let new_child_idx = graph.add_node(NodeData {
                         name: child.to_string(),
                         weight: 0,
+                        total: 0,
                     });
                     index.insert(child.clone(), new_child_idx); // Insert the new node into the index
                     new_child_idx
@@ -95,15 +100,46 @@ pub fn part2(input: String) -> i64 {
 
     // Find root nodes (nodes with no incoming edges)
     let roots: Vec<_> = graph.externals(petgraph::Direction::Incoming).collect();
+    let sorted = toposort(&graph, None).unwrap();
 
-    // There should be only one root in a tree; get the first one
-    if let Some(root_idx) = roots.first() {
-        let root = &graph[*root_idx];
+    // Now, find the unbalanced node, starting at the leaves...
+    for &node in sorted.iter().rev() {
+        // If this node's children aren't all equal
+        if !graph.neighbors(node).map(|n| graph[n].total).all_equal() {
+            // Find the min and max value of the children
+            let (min, max) = graph
+                .neighbors(node)
+                .map(|n| graph[n].total)
+                .minmax()
+                .into_option()
+                .unwrap();
 
-        return root.sum_of_weights(&graph, *root_idx) as i64;
-    } else {
-        panic!("No root node found!");
+            // Split the children based on their total (left for min, right for max)
+            let (left, right): (Vec<_>, Vec<_>) =
+                graph.neighbors(node).partition(|&n| graph[n].total == min);
+
+            // The unbalanced node is the side that has one element
+            let unbalanced = if left.len() == 1 {
+                &graph[left[0]]
+            } else {
+                &graph[right[0]]
+            };
+
+            return (unbalanced.weight + min - max).into();
+            // Find that node's new weight in order to balance the weights
+            // println!(
+            //     "[Part 2]: New weight (for \"{}\") is: {}",
+            //     unbalanced.name,
+            //     unbalanced.weight + min - max
+            // );
+
+            // break;
+        }
+
+        // Otherwise, update this node's total weight
+        graph[node].total += graph.neighbors(node).map(|n| graph[n].total).sum::<i32>();
     }
+    return 0;
 }
 
 impl NodeData {
@@ -127,29 +163,6 @@ impl NodeData {
             children.push(child.sum_of_weights(graph, child_idx));
         }
         return children.windows(2).all(|w| w[0] == w[1]);
-    }
-
-    fn get_odd_one(&self, graph: &Graph<NodeData, ()>, node_idx: NodeIndex) -> String {
-        let treeWeight: HashMap<i32, NodeIndex> = HashMap::new();
-        let mut children: HashMap<NodeIndex, i32> = HashMap::<NodeIndex, i32>::new();
-        for child_idx in graph.neighbors(node_idx) {
-            let child = &graph[child_idx];
-            children.insert(child_idx, child.sum_of_weights(graph, child_idx));
-        }
-
-        let mut counts = HashMap::<i32, i32>::new();
-        for (&child, &val) in children.iter() {
-            *counts.entry(val).or_insert(0) += 1;
-        }
-        let odd_one = counts.iter().find(|&(_, &v)| v == 1).unwrap().0;
-        let odd_idx = children.iter().position(|x| x == odd_one).unwrap();
-        let odd_node_idx = graph.neighbors(node_idx).nth(odd_idx).unwrap();
-        let odd_node = &graph[odd_node_idx];
-        if odd_node.is_balanced(graph, odd_node_idx) {
-            return odd_one;
-        } else {
-            return odd_node.get_odd_one(graph, odd_node_idx);
-        }
     }
 }
 
@@ -182,7 +195,6 @@ mod tests {
         build_tree(input, &mut index, &mut graph);
         let node_idx = index.get(&node).unwrap();
         let node = &graph[*node_idx];
-        assert_eq!(result, node.get_odd_one(&graph, *node_idx));
     }
 
     #[rstest]
@@ -280,7 +292,7 @@ mod tests {
     ugml (68) -> gyxo, ebii, jptl
     gyxo (61)
     cntj (57)",
-        778
+        60
     )]
     fn test2(#[case] input: String, #[case] result: i64) {
         assert_eq!(result, part2(input));

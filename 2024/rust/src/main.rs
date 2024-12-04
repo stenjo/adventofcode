@@ -33,11 +33,12 @@ fn run_day_binaries() -> Result<(), Box<dyn Error>> {
 
                 // Construct the binary name (e.g., "day01")
                 let binary_name = format!("day{}", day_number);
-
+                let full_filename =
+                    fs::canonicalize("../data/".to_string() + &file_name).expect("");
                 // Execute the corresponding binary with the file content as input
                 let output = Command::new("cargo")
                     .args(&["run", "-p", &binary_name, "--"])
-                    .arg("../data/".to_string() + file_name.trim())
+                    .arg(full_filename.as_os_str())
                     .output();
 
                 match output {

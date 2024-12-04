@@ -2,9 +2,9 @@ use assert_cmd::Command;
 
 #[test]
 fn test_part1_success() {
-    Command::cargo_bin("day02")
+    Command::cargo_bin("{{ crate_name }}")
         .unwrap()
-        .arg("../../data/day02.txt")
+        .arg("../../data/{{ crate_name }}.txt")
         .assert()
         .success()
         .stdout("321\n386\n");
