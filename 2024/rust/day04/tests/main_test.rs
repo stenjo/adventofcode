@@ -1,4 +1,112 @@
 use assert_cmd::Command;
+use day04::*;
+use rstest::rstest;
+
+#[rstest]
+#[case(
+    "....XXMAS.
+.SAMXMS...
+...S..A...
+..A.A.MS.X
+XMASAMX.MM
+X.....XA.A
+S.S.S.S.SS
+.A.A.A.A.A
+..M.M.M.MM
+.X.X.XMASX",
+    5
+)]
+#[case(
+    "....XXS...
+.S..M..A.X
+.A.AA.S.M.
+.MS.S..A.X
+XX.AA.S.M.
+XM..M..A.X
+MSAMXXS.MM
+A..S.A.A.A
+S...M.S.MS
+...XMASAMX",
+    3
+)]
+#[case(
+    "MMMSXXMASM
+MSAMXMSMSA
+AMXSXMAAMM
+MSAMASMSMX
+XMASAMXAMM
+XXAMMXXAMA
+SMSMSASXSS
+SAXAMASAAA
+MAMMMXMMMM
+MXMXAXMASX",
+    5
+)]
+#[case(
+    "MMAMXXSSMM
+MSMSMXMAAX
+MAXAAASXMM
+SMSMSMMAMX
+XXXAAMSMMA
+XMMSMXAAXX
+MSAMXXSSMM
+AMASAAXAMA
+SSMMMMSAMS
+MAMXMASAMX",
+    3
+)]
+#[case(
+    "M.........
+MM........
+ASM.......
+MMAS......
+XSXMX.....
+XMASXX....
+SXAMXMM...
+SMASAMSA..
+MASMASAMS.
+MAXMMMMASM
+.XMASXXSMA
+..MMMAXAMM
+...XMASAMX
+....AXSXMM
+.....XMASA
+......MMAS
+.......AMA
+........SM
+.........X",
+    5
+)]
+#[case(
+    ".........M
+........SA
+.......ASM
+......MMMX
+.....XSAMM
+....XMASMA
+...SXMMAMS
+..MMXSXASA
+.MASAMXXAM
+MSXMAXSAMX
+MMASMASMS.
+ASAMSAMA..
+MMAMMXM...
+XXSAMX....
+XMXMA.....
+SAMX......
+SAM.......
+MX........
+M........",
+    5
+)]
+fn test_search(#[case] input: String, #[case] result: i64) {
+    let mut xword: Vec<Vec<char>> = Vec::new();
+    for line in input.lines() {
+        xword.push(line.trim().chars().collect());
+    }
+    let count = search_lines(&xword);
+    assert_eq!(result, count);
+}
 
 #[test]
 fn test_part1_success() {
