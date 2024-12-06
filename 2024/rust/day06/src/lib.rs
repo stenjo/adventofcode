@@ -5,7 +5,7 @@ pub fn part1(input: String) -> i64 {
     let guard = get_guard(input.clone());
     let dir = get_dir(input);
 
-    let path = walk(guard, dir, labmap);
+    let path = walk(guard, dir, &labmap);
     let visited = path.iter().map(|p| (p.0, p.1)).collect::<HashSet<_>>();
     return visited.len() as i64;
 }
@@ -39,7 +39,7 @@ pub fn get_map(input: &String) -> Vec<Vec<bool>> {
 pub fn walk(
     guard: (usize, usize),
     mut dir: usize,
-    labmap: Vec<Vec<bool>>,
+    labmap: &Vec<Vec<bool>>,
 ) -> Vec<(i32, i32, usize)> {
     let mut pos: (i32, i32) = (guard.0 as i32, guard.1 as i32);
     let mut visited: HashSet<(i32, i32)> = HashSet::new();
@@ -76,16 +76,79 @@ pub fn find_obstacle_options(
     dir: usize,
     labmap: Vec<Vec<bool>>,
 ) -> Vec<(i32, i32, usize)> {
-    let visited: Vec<(i32, i32, usize)> = walk(guard, dir, labmap);
-    let mut options: Vec<(i32, i32, usize)> = Vec::new();
+    let visited: Vec<(i32, i32, usize)> = walk(guard, dir, &labmap);
+    let mut options: HashSet<(i32, i32, usize)> = HashSet::new();
 
     for (row, col, dir) in visited.iter() {
-        let next_pos = get_next_pos((*row, *col, (*dir + 1) % 4), *dir);
-        if visited.contains(&next_pos) {
-            options.push(get_next_pos(next_pos, *dir));
+        let mut next_pos = (*row, *col, (*dir + 1) % 4);
+        if will_enter_previous_path((*row, *col, (*dir + 1) % 4), &visited, &labmap) {
+            next_pos = get_next_pos(next_pos, dir.clone());
+            if is_valid_pos(next_pos, &labmap)
+                && !is_line_of_sight(next_pos, (guard.0 as i32, guard.1 as i32, *dir), &labmap)
+            {
+                options.insert(next_pos);
+            }
         }
     }
-    return options;
+    return options.into_iter().collect();
+}
+
+fn is_valid_pos(pos: (i32, i32, usize), labmap: &Vec<Vec<bool>>) -> bool {
+    let rows = labmap.len();
+    let cols = labmap[0].len();
+    if is_out_of_bounds((pos.0, pos.1), pos.2, rows, cols) || labmap[pos.0 as usize][pos.1 as usize]
+    {
+        return false;
+    }
+    return true;
+}
+
+fn will_enter_previous_path(
+    pos: (i32, i32, usize),
+    path: &Vec<(i32, i32, usize)>,
+    labmap: &Vec<Vec<bool>>,
+) -> bool {
+    let mut next_pos = pos;
+    loop {
+        if is_out_of_bounds(
+            (next_pos.0, next_pos.1),
+            pos.2,
+            labmap.len(),
+            labmap[0].len(),
+        ) {
+            return false;
+        }
+        if labmap[next_pos.0 as usize][next_pos.1 as usize] {
+            return false;
+        }
+        // print!("{:?}", next_pos);
+        if path.contains(&next_pos) {
+            return true;
+        }
+        next_pos = get_next_pos(next_pos, pos.2);
+    }
+}
+
+fn is_line_of_sight(
+    pos: (i32, i32, usize),
+    guard: (i32, i32, usize),
+    labmap: &Vec<Vec<bool>>,
+) -> bool {
+    let mut sight: (i32, i32, usize) = guard;
+    loop {
+        if is_out_of_bounds((sight.0, sight.1), sight.2, labmap.len(), labmap[0].len()) {
+            return false;
+        }
+        let next_pos = get_next_pos(sight, sight.2);
+        if labmap[next_pos.0 as usize][next_pos.1 as usize] {
+            return false;
+        }
+        if sight == next_pos {
+            return true;
+        }
+
+        sight = next_pos;
+    }
 }
 
 fn get_next_pos(pos: (i32, i32, usize), dir: usize) -> (i32, i32, usize) {
@@ -114,5 +177,6 @@ pub fn part2(input: String) -> i64 {
     let dir = get_dir(input);
 
     let options = find_obstacle_options(guard, dir, labmap);
-    return options.len() as i64;
+    let option_set: HashSet<(i32, i32)> = options.iter().map(|p| (p.0, p.1)).collect();
+    return option_set.len() as i64;
 }

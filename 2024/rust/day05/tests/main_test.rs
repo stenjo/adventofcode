@@ -2,7 +2,6 @@ use assert_cmd::Command;
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use rstest::rstest;
 
     #[rstest]
