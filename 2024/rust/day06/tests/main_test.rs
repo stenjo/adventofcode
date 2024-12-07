@@ -1,8 +1,8 @@
-use std::{collections::HashSet, fs};
-
 use assert_cmd::Command;
 use day06::{find_obstacle_options, walk, *};
 use rstest::rstest;
+use std::fs;
+mod area;
 
 const TEST_INPUT: &str = "....#.....
 .........#
@@ -15,9 +15,30 @@ const TEST_INPUT: &str = "....#.....
 #.........
 ......#...";
 
+#[test]
+fn test_class() {
+    let map: Area = Area::new(TEST_INPUT.to_string());
+    let path = map.walk();
+    assert_eq!(41, path.len())
+}
+
+#[rstest]
+#[case::north(TEST_INPUT.to_string(), (1, 4, 0), true)]
+#[case::west(TEST_INPUT.to_string(), (6, 2, 3), true)]
+fn test_los(#[case] input: String, #[case] spot: (i32, i32, usize), #[case] result: bool) {
+    let labmap = get_map(&input);
+    let guard = get_guard(input.clone());
+    let dir = spot.2;
+
+    assert_eq!(
+        result,
+        is_line_of_sight(spot, (guard.0 as i32, guard.1 as i32, dir), &labmap)
+    )
+}
+
 #[rstest]
 #[case::first(TEST_INPUT.to_string(), 41)]
-fn test1(#[case] input: String, #[case] result: i64) {
+fn part1_test(#[case] input: String, #[case] result: i64) {
     assert_eq!(result, part1(input));
 }
 
@@ -43,9 +64,20 @@ fn test_options() {
     let labmap = get_map(&input);
     let guard = get_guard(input.clone());
     let dir = get_dir(input);
-    let options = find_obstacle_options(guard, dir, labmap.clone());
+    let mut options = find_obstacle_options(guard, dir, labmap.clone());
     print_map(guard, &labmap, &walk(guard, dir, &labmap), &options);
-    assert_eq!(vec![(6, 4, 3), (7, 7, 2), (7, 8, 1)], options);
+    assert_eq!(
+        vec![
+            (8, 3, 0),
+            (7, 6, 3),
+            (8, 1, 0),
+            (7, 7, 2),
+            (1, 7, 2),
+            (9, 7, 3)
+        ]
+        .sort(),
+        options.sort()
+    );
 }
 
 fn print_map(
@@ -86,9 +118,10 @@ fn print_map(
     }
     println!()
 }
+
 #[rstest]
 #[case::second(TEST_INPUT.to_string(), 6)]
-fn test_2(#[case] input: String, #[case] result: i64) {
+fn part2_test(#[case] input: String, #[case] result: i64) {
     assert_eq!(result, part2(input));
 }
 
@@ -99,5 +132,5 @@ fn day_success() {
         .arg("../../data/day06.txt")
         .assert()
         .success()
-        .stdout("4515\n386\n");
+        .stdout("4515\n1309\n");
 }

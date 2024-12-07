@@ -1,4 +1,5 @@
 use std::collections::HashSet;
+mod area;
 
 pub fn part1(input: String) -> i64 {
     let labmap = get_map(&input);
@@ -66,6 +67,10 @@ pub fn walk(
     path
 }
 
+fn inbound(pos: (i32, i32, usize), map: &Vec<Vec<bool>>) -> bool {
+    pos.0 >= 0 && pos.0 < map.len() as i32 && pos.1 >= 0 && pos.1 < map[0].len() as i32
+}
+
 fn is_out_of_bounds(pos: (i32, i32), dir: usize, rows: usize, cols: usize) -> bool {
     let next = get_next_pos((pos.0, pos.1, dir), dir);
     next.0 < 0 || next.0 >= rows as i32 || next.1 < 0 || next.1 >= cols as i32
@@ -84,7 +89,7 @@ pub fn find_obstacle_options(
         if will_enter_previous_path((*row, *col, (*dir + 1) % 4), &visited, &labmap) {
             next_pos = get_next_pos(next_pos, dir.clone());
             if is_valid_pos(next_pos, &labmap)
-                && !is_line_of_sight(next_pos, (guard.0 as i32, guard.1 as i32, *dir), &labmap)
+            // && !is_line_of_sight(next_pos, (guard.0 as i32, guard.1 as i32, *dir), &labmap)
             {
                 options.insert(next_pos);
             }
@@ -129,7 +134,7 @@ fn will_enter_previous_path(
     }
 }
 
-fn is_line_of_sight(
+pub fn is_line_of_sight(
     pos: (i32, i32, usize),
     guard: (i32, i32, usize),
     labmap: &Vec<Vec<bool>>,
@@ -143,13 +148,25 @@ fn is_line_of_sight(
         if labmap[next_pos.0 as usize][next_pos.1 as usize] {
             return false;
         }
-        if sight == next_pos {
+        if pos.0 == next_pos.0 && pos.1 == next_pos.1 {
             return true;
         }
 
         sight = next_pos;
     }
 }
+
+// fn get_squares(map: Vec<Vec<(i32, i32, usize)>>, start: (i32, i32, usize)) -> i32 {
+//     let mut pos = start;
+//     loop {}
+//     return 0;
+// }
+
+// fn next_pos(pos: (i32, i32, usize)) -> (i32, i32, usize) {
+//     let dir: Vec<(i32, i32)> = vec![(-1, 0), (0, 1), (1, 0), (0, -1)];
+//     let next_pos = (pos.0 + dir[pos.2].0, pos.1 + dir[pos.2].1, pos.2);
+//     next_pos
+// }
 
 fn get_next_pos(pos: (i32, i32, usize), dir: usize) -> (i32, i32, usize) {
     let directions: Vec<(i32, i32)> = vec![(-1, 0), (0, 1), (1, 0), (0, -1)];
@@ -176,7 +193,6 @@ pub fn part2(input: String) -> i64 {
     let guard = get_guard(input.clone());
     let dir = get_dir(input);
 
-    let options = find_obstacle_options(guard, dir, labmap);
-    let option_set: HashSet<(i32, i32)> = options.iter().map(|p| (p.0, p.1)).collect();
-    return option_set.len() as i64;
+    let options = find_obstacle_options(guard, dir, labmap.clone());
+    return options.len() as i64;
 }
