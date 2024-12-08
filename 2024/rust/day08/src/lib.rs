@@ -1,6 +1,6 @@
 use std::collections::HashSet;
 
-#[derive(Debug, Clone, Copy, Eq, Hash, PartialEq)]
+#[derive(Debug, Clone, Copy, Eq, Hash, PartialEq, PartialOrd, Ord)]
 pub struct Loc {
     row: isize,
     col: isize,
@@ -9,10 +9,13 @@ impl Loc {
     pub fn as_tuple(&self) -> (isize, isize) {
         (self.row, self.col)
     }
+    pub fn new(row: isize, col: isize) -> Self {
+        Self { row, col }
+    }
 }
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, Eq, Hash, PartialEq, PartialOrd, Ord)]
 pub struct Pos {
-    loc: Loc,
+    pub loc: Loc,
     pub freq: char,
 }
 
@@ -93,8 +96,11 @@ impl Area {
     }
 
     /// Finds positions along the diagonal from `p1` to `p2`
-    pub fn find_diagonal_positions(&self, p1: Pos, p2: Pos) -> Vec<Pos> {
+    pub fn get_diagonal(&self, p1: Pos, p2: Pos) -> Vec<Pos> {
         let mut positions: Vec<Pos> = Vec::new();
+        if p1.loc == p2.loc {
+            return positions;
+        }
 
         // Calculate the direction vector
         let mut dr = p2.loc.row as isize - p1.loc.row as isize;
@@ -106,7 +112,7 @@ impl Area {
         dc /= g;
 
         // Forward direction
-        let mut current = p2;
+        let mut current = p1;
         while self.inbound(current) {
             positions.push(current);
             current.loc.row += dr;
@@ -115,12 +121,15 @@ impl Area {
 
         // Backward direction
         let mut current: Pos = p1;
+        current.loc.row -= dr;
+        current.loc.col -= dc;
         while self.inbound(current) {
             positions.push(current);
             current.loc.row -= dr;
             current.loc.col -= dc;
         }
 
+        positions.sort();
         positions
     }
 
@@ -134,19 +143,20 @@ impl Area {
         return antennas;
     }
 
-    pub fn antinodes(&self, current: &Pos, other: &Pos) -> Vec<Loc> {
-        let distance = current.dist(*other);
-        let candidates = self.find_diagonal_positions(*current, *other);
-        let anti = candidates
-            .iter()
-            .filter(|&p| {
-                (current.dist(*p) == distance && &p.loc != &other.loc)
-                    || (other.dist(*p) == distance && &p.loc != &current.loc)
-            })
-            .map(|p| p.loc)
-            .collect();
+    pub fn antinodes(&self, current: &Pos, other: &Pos) -> Option<Loc> {
+        if current.loc == other.loc {
+            return None;
+        }
+        let distance = current.dist(*other); // Calculate distance between current and other
+        let candidates = self.get_diagonal(*current, *other); // Find diagonal positions
 
-        return anti;
+        // Find the first valid antinode
+        let antinode = candidates
+            .iter()
+            .find(|&p| current.dist(*p) == distance && p != other) // Check conditions
+            .map(|&l| l.loc);
+
+        return antinode;
     }
 }
 
@@ -167,11 +177,12 @@ pub fn part1(input: String) -> i64 {
             .collect();
 
         // Iterate over all unique pairs of positions
-        for (i, &current) in same_freq.iter().enumerate() {
-            for &other in same_freq.iter().skip(i + 1) {
+        for current in same_freq.clone() {
+            for &other in same_freq.clone() {
                 // Calculate and add antinodes
-                let locs = area.antinodes(current, other);
-                antinodes.extend(locs); // Add all locations to the HashSet
+                if let Some(loc) = area.antinodes(&current, &other) {
+                    antinodes.insert(loc.clone()); // Add all locations to the HashSet
+                }
             }
         }
     }
@@ -181,5 +192,31 @@ pub fn part1(input: String) -> i64 {
 }
 
 pub fn part2(input: String) -> i64 {
-    return input.len().try_into().unwrap();
+    let area = Area::new(input);
+    let mut interference: HashSet<Loc> = HashSet::new();
+    let frequency: HashSet<char> = area.get_antennas().iter().map(|p| p.freq).collect();
+
+    for &freq in &frequency {
+        // Get all positions with the same frequency
+        let same_freq: Vec<&Pos> = area
+            .get_antennas()
+            .iter()
+            .filter(|&p| p.freq == freq)
+            .map(|s| *s)
+            .collect();
+
+        // Iterate over all unique pairs of positions
+        for current in same_freq.clone() {
+            for &other in same_freq.clone() {
+                let diagonal = area.get_diagonal(*current, other);
+
+                if diagonal.contains(current) && diagonal.contains(&other) {
+                    for p in diagonal {
+                        interference.insert(p.loc);
+                    }
+                }
+            }
+        }
+    }
+    return interference.len() as i64;
 }
