@@ -154,5 +154,5 @@ fn test_part1_success() {
         .arg("../../data/day07.txt")
         .assert()
         .success()
-        .stdout("1611660863222\n386\n");
+        .stdout("1611660863222\n945341732469724\n");
 }

@@ -2,6 +2,7 @@ use regex::Regex;
 use std::error::Error;
 use std::fs;
 use std::process::Command;
+use std::time::Instant;
 
 fn run_day_binaries() -> Result<(), Box<dyn Error>> {
     // Regex to match files like day01.txt, day25.txt, etc.
@@ -35,6 +36,9 @@ fn run_day_binaries() -> Result<(), Box<dyn Error>> {
                 let binary_name = format!("day{}", day_number);
                 let full_filename =
                     fs::canonicalize("../data/".to_string() + &file_name).expect("");
+
+                let now = Instant::now();
+
                 // Execute the corresponding binary with the file content as input
                 let output = Command::new("cargo")
                     .args(&["run", "-p", &binary_name, "--"])
@@ -65,6 +69,7 @@ fn run_day_binaries() -> Result<(), Box<dyn Error>> {
                     }
                     Err(e) => eprintln!("Error executing {}: {}", binary_name, e),
                 }
+                println!("{:?}", now.elapsed());
             }
         }
     }

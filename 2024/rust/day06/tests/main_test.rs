@@ -1,8 +1,8 @@
+use area::Area;
 use assert_cmd::Command;
 use day06::{find_obstacle_options, walk, *};
 use rstest::rstest;
 use std::fs;
-mod area;
 
 const TEST_INPUT: &str = "....#.....
 .........#
@@ -17,7 +17,7 @@ const TEST_INPUT: &str = "....#.....
 
 #[test]
 fn test_class() {
-    let map: Area = Area::new(TEST_INPUT.to_string());
+    let mut map: Area = Area::new(TEST_INPUT.to_string());
     let path = map.walk();
     assert_eq!(41, path.len())
 }

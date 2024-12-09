@@ -61,5 +61,5 @@ fn test_day09_success() {
         .arg("../../data/day09.txt")
         .assert()
         .success()
-        .stdout("6461289671426\n386\n");
+        .stdout("6461289671426\n6488291456470\n");
 }

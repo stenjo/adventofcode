@@ -1,5 +1,5 @@
 use std::collections::HashSet;
-mod area;
+pub mod area;
 
 pub fn part1(input: String) -> i64 {
     let labmap = get_map(&input);

@@ -1,11 +1,11 @@
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, Eq, Hash, PartialEq, PartialOrd, Ord)]
 pub struct Pos {
     row: usize,
     col: usize,
     dir: Direction,
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, Eq, Hash, PartialEq, PartialOrd, Ord)]
 enum Direction {
     Up,
     Down,
@@ -20,7 +20,7 @@ pub struct Area {
 
 impl Area {
     /// Constructs a new Area from the given input string
-    fn new(input: String) -> Self {
+    pub fn new(input: String) -> Self {
         let map: Vec<Vec<char>> = input.lines().map(|line| line.chars().collect()).collect();
         let mut guard = Pos {
             row: 0,
@@ -99,7 +99,7 @@ impl Area {
     }
 
     /// Moves the guard and returns the path taken
-    fn walk(&mut self) -> Vec<Pos> {
+    pub fn walk(&mut self) -> Vec<Pos> {
         let mut path = Vec::new();
         let mut current_pos = self.guard;
 
