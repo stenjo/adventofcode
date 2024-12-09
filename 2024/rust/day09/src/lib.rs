@@ -32,11 +32,18 @@ impl Block {
         return self.size - self.block_ids.len();
     }
     pub fn add(&mut self, block: i32) {
-        self.block_ids.push(block);
+        if self.avail() > 0 {
+            self.block_ids.push(block);
+        } else {
+            println!("Block {} is full", self.id);
+        };
     }
 
     pub fn pop(&mut self) -> i32 {
-        return self.block_ids.pop().unwrap();
+        match self.block_ids.pop() {
+            Some(val) => return val,
+            None => return -1,
+        }
     }
 
     pub fn free_space(&self) -> i64 {
@@ -44,7 +51,12 @@ impl Block {
     }
 
     pub fn blocks(&self) -> Vec<i32> {
-        return self.block_ids.clone();
+        return self
+            .block_ids
+            .clone()
+            .into_iter()
+            .chain(vec![0; self.avail()].into_iter())
+            .collect();
     }
 
     pub fn checksum(&self) -> i64 {
@@ -152,6 +164,46 @@ impl DiskMap {
         }
     }
 
+    pub fn optimize2(&mut self) {
+        let mut front = 0;
+
+        while front < self.space.len() as i32 - 2 {
+            let mut back = self.space.len() as i32 - 1;
+            while front < back {
+                // println!("front: {}, back: {}", front, back);
+                if {
+                    let front_avail = self.space.get(&front).unwrap().avail();
+                    let back_used = self.space.get(&back).unwrap().used();
+                    front_avail > 0 && back_used > 0 && front_avail >= back_used
+                } {
+                    self.move_file(front, back);
+                    front = 0;
+                    back = self.space.len() as i32 - 1;
+                } else if front < back {
+                    back -= 1;
+                } else {
+                    break;
+                }
+            }
+            front += 1;
+        }
+    }
+
+    fn move_file(&mut self, front: i32, back: i32) {
+        // Extract the blocks into temporary variables to avoid mutable borrow conflicts
+        let mut front_block = self.space.remove(&front).unwrap();
+        let mut back_block = self.space.remove(&back).unwrap();
+
+        // Perform the operation
+        while front_block.avail() > 0 && back_block.used() > 0 {
+            front_block.add(back_block.pop());
+        }
+
+        // Insert the blocks back into the HashMap
+        self.space.insert(front, front_block);
+        self.space.insert(back, back_block);
+    }
+
     pub fn print(&self) -> io::Result<()> {
         for i in 0..self.space.len() {
             self.space.get(&(i as i32)).unwrap().print()?;
@@ -169,5 +221,8 @@ pub fn part1(input: String) -> i64 {
 }
 
 pub fn part2(input: String) -> i64 {
-    return input.len().try_into().unwrap();
+    let mut dm = DiskMap::new(input);
+    dm.optimize2();
+
+    return dm.checksum();
 }

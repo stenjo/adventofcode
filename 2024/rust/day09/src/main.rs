@@ -1,4 +1,4 @@
-use std::fs;
+use std::{fs, time::Instant};
 
 use day09::{part1, part2};
 
@@ -8,6 +8,9 @@ pub fn main() {
         Ok(input) => input,
         Err(e) => panic!("Error reading file: {}", e),
     };
+    let now = Instant::now();
     println!("{}", part1(input.clone()));
-    println!("{}", part2(input));
+    println!("{:?}", now.elapsed());
+    // println!("{}", part2(input));
+    now.elapsed();
 }
