@@ -67,10 +67,10 @@ impl Island {
                 continue;
             }
             let current_height = self.get_height(loc).unwrap();
-            let mut heights: Vec<usize> = vec![current_height, current_height + 1];
-            if current_height > 0 {
-                heights.push(current_height - 1)
-            };
+            let mut heights: Vec<usize> = vec![current_height + 1];
+            // if current_height > 0 {
+            //     heights.push(current_height - 1)
+            // };
             if let Some(height) = self.get_height(next) {
                 if heights.contains(&height) && !visited.contains(&next) && height > 0 {
                     let t = next.to_tuple();
