@@ -21,18 +21,61 @@ const INPUT2: &str = "89010123
 10456732";
 
 #[rstest]
-#[case(INPUT.to_string(), 9)]
-fn island_trailheads(#[case] input: String, #[case] result: usize) {
+#[case(INPUT.to_string(), (0,2), 5)]
+#[case(INPUT.to_string(), (0,4), 6)]
+#[case(INPUT.to_string(), (2,4), 5)]
+#[case(INPUT.to_string(), (4,6), 3)]
+#[case(INPUT.to_string(), (5,2), 1)]
+#[case(INPUT.to_string(), (5,5), 3)]
+#[case(INPUT.to_string(), (6,0), 5)]
+#[case(INPUT.to_string(), (6,6), 3)]
+#[case(INPUT.to_string(), (7,1), 5)]
+fn island_trailheads(#[case] input: String, #[case] start: (usize, usize), #[case] result: usize) {
     let mut visited: Vec<Coord> = Vec::new();
     let mut trails: Vec<Vec<Coord>> = Vec::new();
     let mut i = Island::new(input);
-    i.walk(Coord::new(0, 2), &mut visited, &mut trails);
+    i.walk(Coord::new(start.0, start.1), &mut visited, &mut trails);
 
     for t in trails.iter() {
-        t.iter().for_each(|c| print!("{:?} ", c.to_tuple()));
+        // t.iter().for_each(|c| print!("{:?} ", c.to_tuple()));
         println!();
-        i.print(t);
+        // i.print(t);
     }
     // i.print(&visited);
-    assert_eq!(result, visited.len());
+    assert_eq!(result, trails.len());
+}
+
+#[test]
+fn test_island_new() {
+    let input = "123\n456\n789".to_string();
+    let island = Island::new(input);
+    assert_eq!(
+        island.map,
+        vec![vec![1, 2, 3], vec![4, 5, 6], vec![7, 8, 9]]
+    );
+}
+
+#[test]
+fn test_get_height() {
+    let input = "123\n456\n789".to_string();
+    let island = Island::new(input);
+    assert_eq!(island.get_height(Coord::new(0, 0)), Some(1));
+    assert_eq!(island.get_height(Coord::new(2, 2)), Some(9));
+    assert_eq!(island.get_height(Coord::new(3, 3)), None);
+}
+
+#[test]
+fn test_get_starting_points() {
+    let input = "012\n345\n678".to_string();
+    let island = Island::new(input);
+    let starting_points = island.get_starting_points();
+    assert_eq!(starting_points, vec![Coord::new(0, 0)]);
+}
+
+#[test]
+fn test_print() {
+    let input = "012\n345\n678".to_string();
+    let island = Island::new(input);
+    let trail = vec![Coord::new(0, 0), Coord::new(0, 1), Coord::new(0, 2)];
+    island.print(&trail);
 }

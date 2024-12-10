@@ -20,7 +20,7 @@ impl Coord {
 
 #[derive(Debug, Clone, Eq, Hash, PartialEq, PartialOrd, Ord)]
 pub struct Island {
-    map: Vec<Vec<usize>>,
+    pub map: Vec<Vec<usize>>,
 }
 
 impl Island {
@@ -40,7 +40,7 @@ impl Island {
     }
 
     /// Gets the height of the position at the given coordinates
-    fn get_height(&self, loc: Coord) -> Option<usize> {
+    pub fn get_height(&self, loc: Coord) -> Option<usize> {
         if self.inbound(loc) {
             Some(self.map[loc.row][loc.col])
         } else {
@@ -72,7 +72,7 @@ impl Island {
                 heights.push(current_height - 1)
             };
             if let Some(height) = self.get_height(next) {
-                if heights.contains(&height) && !visited.contains(&next) {
+                if heights.contains(&height) && !visited.contains(&next) && height > 0 {
                     let t = next.to_tuple();
                     next_steps.push(next);
                 }
@@ -80,6 +80,18 @@ impl Island {
         }
         // print!("{:?}", next_steps);
         return next_steps;
+    }
+
+    pub fn get_starting_points(&self) -> Vec<Coord> {
+        let mut starting_points: Vec<Coord> = Vec::new();
+        for (i, row) in self.map.iter().enumerate() {
+            for (col, height) in row.iter().enumerate() {
+                if *height == 0 {
+                    starting_points.push(Coord::new(i, col));
+                }
+            }
+        }
+        return starting_points;
     }
 
     pub fn walk(
