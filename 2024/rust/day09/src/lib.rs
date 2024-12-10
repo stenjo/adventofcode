@@ -1,4 +1,4 @@
-use std::{collections::HashMap, io};
+use std::{cmp::Reverse, collections::HashMap, io};
 
 #[derive(Debug, Clone, Eq, Hash, PartialEq, PartialOrd, Ord)]
 pub struct Block {
@@ -137,7 +137,7 @@ impl DiskMap {
 
         while front < back {
             while {
-                let front_avail = self.space.get(&front).unwrap().avail();
+                let front_avail = self.space.get(&(front as i32)).unwrap().avail();
                 let back_used = self.space.get(&back).unwrap().used();
                 front_avail > 0 && back_used > 0
             } {
@@ -167,25 +167,25 @@ impl DiskMap {
     pub fn optimize2(&mut self) {
         let mut front = 0;
 
-        while front < self.space.len() as i32 - 2 {
+        let mut unoptimized = self.space.clone();
+        for front in 0..self.space.len() {
+            let front_avail = self.space.get(&(front as i32)).unwrap().avail();
             let mut back = self.space.len() as i32 - 1;
-            while front < back {
-                // println!("front: {}, back: {}", front, back);
-                if {
-                    let front_avail = self.space.get(&front).unwrap().avail();
-                    let back_used = self.space.get(&back).unwrap().used();
-                    front_avail > 0 && back_used > 0 && front_avail >= back_used
-                } {
-                    self.move_file(front, back);
-                    front = 0;
-                    back = self.space.len() as i32 - 1;
-                } else if front < back {
-                    back -= 1;
-                } else {
-                    break;
-                }
+            let mut back_used = self.space.get(&(back)).unwrap().used();
+            while back_used > front_avail && back > 0 {
+                back -= 1;
+                back_used = self.space.get(&(back)).unwrap().used();
             }
-            front += 1;
+            if front_avail > 0 && back_used > 0 && front_avail >= back_used {
+                let mut front_block = self.space.get_mut(&(front as i32)).unwrap();
+                let mut back_block = unoptimized.remove(&back).unwrap();
+                while front_block.avail() > 0 && back_block.used() > 0 {
+                    front_block.add(back_block.pop());
+                }
+                unoptimized.remove(&back);
+                self.space.remove(&back);
+            };
+            self.print();
         }
     }
 
