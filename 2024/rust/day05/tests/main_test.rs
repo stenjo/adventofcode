@@ -1,12 +1,9 @@
 use assert_cmd::Command;
+use rstest::rstest;
 
-#[cfg(test)]
-mod tests {
-    use rstest::rstest;
-
-    #[rstest]
-    #[case::first(
-        "47|53
+#[rstest]
+#[case::first(
+    "47|53
     97|13
     97|61
     97|47
@@ -34,17 +31,17 @@ mod tests {
     75,97,47,61,53
     61,13,29
     97,13,75,29,47",
-        143
-    )]
-    fn test1(#[case] input: String, #[case] result: i64) {
-        use day05::part1;
+    143
+)]
+fn test1(#[case] input: String, #[case] result: i64) {
+    use day05::part1;
 
-        assert_eq!(result, part1(input));
-    }
+    assert_eq!(result, part1(input));
+}
 
-    #[rstest]
-    #[case::first(
-        "47|53
+#[rstest]
+#[case::first(
+    "47|53
     97|13
     97|61
     97|47
@@ -72,13 +69,12 @@ mod tests {
     75,97,47,61,53
     61,13,29
     97,13,75,29,47",
-        123
-    )]
-    fn test2(#[case] input: String, #[case] result: i64) {
-        use day05::part2;
+    123
+)]
+fn test2(#[case] input: String, #[case] result: i64) {
+    use day05::part2;
 
-        assert_eq!(result, part2(input));
-    }
+    assert_eq!(result, part2(input));
 }
 
 #[test]

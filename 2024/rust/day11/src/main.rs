@@ -1,4 +1,4 @@
-use {{ crate_name }}::{part1, part2};
+use day11::{part1, part2};
 use std::fs;
 
 pub fn main() {
