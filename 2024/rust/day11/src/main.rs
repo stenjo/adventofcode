@@ -1,5 +1,5 @@
 use day11::{part1, part2};
-use std::fs;
+use std::{fs, time::Instant};
 
 pub fn main() {
     let path = "".to_string() + &std::env::args().nth(1).expect("Expected input argument");
