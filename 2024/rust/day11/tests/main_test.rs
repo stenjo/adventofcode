@@ -1,4 +1,4 @@
-use assert_cmd::{assert, Command};
+use assert_cmd::Command;
 use day11::*;
 use rstest::rstest;
 
@@ -76,7 +76,7 @@ fn test_process(#[case] m: u128, #[case] count: usize, #[case] mut result: Vec<u
     let mut stones = Stones::new(m.to_string());
     print!("{} -> ", m);
 
-    let mut v = stones.process_number(&m, count as u32);
+    let mut v = stones.process_number(&m, count as u64);
     print!("{:?} -  ", v);
     println!();
 
@@ -97,7 +97,7 @@ fn part1_test(#[case] input: String, #[case] blinks: usize, #[case] result: i64)
     assert_eq!(result, stones.count().try_into().unwrap());
 }
 #[rstest]
-#[case("125 17", 4)]
+#[case("125 17", 55312)]
 fn part2_test(#[case] input: String, #[case] result: i64) {
     assert_eq!(result, part1(input));
 }
@@ -109,5 +109,5 @@ fn test_part1_success() {
         .arg("../../data/day11.txt")
         .assert()
         .success()
-        .stdout("199946\n0\n");
+        .stdout("199946\n237994815702032\n");
 }

@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 pub struct Stones {
-    stones: HashMap<u128, u32>,
+    stones: HashMap<u128, u64>,
 }
 
 impl Stones {
@@ -14,16 +14,16 @@ impl Stones {
             }),
         }
     }
-    pub fn get(&self, stone: u128) -> u32 {
+    pub fn get(&self, stone: u128) -> u64 {
         *self.stones.get(&stone).unwrap_or(&0)
     }
 
-    pub fn tuples(&self) -> Vec<(u128, u32)> {
+    pub fn tuples(&self) -> Vec<(u128, u64)> {
         self.stones.iter().map(|(k, v)| (*k, *v)).collect()
     }
 
     pub fn count(&self) -> u128 {
-        self.stones.values().copied().sum::<u32>() as u128
+        self.stones.values().copied().sum::<u64>() as u128
     }
 
     pub fn sum(&self) -> u128 {
@@ -39,40 +39,29 @@ impl Stones {
         keys.sort();
         keys.iter().map(|k| self.stones[k] as u128).collect()
     }
-    fn inc(&mut self, stone: u128, incr: u32) {
-        let count = self.get(stone);
-        self.stones.insert(stone, count + incr);
-    }
 
-    fn remove(&mut self, stone: &u128, count: u32) {
-        let val = self.get(*stone);
-        if val < count {
-            panic!("Can't remove more stones than we have");
-        } else if val == count {
-            self.stones.remove(stone);
-        } else {
-            self.stones.insert(*stone, val - count);
-        }
+    fn add(&mut self, key: u128, count: u64) {
+        let val = self.get(key);
+        self.stones.insert(key, count + val);
     }
 
     pub fn blink(&mut self, blinks: usize) {
         for _i in 0..blinks {
-            let old_stones: Vec<u128> = self.stones.keys().cloned().collect();
+            let keys: Vec<u128> = self.stones.keys().cloned().collect();
+            let mut processed: Vec<(u128, u64)> = Vec::new();
+            for key in keys.iter() {
+                let count = self.stones.remove(key).unwrap();
 
-            for stone in old_stones.iter() {
-                let count = self.get(*stone);
-                self.remove(stone, count);
-                for (num, count) in self.process_number(stone, count).iter() {
-                    self.inc(*num, *count);
-                }
+                processed.extend(self.process_number(key, count).iter());
             }
-            // self.stones = new_stones;
-            // print!(".")
+            for (key, count) in processed {
+                self.add(key, count);
+            }
         }
     }
 
-    pub fn process_number(&mut self, stone: &u128, count: u32) -> Vec<(u128, u32)> {
-        let mut out: Vec<(u128, u32)> = Vec::new();
+    pub fn process_number(&mut self, stone: &u128, count: u64) -> Vec<(u128, u64)> {
+        let mut out: Vec<(u128, u64)> = Vec::new();
         if stone == &0 {
             out.push((1, count));
         } else if stone.to_string().len() % 2 == 0 {
