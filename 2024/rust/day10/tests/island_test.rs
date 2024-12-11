@@ -21,20 +21,20 @@ const INPUT2: &str = ".....0.
 
 #[rstest]
 #[case(INPUT2.to_string(), (0,5), 3)]
-// #[case(INPUT.to_string(), (0,2), 20)]
-// #[case(INPUT.to_string(), (0,4), 24)]
-// #[case(INPUT.to_string(), (2,4), 10)]
-// #[case(INPUT.to_string(), (4,6), 4)]
-// #[case(INPUT.to_string(), (5,2), 1)]
-// #[case(INPUT.to_string(), (5,5), 4)]
-// #[case(INPUT.to_string(), (6,0), 5)]
-// #[case(INPUT.to_string(), (6,6), 8)]
-// #[case(INPUT.to_string(), (7,1), 5)]
+#[case(INPUT.to_string(), (0,2), 20)]
+#[case(INPUT.to_string(), (0,4), 24)]
+#[case(INPUT.to_string(), (2,4), 10)]
+#[case(INPUT.to_string(), (4,6), 4)]
+#[case(INPUT.to_string(), (5,2), 1)]
+#[case(INPUT.to_string(), (5,5), 4)]
+#[case(INPUT.to_string(), (6,0), 5)]
+#[case(INPUT.to_string(), (6,6), 8)]
+#[case(INPUT.to_string(), (7,1), 5)]
 fn island_rating(#[case] input: String, #[case] start: (usize, usize), #[case] result: usize) {
     let mut visited: Vec<Coord> = Vec::new();
     let mut trails: Vec<Vec<Coord>> = Vec::new();
     let mut i = Island::new(input);
-    i.walk(Coord::new(start.0, start.1), &mut visited, &mut trails);
+    i.rating(Coord::new(start.0, start.1), &mut visited, &mut trails);
 
     for t in trails.iter() {
         t.iter().for_each(|c| print!("{:?} ", c.to_tuple()));

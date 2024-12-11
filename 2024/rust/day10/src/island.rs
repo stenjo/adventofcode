@@ -127,21 +127,33 @@ impl Island {
         trails: &mut Vec<Vec<Coord>>,
     ) -> Option<usize> {
         visited.push(loc);
-        if self.get_height(loc) == Some(9) {
+        let height = self.get_height(loc);
+        if height == Some(9) {
             trails.push(visited.clone());
             visited.pop();
             return Some(9);
         };
-        let result = Option(usize);
+        let mut result: Option<usize> = None;
         for next in self.next_step(loc, visited) {
-            if Some(result) = self.walk(next, visited, trails) {
-            } else {
-                visited.pop();
-                return None;
+            match self.rating(next, visited, trails) {
+                Some(res) => result = Some(res),
+                None => {
+                    visited.pop();
+                    return None;
+                }
             }
         }
-        return Option(result);
+        visited.pop();
+        // self.print_trail(&visited);
+        height
     }
+
+    pub fn print_trail(&self, trails: &Vec<Coord>) {
+        print!("-->");
+        trails.iter().for_each(|c| print!("{:?} ", c.to_tuple()));
+        println!();
+    }
+
     pub fn print(&self, trail: &Vec<Coord>) {
         for (i, row) in self.map.iter().enumerate() {
             for (col, height) in row.iter().enumerate() {
