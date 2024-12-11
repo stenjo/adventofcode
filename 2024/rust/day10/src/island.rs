@@ -20,19 +20,25 @@ impl Coord {
 
 #[derive(Debug, Clone, Eq, Hash, PartialEq, PartialOrd, Ord)]
 pub struct Island {
-    pub map: Vec<Vec<usize>>,
+    pub map: Vec<Vec<Option<usize>>>,
 }
 
 impl Island {
     /// Constructs a new Area from the given input string
     pub fn new(input: String) -> Self {
-        let map: Vec<Vec<usize>> = input
+        let map: Vec<Vec<Option<usize>>> = input
             .lines()
             .map(|line| {
                 line.trim()
                     .chars()
-                    .map(|c| c.to_string().parse().unwrap())
-                    .collect::<Vec<usize>>()
+                    .map(|c| {
+                        if c != '.' {
+                            Some(c.to_string().parse().unwrap())
+                        } else {
+                            None // Use None for '.'
+                        }
+                    })
+                    .collect::<Vec<Option<usize>>>()
             })
             .collect();
 
@@ -42,7 +48,7 @@ impl Island {
     /// Gets the height of the position at the given coordinates
     pub fn get_height(&self, loc: Coord) -> Option<usize> {
         if self.inbound(loc) {
-            Some(self.map[loc.row][loc.col])
+            self.map[loc.row][loc.col]
         } else {
             None
         }
@@ -86,7 +92,7 @@ impl Island {
         let mut starting_points: Vec<Coord> = Vec::new();
         for (i, row) in self.map.iter().enumerate() {
             for (col, height) in row.iter().enumerate() {
-                if *height == 0 {
+                if (*height).unwrap() == 0 {
                     starting_points.push(Coord::new(i, col));
                 }
             }
@@ -114,12 +120,34 @@ impl Island {
         }
         return self.get_height(loc);
     }
+    pub fn rating(
+        &mut self,
+        loc: Coord,
+        visited: &mut Vec<Coord>,
+        trails: &mut Vec<Vec<Coord>>,
+    ) -> Option<usize> {
+        visited.push(loc);
+        if self.get_height(loc) == Some(9) {
+            trails.push(visited.clone());
+            visited.pop();
+            return Some(9);
+        };
+        let result = Option(usize);
+        for next in self.next_step(loc, visited) {
+            if Some(result) = self.walk(next, visited, trails) {
+            } else {
+                visited.pop();
+                return None;
+            }
+        }
+        return Option(result);
+    }
     pub fn print(&self, trail: &Vec<Coord>) {
         for (i, row) in self.map.iter().enumerate() {
             for (col, height) in row.iter().enumerate() {
                 let loc = Coord::new(i, col);
                 if trail.contains(&loc) {
-                    print!("{}", height);
+                    print!("{}", height.unwrap());
                 } else {
                     print!(".");
                 }
