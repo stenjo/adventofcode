@@ -97,6 +97,25 @@ fn test_solver2(#[case] input: &str, #[case] result: i64) {
 
 #[rstest]
 #[case("190: 10 19", 190)]
+// #[case("3267: 81 40 27", 3267)]
+// #[case("83: 17 5", 0)]
+// #[case(
+//     "156: 15 6
+//                 ",
+//     0
+// )]
+// #[case("7290: 6 8 6 15", 0)]
+// #[case("161011: 16 10 13", 0)]
+// #[case("192: 17 8 14", 0)]
+// #[case("21037: 9 7 18 13", 0)]
+// #[case("292: 11 6 16 20", 292)]
+fn test_solve_recursive(#[case] input: &str, #[case] result: i64) {
+    let eq = Equation::new(input).unwrap();
+    assert_eq!(result, eq.solve2(0, 0).1);
+}
+
+#[rstest]
+#[case("190: 10 19", 190)]
 #[case("3267: 81 40 27", 3267)]
 #[case("83: 17 5", 0)]
 #[case(

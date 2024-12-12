@@ -1,6 +1,6 @@
 use std::fs;
 
-use day07::part1;
+use day07::{part1, part2};
 
 // Borrowed from https://github.com/smith61/advent_of_code/blob/main/src/year_2024/day_07.rs
 fn parse_number(chars: &mut impl Iterator<Item = char>) -> (u64, u64) {
@@ -52,43 +52,43 @@ fn is_solveable<const ALLOW_CONCAT: bool>(nums: &[(u64, u64)], value: u64) -> bo
     false
 }
 
-pub fn part_1(input: &str) -> u64 {
-    let mut count = 0;
-    for line in input.lines() {
-        let nums = line
-            .split(|c| c == ':' || c == ' ')
-            .map(|p| parse_number(&mut p.chars()))
-            .collect::<Vec<_>>();
+// pub fn part1(input: &str) -> u64 {
+//     let mut count = 0;
+//     for line in input.lines() {
+//         let nums = line
+//             .split(|c| c == ':' || c == ' ')
+//             .map(|p| parse_number(&mut p.chars()))
+//             .collect::<Vec<_>>();
 
-        if is_solveable::<false>(&nums[1..], nums[0].0) {
-            count += nums[0].0;
-        }
-    }
+//         if is_solveable::<false>(&nums[1..], nums[0].0) {
+//             count += nums[0].0;
+//         }
+//     }
 
-    count
-}
+//     count
+// }
 
-pub fn part2(input: &str) -> u64 {
-    let mut count = 0;
-    for line in input.lines() {
-        let nums = line
-            .split(|c| c == ':' || c == ' ')
-            .map(|p| parse_number(&mut p.chars()))
-            .collect::<Vec<_>>();
+// pub fn part2(input: &str) -> u64 {
+//     let mut count = 0;
+//     for line in input.lines() {
+//         let nums = line
+//             .split(|c| c == ':' || c == ' ')
+//             .map(|p| parse_number(&mut p.chars()))
+//             .collect::<Vec<_>>();
 
-        if is_solveable::<true>(&nums[1..], nums[0].0) {
-            count += nums[0].0;
-        }
-    }
+//         if is_solveable::<true>(&nums[1..], nums[0].0) {
+//             count += nums[0].0;
+//         }
+//     }
 
-    count
-}
+//     count
+// }
 pub fn main() {
     let path = "".to_string() + &std::env::args().nth(1).expect("Expected input argument");
     let input = match fs::read_to_string(&path) {
         Ok(input) => input,
         Err(e) => panic!("Error reading file: {}", e),
     };
-    println!("{}", part1(&input.clone()));
-    println!("{}", part2(&input));
+    println!("{}", part1(input.clone()));
+    println!("{}", part2(input.clone()));
 }

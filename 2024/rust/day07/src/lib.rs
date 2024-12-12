@@ -2,6 +2,7 @@
 pub struct Equation {
     pub val: i64,
     pub nums: Vec<Vec<i64>>,
+    pub numbers: Vec<i64>,
 }
 
 impl Equation {
@@ -20,8 +21,37 @@ impl Equation {
             .split_whitespace()
             .map(|n| n.parse::<i64>().map_err(|_| "Failed to parse number"))
             .collect::<Result<Vec<_>, _>>()?;
-        let nums = vec![numbers];
-        Ok(Self { val, nums })
+        let nums = vec![numbers.clone()];
+        Ok(Self {
+            val,
+            nums,
+            numbers: numbers.clone(),
+        })
+    }
+
+    pub fn solve2(&self, checksum: i64, index: usize) -> (i64, i64) {
+        if checksum == self.val {
+            return (0, self.numbers[index]);
+        }
+        if self.val < checksum {
+            return (-1, 0);
+        }
+        if index >= self.numbers.len() {
+            return (-1, 0);
+        }
+        let value = self.numbers[index];
+        let (mut new_checksum, mut sum) = self.solve2(checksum * value, index + 1);
+        if new_checksum >= 0 {
+            return (new_checksum, sum + value);
+        }
+        (new_checksum, sum) = self.solve2(checksum + value, index + 1);
+        if new_checksum >= 0 {
+            return (new_checksum, sum + value);
+        }
+        if index == 0 {
+            return (self.numbers[0], self.numbers[0]);
+        }
+        return (-1, 0);
     }
 
     pub fn variations(&self, nums: Vec<i64>) -> Vec<Vec<i64>> {
