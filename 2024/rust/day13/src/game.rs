@@ -1,6 +1,6 @@
 pub struct Game {
-    pub a: (i64, i64),
-    pub b: (i64, i64),
+    pub a: (i128, i128),
+    pub b: (i128, i128),
     pub prize: (i128, i128),
 }
 
@@ -25,7 +25,7 @@ impl Game {
         (iter.next().unwrap(), iter.next().unwrap())
     }
 
-    pub fn parse_button(input: &str) -> (i64, i64) {
+    pub fn parse_button(input: &str) -> (i128, i128) {
         let parts: Vec<&str> = input.split(',').collect();
         let x_part = parts[0].split('+').nth(1).unwrap().trim().parse().unwrap();
         let y_part = parts[1].split('+').nth(1).unwrap().trim().parse().unwrap();
@@ -37,8 +37,8 @@ impl Game {
         let y_part = parts[1].split('=').nth(1).unwrap().trim().parse().unwrap();
         (x_part, y_part)
     }
-    pub fn presses(&self, inc: (i64, i64), target: (i64, i64)) -> Vec<i64> {
-        let mut presses: Vec<i64> = Vec::new();
+    pub fn presses(&self, inc: (i128, i128), target: (i128, i128)) -> Vec<i128> {
+        let mut presses: Vec<i128> = Vec::new();
         if target.0 % inc.0 == 0 {
             presses.push(target.0 / inc.0);
         }
@@ -49,48 +49,33 @@ impl Game {
     }
 
     pub fn a_btn(&self) -> i128 {
-        if (self.prize.0 * self.b.1 as i128 - self.prize.1 * self.b.0 as i128)
-            % (self.a.0 * self.b.1 - self.a.1 * self.b.0) as i128
+        if (self.prize.0 * self.b.1 - self.prize.1 * self.b.0)
+            % (self.a.0 * self.b.1 - self.a.1 * self.b.0)
             != 0
         {
             return 0;
         }
-        return (self.prize.0 * self.b.1 as i128 - self.prize.1 * self.b.0 as i128)
-            / self.has_unique_solution();
+        return (self.prize.0 * self.b.1 - self.prize.1 * self.b.0)
+            / (self.a.0 * self.b.1 - self.a.1 * self.b.0);
     }
 
     pub fn b_btn(&self) -> i128 {
-        if (self.prize.0 * self.a.1 as i128 - self.prize.1 * self.a.0 as i128)
-            % (self.b.0 * self.a.1 - self.b.1 * self.a.0) as i128
+        if (self.prize.0 * self.a.1 - self.prize.1 * self.a.0)
+            % (self.b.0 * self.a.1 - self.b.1 * self.a.0)
             != 0
         {
             return 0;
         }
-        return (self.prize.0 * self.a.1 as i128 - self.prize.1 * self.a.0 as i128)
-            / self.has_unique_solution();
+        return (self.prize.0 * self.a.1 - self.prize.1 * self.a.0)
+            / (self.b.0 * self.a.1 - self.b.1 * self.a.0);
     }
 
-    pub fn has_unique_solution(&self) -> i128 {
-        let b = self.b;
-        let a = self.a;
-
-        return (a.0 * b.1 - a.1 * b.0) as i128;
-    }
     pub fn tokens(&self) -> i128 {
-        // let lcm = self.lcm(self.a_btn(), self.b_btn());
-        // println!("lcm: {:?}", lcm);
-        let i = self.a_btn() as i128;
-        let j = self.b_btn() as i128;
-        // if i * self.a.0 as i128 + j * self.b.0 as i128 != self.prize.0
-        //     || 1 * self.a.1 as i128 + j * self.b.1 as i128 == self.prize.1
-        // {
-        //     return 0;
-        // }
-        return i * 3 + j;
+        return (self.a_btn() * 3 + self.b_btn()) as i128;
     }
 
     pub fn seed(&mut self, val: i128) {
-        self.prize = (self.prize.0 + val, self.prize.1 + val);
+        self.prize = (self.prize.0 + val as i128, self.prize.1 + val as i128);
     }
 }
 

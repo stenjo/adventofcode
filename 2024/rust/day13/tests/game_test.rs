@@ -35,8 +35,8 @@ Prize: X=18641, Y=10279";
 #[case::first(LAST_TEST, (69,23),(27,71),(18641,10279))]
 fn test_new(
     #[case] input: &str,
-    #[case] a: (i64, i64),
-    #[case] b: (i64, i64),
+    #[case] a: (i128, i128),
+    #[case] b: (i128, i128),
     #[case] prize: (i128, i128),
 ) {
     use day13::game::Game;
@@ -59,7 +59,6 @@ fn test_tokens(#[case] input: &str, #[case] result: i128) {
     let game = Game::new(&input);
     println!("A: {:?}", game.a_btn());
     println!("B: {:?}", game.b_btn());
-    println!("Has: {:?}", game.has_unique_solution());
     assert_eq!(result, game.tokens());
 }
 
@@ -67,7 +66,11 @@ fn test_tokens(#[case] input: &str, #[case] result: i128) {
 #[case((69, 23), (69, 23), vec![1,1])]
 #[case((69, 23), (18641, 10279), vec![])]
 #[case((27, 71), (18641, 10279), vec![])]
-fn test_presses(#[case] inc: (i64, i64), #[case] target: (i64, i64), #[case] result: Vec<i64>) {
+fn test_presses(
+    #[case] inc: (i128, i128),
+    #[case] target: (i128, i128),
+    #[case] result: Vec<i128>,
+) {
     use day13::game::Game;
 
     let game = Game {
