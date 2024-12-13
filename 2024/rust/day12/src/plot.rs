@@ -63,15 +63,15 @@ impl Plot {
         }
         (min_x, min_y)
     }
-    pub fn connecting_positions(&self) -> Vec<(i64, i64)> {
+    pub fn edges(&self) -> Vec<(i64, i64)> {
         let mut positions: Vec<(i64, i64)> = Vec::new();
         let (max_x, max_y) = self.max_pos();
         let (min_x, min_y) = self.min_pos();
-        for x in min_x - 1..max_x + 2 {
-            for y in min_y - 1..max_y + 2 {
-                for plant in &self.plants {
+        for plant in &self.plants {
+            for x in min_x - 1..max_x + 2 {
+                for y in min_y - 1..max_y + 2 {
                     let (px, py) = plant.pos();
-                    if is_neighbour(px, x, py, y) && !self.in_plot(x, y) {
+                    if self.is_neighbor(px, x, py, y) && !self.in_plot(x, y) {
                         positions.push((x, y));
                     }
                 }
@@ -123,8 +123,16 @@ impl Plot {
     pub fn plant_type(&self) -> char {
         return self.plant_type;
     }
-}
 
-fn is_neighbour(px: i64, x: i64, py: i64, y: i64) -> bool {
-    (px - x).abs() == 1 || (py - y).abs() == 1
+    pub fn is_neighbor(&self, px: i64, x: i64, py: i64, y: i64) -> bool {
+        ((px - x).abs() == 1 && py == y) || ((py - y).abs() == 1 && px == x)
+    }
+
+    pub(crate) fn contains(&self, plant: &Plant) -> bool {
+        self.plants.contains(plant)
+    }
+
+    pub(crate) fn is_in_perimeter(&self, plant: &Plant) -> bool {
+        self.edges().contains(&plant.get_loc().as_tuple())
+    }
 }

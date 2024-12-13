@@ -66,7 +66,7 @@ A", 6
 )]
 fn farm_perimeter_test(#[case] input: String, #[case] result: i64) {
     use farm::Farm;
-    let farm = Farm::new(&input);
+    let mut farm = Farm::new(&input);
     let plots = farm.get_plots();
     let plot = plots.first().unwrap();
     println!("{:?}", plot);
@@ -86,7 +86,7 @@ fn farm_perimeter_test(#[case] input: String, #[case] result: i64) {
 #[case(LARGE.to_string(), 11)]
 fn farm_plots_test(#[case] input: String, #[case] result: i64) {
     use farm::Farm;
-    let farm = Farm::new(&input);
+    let mut farm = Farm::new(&input);
     let plots = farm.get_plots();
     print!(
         "{:?}",
@@ -96,7 +96,7 @@ fn farm_plots_test(#[case] input: String, #[case] result: i64) {
             .collect::<Vec<char>>()
     );
     for plot in plots.iter() {
-        plot.print(plot.connecting_positions());
+        plot.print(plot.edges());
     }
     assert_eq!(result, plots.len() as i64);
 }

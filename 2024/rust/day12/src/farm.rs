@@ -1,29 +1,31 @@
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
 use crate::{plant::Plant, plot::Plot};
 
 pub struct Farm {
     garden: Vec<Vec<Plant>>,
     plots: Vec<Plot>,
-    plant_hash: HashMap<Plant,char>,
+    plant_hash: HashMap<Plant, char>,
 }
 
 impl Farm {
     pub fn new(input: &str) -> Farm {
         let mut garden = Vec::new();
+        let mut plant_hash = HashMap::new();
         for (y, line) in input.lines().enumerate() {
             let mut row = Vec::new();
             for (x, plant) in line.chars().enumerate() {
                 row.push(Plant::new(x as i64, y as i64, plant));
-                self.plant_hash.insert((x,y),1);
+                plant_hash.insert((x, y), 1);
             }
             garden.push(row);
         }
         let mut farm = Farm {
             garden: garden.clone(),
             plots: Vec::new(),
+            plant_hash: HashMap::new(),
         };
-        farm.plots = farm.get_plots();
+        farm.get_plots();
 
         farm
     }
@@ -38,54 +40,76 @@ impl Farm {
         surrounding
     }
 
-    pub fn find_plants_for_plot(&self, starting: Plant) -> Vec<Plant> {
-        let found : HashMap<Plant, _> = HashMap::new();
-        for neighbour in get_next_pos(starting.pos()) {
-if self.plant_hash(neighbour) = starting.get_plant() && {
+    pub fn find_plants_for_plot(
+        &mut self,
+        starting: (i64, i64),
+        plot: &mut Plot,
+        visited: &mut HashSet<(i64, i64)>,
+    ) -> Option<Plant> {
+        let mut stack = vec![starting]; // Use a stack to replace recursion
 
-}
-        }
-    }
-    pub fn get_plots(&self) -> Vec<Plot> {
-        let mut plots: Vec<Plot> = Vec::new();
-        let plants = self.get_plants();
-        for plant in plants {
-            let mut found = false;
-            if in_plots(&mut plots, &plant) {};
-            if found {
+        while let Some(current) = stack.pop() {
+            // Skip if already visited
+            if !visited.insert(current) {
                 continue;
             }
 
-            for pos in get_next_pos(plant.pos()) {
-                if Some(p = self.get_plant(pos)) = &&p.get() == plant.get() {
-                    plot.add_plant(plant.clone());
+            if let Some(plant) = self.get_plant(current) {
+                if plant.get_plant() != plot.plant_type() {
+                    continue; // Skip plants that don't match the plot type
                 }
-                if self.plants().contains(&pos) {
-                    continue;
-                }
-                for plot in &mut plots {
-                    if plot.connecting_positions().contains(&p)
-                        && plot.plant_type() == plant.get_plant()
-                    {
-                        plot.add_plant(plant.clone());
+
+                plot.add_plant(plant.clone());
+
+                // Add neighbors to the stack
+                for neighbor in Farm::get_next_pos(current) {
+                    if !visited.contains(&neighbor) {
+                        stack.push(neighbor);
                     }
                 }
             }
-            for plot in &mut plots {
-                if plot.connecting_positions().contains(&plant.pos())
-                    && plot.plant_type() == plant.get_plant()
-                {
-                    plot.add_plant(plant.clone());
-                    found = true;
-                }
-            }
-            if !found {
-                let new_plot = Plot::new(vec![plant.clone()]);
+        }
+
+        // If starting plant was valid, return it; otherwise, None
+        self.get_plant(starting)
+            .filter(|plant| plant.get_plant() == plot.plant_type())
+            .cloned()
+    }
+
+    pub fn get_plant(&self, pos: (i64, i64)) -> Option<&Plant> {
+        if pos.0 < 0 || pos.1 < 0 {
+            return None;
+        }
+        if pos.0 >= self.garden[0].len() as i64 || pos.1 >= self.garden.len() as i64 {
+            return None;
+        }
+        return Some(&self.garden[pos.1 as usize][pos.0 as usize]);
+    }
+
+    pub fn find_plots(&mut self) -> Vec<Plot> {
+        let mut plots: Vec<Plot> = Vec::new();
+        let plants = self.get_plants();
+        for plant in plants {
+            if !self.in_plots(&plant) {
+                let mut new_plot = Plot::new(vec![plant.clone()]);
+                let mut visited: HashSet<(i64, i64)> = HashSet::new();
+                self.find_plants_for_plot(plant.pos(), &mut new_plot, &mut visited);
                 plots.push(new_plot);
+            };
+            if let Some(plot) = self.is_in_perimeter_of_plots_mut(&plant) {
+                plot.add_plant(plant.clone());
             }
         }
         return plots;
     }
+
+    pub fn get_plots(&mut self) -> Vec<Plot> {
+        if self.plots.is_empty() {
+            self.plots = self.find_plots();
+        }
+        return self.plots.clone();
+    }
+
     pub fn get_plants(&self) -> Vec<Plant> {
         let mut plants: Vec<Plant> = Vec::new();
         for row in &self.garden {
@@ -95,6 +119,7 @@ if self.plant_hash(neighbour) = starting.get_plant() && {
         }
         return plants;
     }
+
     pub fn price(&self) -> u64 {
         return self
             .plots
@@ -102,12 +127,21 @@ if self.plant_hash(neighbour) = starting.get_plant() && {
             .map(|plot: &Plot| plot.perimeter() * plot.area())
             .sum::<u64>();
     }
-}
-
-fn in_plots(plots: &mut Vec<Plot>, plant: &Plant, found: &mut bool) {
-    for plot in plots {
-        if plot.plants().contains(plant) {
-            *found = true;
+    fn in_plots(&mut self, plant: &Plant) -> bool {
+        for plot in &mut self.plots {
+            if plot.contains(plant) {
+                return true;
+            }
         }
+        return false;
+    }
+
+    fn is_in_perimeter_of_plots_mut(&mut self, plant: &Plant) -> Option<&mut Plot> {
+        for plot in &mut self.plots {
+            if plot.is_in_perimeter(plant) {
+                return Some(plot);
+            }
+        }
+        return None;
     }
 }
