@@ -1,8 +1,11 @@
+use std::collections::HashMap;
+
 use crate::{plant::Plant, plot::Plot};
 
 pub struct Farm {
     garden: Vec<Vec<Plant>>,
     plots: Vec<Plot>,
+    plant_hash: HashMap<Plant,char>,
 }
 
 impl Farm {
@@ -12,6 +15,7 @@ impl Farm {
             let mut row = Vec::new();
             for (x, plant) in line.chars().enumerate() {
                 row.push(Plant::new(x as i64, y as i64, plant));
+                self.plant_hash.insert((x,y),1);
             }
             garden.push(row);
         }
@@ -34,6 +38,14 @@ impl Farm {
         surrounding
     }
 
+    pub fn find_plants_for_plot(&self, starting: Plant) -> Vec<Plant> {
+        let found : HashMap<Plant, _> = HashMap::new();
+        for neighbour in get_next_pos(starting.pos()) {
+if self.plant_hash(neighbour) = starting.get_plant() && {
+
+}
+        }
+    }
     pub fn get_plots(&self) -> Vec<Plot> {
         let mut plots: Vec<Plot> = Vec::new();
         let plants = self.get_plants();

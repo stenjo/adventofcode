@@ -2,16 +2,6 @@ use assert_cmd::Command;
 use day11::*;
 use rstest::rstest;
 
-// #[rstest]
-// #[case("125 17", 2)]
-// #[case("0 1 10 99 999", 2)]
-// #[case("0 1 10 99 999", 2)]
-// fn blink_test(#[case] input: String, #[case] result: i64) {
-//     let stones = Stones::new(input);
-//     let stones = stones.blink();
-//     assert_eq!(result, stones.sum() as i64);
-// }
-
 #[rstest]
 #[case("125 17", vec![17,125])]
 #[case("0 1 10 99 999", vec![0,1,10,99,999])]
