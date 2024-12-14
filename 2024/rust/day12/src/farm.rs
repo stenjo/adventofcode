@@ -12,9 +12,9 @@ impl Farm {
     pub fn new(input: &str) -> Farm {
         let mut garden = Vec::new();
         let mut plant_hash = HashMap::new();
-        for (y, line) in input.lines().enumerate() {
+        for (x, line) in input.lines().enumerate() {
             let mut row = Vec::new();
-            for (x, plant) in line.chars().enumerate() {
+            for (y, plant) in line.chars().enumerate() {
                 row.push(Plant::new(x as i64, y as i64, plant));
                 plant_hash.insert((x, y), 1);
             }
@@ -58,8 +58,9 @@ impl Farm {
                 if plant.get_plant() != plot.plant_type() {
                     continue; // Skip plants that don't match the plot type
                 }
-
-                plot.add_plant(plant.clone());
+                if plant.pos() != starting {
+                    plot.add_plant(plant.clone());
+                }
 
                 // Add neighbors to the stack
                 for neighbor in Farm::get_next_pos(current) {
@@ -88,19 +89,33 @@ impl Farm {
 
     pub fn find_plots(&mut self) -> Vec<Plot> {
         let mut plots: Vec<Plot> = Vec::new();
-        let plants = self.get_plants();
-        for plant in plants {
+        let mut plants = self.get_plants(); // Assuming this returns a Vec<Plant>
+
+        while let Some(plant) = plants.pop() {
+            // Skip plants already part of existing plots
             if !self.in_plots(&plant) {
                 let mut new_plot = Plot::new(vec![plant.clone()]);
-                let mut visited: HashSet<(i64, i64)> = HashSet::new();
-                self.find_plants_for_plot(plant.pos(), &mut new_plot, &mut visited);
+                let plot_plants = self.add_plants(&mut new_plot, plant);
+
+                // Remove all plants in the new plot from the remaining list
+                for pl in plot_plants {
+                    if let Some(index) = plants.iter().position(|p| p == &pl) {
+                        plants.remove(index);
+                    }
+                }
+
                 plots.push(new_plot);
-            };
-            if let Some(plot) = self.is_in_perimeter_of_plots_mut(&plant) {
-                plot.add_plant(plant.clone());
             }
         }
-        return plots;
+
+        plots
+    }
+
+    fn add_plants(&mut self, mut plot: &mut Plot, plant: Plant) -> Vec<Plant> {
+        let mut visited: HashSet<(i64, i64)> = HashSet::new();
+        // Find all connected plants and add them to the new plot
+        self.find_plants_for_plot(plant.pos(), &mut plot, &mut visited);
+        return plot.get_plants();
     }
 
     pub fn get_plots(&mut self) -> Vec<Plot> {

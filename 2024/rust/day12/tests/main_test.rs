@@ -1,3 +1,5 @@
+use assert_cmd::Command;
+
 // use assert_cmd::Command;
 use day12::*;
 use rstest::rstest;
@@ -24,13 +26,19 @@ BBCD
 BBCC
 EEEC";
 
-// #[rstest]
-// #[case(SIMPLE.to_string(), 140)]
-// #[case(SPECIAL.to_string(), 772)]
-// #[case(LARGE.to_string(), 1930)]
-// fn test1(#[case] input: String, #[case] result: i64) {
-// assert_eq!(result, part1(input));
-// }
+const MEDIUM: &str = "AAAAA
+ABCCA
+ABADD
+ABCCC
+AAACC";
+
+#[rstest]
+#[case(SIMPLE.to_string(), 140)]
+#[case(SPECIAL.to_string(), 772)]
+#[case(LARGE.to_string(), 1930)]
+fn test1(#[case] input: String, #[case] result: i64) {
+    assert_eq!(result, part1(input));
+}
 
 #[rstest]
 #[case(SIMPLE.to_string(), 16)]
@@ -57,20 +65,27 @@ fn farm_price_test(#[case] input: String, #[case] result: i64) {
 }
 
 #[rstest]
-#[case("A", 4)]
-#[case("AA", 6)]
-#[case("AABB", 6)]
-#[case(
-    "A
-A", 6
-)]
-fn farm_perimeter_test(#[case] input: String, #[case] result: i64) {
+#[case("A", vec![4])]
+#[case("AA", vec![6])]
+#[case("AABB", vec![6,6])]
+#[case("A\nA", vec![6])]
+#[case(SIMPLE, vec![10,8,8,4,10])]
+fn farm_perimeter_test(#[case] input: &str, #[case] result: Vec<i64>) {
     use farm::Farm;
     let mut farm = Farm::new(&input);
     let plots = farm.get_plots();
-    let plot = plots.first().unwrap();
-    println!("{:?}", plot);
-    assert_eq!(result, plot.perimeter() as i64);
+
+    print!(
+        "{:?}",
+        plots
+            .iter()
+            .map(|plot| plot.plant_type())
+            .collect::<Vec<char>>()
+    );
+    for (key, plot) in plots.iter().enumerate() {
+        plot.print(plot.edges());
+        assert_eq!(result[key], plot.perimeter() as i64);
+    }
 }
 
 #[rstest]
@@ -80,9 +95,10 @@ fn farm_perimeter_test(#[case] input: String, #[case] result: i64) {
 #[case("ABA\nCCC", 4)]
 #[case("AABB", 2)]
 #[case("A\nA", 1)]
-#[case("RCCCJF\nVVCJJC\nVVCCJJ\nCCCCCC", 4)]
+#[case("VCCCJC\nVVCJJC\nVVCCJJ\nCCCCCC", 4)]
 #[case(SIMPLE.to_string(), 5)]
 #[case(SPECIAL.to_string(), 5)]
+#[case(MEDIUM.to_string(), 6)]
 #[case(LARGE.to_string(), 11)]
 fn farm_plots_test(#[case] input: String, #[case] result: i64) {
     use farm::Farm;
@@ -96,17 +112,19 @@ fn farm_plots_test(#[case] input: String, #[case] result: i64) {
             .collect::<Vec<char>>()
     );
     for plot in plots.iter() {
-        plot.print(plot.edges());
+        if plot.plant_type() == 'C' {
+            plot.print(plot.edges());
+        }
     }
     assert_eq!(result, plots.len() as i64);
 }
 
-// #[test]
-// fn test_part1_success() {
-//     Command::cargo_bin("day12")
-//         .unwrap()
-//         .arg("../../data/day12.txt")
-//         .assert()
-//         .success()
-//         .stdout("321\n386\n");
-// }
+#[test]
+fn test_part1_success() {
+    Command::cargo_bin("day12")
+        .unwrap()
+        .arg("../../data/day12.txt")
+        .assert()
+        .success()
+        .stdout("1485656\n386\n");
+}

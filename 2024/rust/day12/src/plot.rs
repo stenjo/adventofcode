@@ -25,11 +25,24 @@ impl Plot {
         }
         perimeter
     }
+    pub fn merge_plot(&mut self, plot: Plot) -> bool {
+        // Check if any plant location in the plot is within the current edges
+        if plot
+            .plants
+            .iter()
+            .any(|p| self.edges().contains(&p.get_loc().as_tuple()))
+        {
+            // Merge plants into the current plot
+            self.plants.extend(plot.plants);
+            return true;
+        }
+        false
+    }
 
     fn is_connected(&self, first: usize, second: usize) -> bool {
         let (x1, y1) = self.plants[first].pos();
         let (x2, y2) = self.plants[second].pos();
-        if (x1 - x2).abs() == 1 || (y1 - y2).abs() == 1 {
+        if self.is_neighbor(x1, x2, y1, y2) {
             return true;
         }
         return false;
@@ -134,5 +147,9 @@ impl Plot {
 
     pub(crate) fn is_in_perimeter(&self, plant: &Plant) -> bool {
         self.edges().contains(&plant.get_loc().as_tuple())
+    }
+
+    pub(crate) fn get_plants(&self) -> Vec<Plant> {
+        return self.plants.clone();
     }
 }
