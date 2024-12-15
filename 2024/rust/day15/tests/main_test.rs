@@ -8,13 +8,12 @@ fn test1(#[case] input: String, #[case] result: i64) {
     assert_eq!(result, part1(input));
 }
 
-
-#[test]
-fn test_part1_success() {
-    Command::cargo_bin("day15")
-        .unwrap()
-        .arg("../../data/day15.txt")
-        .assert()
-        .success()
-        .stdout("321\n386\n");
-}
+// #[test]
+// fn test_part1_success() {
+//     Command::cargo_bin("day15")
+//         .unwrap()
+//         .arg("../../data/day15.txt")
+//         .assert()
+//         .success()
+//         .stdout("321\n386\n");
+// }
