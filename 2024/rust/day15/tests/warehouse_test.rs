@@ -42,11 +42,23 @@ fn test1(#[case] input: &str, #[case] result: i64) {
     assert_eq!(result, part1(input.to_string()), "GPS should be {}", result);
 }
 
+// ########
+// #..O.O.#
+// ##@.O..#
+// #...O..#
+// #.#.O..#
+// #...O..#
+// #......#
+// ########
+
 #[rstest]
 #[case(vec!['<'], false, (2,2))]
 #[case(vec!['^'], true, (2,1))]
 #[case(vec!['>'], true, (3,2))]
 #[case(vec!['v'], true, (2,3))]
+#[case(vec!['v','<'], true, (1,3))]
+#[case(vec!['>','>'], true, (4,2))]
+#[case(vec!['>','>','>','>'], false, (5,2))]
 fn test_move_robot(#[case] input: Vec<char>, #[case] moved: bool, #[case] result: (i64, i64)) {
     let mut w = Warehouse::new(SMALL);
     let mut success = false;

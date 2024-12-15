@@ -46,63 +46,38 @@ impl Warehouse {
         return self.boxes.clone().into_iter().map(|b| b.gps()).sum();
     }
 
+    pub fn run_robot(&mut self) {
+        for dir in self.moves.clone() {
+            self.move_robot(dir);
+        }
+    }
+
     pub fn move_robot(&mut self, dir: char) -> bool {
-        if dir == '^' {
-            let above = self.robot.clone().add(&Loc::new(0, -1));
-            if self.boxes.contains(&above) {
-                if self.push_boxes_up() {
-                    return false;
-                }
-            }
-            self.robot.up();
-            return true;
+        let next_pos = self.robot.get_next(dir);
+        if self.walls.contains(&next_pos) {
+            return false;
         }
-        if dir == 'v' {
-            let below = self.robot.clone().add(&Loc::new(0, 1));
-            if self.boxes.contains(&below) {
-                if !self.push_boxes_down() {
-                    return false;
-                }
+        if self.boxes.contains(&next_pos) {
+            if !self.push_boxes(&next_pos, dir) {
+                return false;
             }
-            self.robot.down();
-            return true;
         }
-        if dir == '>' {
-            let right = self.robot.clone().add(&Loc::new(1, 0));
-            if self.boxes.contains(&right) {
-                if !self.push_boxes_right() {
-                    return false;
-                }
-            }
-            self.robot.right();
-            return true;
-        }
-        if dir == '<' {
-            let left = self.robot.clone().add(&Loc::new(1, 0));
-            if self.boxes.contains(&left) {
-                if !self.push_boxes_left() {
-                    return false;
-                }
-            }
-            self.robot.left();
-            return true;
-        }
-        return false;
+        self.robot = next_pos;
+        return true;
     }
 
-    fn push_boxes_up(&self) -> bool {
-        todo!()
-    }
-
-    fn push_boxes_down(&self) -> bool {
-        todo!()
-    }
-
-    fn push_boxes_right(&self) -> bool {
-        todo!()
-    }
-
-    fn push_boxes_left(&self) -> bool {
-        todo!()
+    fn push_boxes(&mut self, loc: &Loc, dir: char) -> bool {
+        let next_pos = loc.get_next(dir);
+        if self.walls.contains(&next_pos) {
+            return false;
+        }
+        if self.boxes.contains(&next_pos) {
+            if !self.push_boxes(&next_pos, dir) {
+                return false;
+            }
+        }
+        self.boxes.remove(&loc);
+        self.boxes.insert(next_pos);
+        return true;
     }
 }

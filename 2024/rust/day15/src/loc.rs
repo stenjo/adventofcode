@@ -1,3 +1,6 @@
+use once_cell::sync::Lazy;
+use std::collections::HashMap;
+
 #[derive(Debug, Clone, Eq, Hash, PartialEq, PartialOrd, Ord)]
 pub struct Loc {
     pub x: i64,
@@ -62,4 +65,17 @@ impl Loc {
     pub(crate) fn gps(&self) -> i64 {
         self.x + self.y * 100
     }
+
+    pub fn get_next(&self, dir: char) -> Loc {
+        return self.clone().add(DIRECTION.get(&dir).unwrap());
+    }
 }
+
+static DIRECTION: Lazy<HashMap<char, Loc>> = Lazy::new(|| {
+    let mut map = HashMap::new();
+    map.insert('>', Loc { x: 1, y: 0 });
+    map.insert('<', Loc { x: -1, y: 0 });
+    map.insert('^', Loc { x: 0, y: -1 });
+    map.insert('v', Loc { x: 0, y: 1 });
+    map
+});
