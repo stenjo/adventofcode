@@ -77,6 +77,27 @@ impl Restroom {
         return factor;
     }
 
+    pub fn tree(&mut self) -> u64 {
+        let (min, max) = &self.space;
+        let mut count = 0;
+        loop {
+            for robot in self.robots.iter_mut() {
+                robot.move_steps(1, &min, &max);
+            }
+            if self
+                .quadrants()
+                .into_iter()
+                .map(|q| q.len())
+                .all(|m| m == 1)
+            {
+                self.print();
+                return count;
+            }
+            count += 1;
+        }
+        count
+    }
+
     pub fn move_robots(&mut self, steps: u64) {
         let (min, max) = &self.space;
         for robot in self.robots.iter_mut() {
@@ -89,28 +110,7 @@ impl Restroom {
         let (min, max) = &self.space; // Assuming space provides `min` and `max` bounds as Loc.
 
         // Define quadrant boundaries
-        let quads = vec![
-            (
-                // Top-left
-                (min.as_tuple().0, (max.as_tuple().0) / 2 - 1),
-                (min.as_tuple().1, (max.as_tuple().1) / 2 - 1),
-            ),
-            (
-                // Top-right
-                ((max.as_tuple().0) / 2 + 1, max.as_tuple().0 + 1),
-                (min.as_tuple().1, (max.as_tuple().1) / 2 - 1),
-            ),
-            (
-                // Bottom-left
-                (min.as_tuple().0, (max.as_tuple().0) / 2 - 1),
-                ((max.as_tuple().1) / 2 + 1, max.as_tuple().1 + 1),
-            ),
-            (
-                // Bottom-right
-                ((max.as_tuple().0) / 2 + 1, max.as_tuple().0 + 1),
-                ((max.as_tuple().1) / 2 + 1, max.as_tuple().1 + 1),
-            ),
-        ];
+        let quads = get_quadrants(min, max);
 
         // Collect robots for each quadrant
         for ((x0, x1), (y0, y1)) in quads {
@@ -131,6 +131,7 @@ impl Restroom {
 
     pub fn print(&self) {
         let (min, max) = &self.space;
+
         for y in 0..max.as_tuple().1 + 1 {
             for x in 0..max.as_tuple().0 + 1 {
                 let count = self
@@ -143,12 +144,58 @@ impl Restroom {
                     .cloned()
                     .collect::<Vec<_>>()
                     .len();
-                if count > 0 {
+                if !in_quadrant((x, y), min, max) {
+                    print!(" {} ", count);
+                } else if count > 0 {
                     print!("{}", count);
                 } else {
                     print!(".");
                 }
             }
+            println!();
+        }
+        let quad_str: String = self
+            .quadrants()
+            .into_iter()
+            .map(|q| q.len().to_string())
+            .collect::<Vec<String>>()
+            .join(" * ");
+        println!(" {} = {}", quad_str, self.safety_factor())
+    }
+}
+
+pub fn in_quadrant(p: (i64, i64), min: &Loc, max: &Loc) -> bool {
+    let (x, y) = p;
+    for ((x1, x2), (y1, y2)) in get_quadrants(min, max) {
+        if x1 <= x && x <= x2 && y1 <= y && y <= y2 {
+            return true;
         }
     }
+    return false;
+}
+
+fn get_quadrants(min: &Loc, max: &Loc) -> Vec<((i64, i64), (i64, i64))> {
+    let quads = vec![
+        (
+            // Top-left
+            (min.as_tuple().0, (max.as_tuple().0) / 2 - 1),
+            (min.as_tuple().1, (max.as_tuple().1) / 2 - 1),
+        ),
+        (
+            // Top-right
+            ((max.as_tuple().0) / 2 + 1, max.as_tuple().0 + 1),
+            (min.as_tuple().1, (max.as_tuple().1) / 2 - 1),
+        ),
+        (
+            // Bottom-left
+            (min.as_tuple().0, (max.as_tuple().0) / 2 - 1),
+            ((max.as_tuple().1) / 2 + 1, max.as_tuple().1 + 1),
+        ),
+        (
+            // Bottom-right
+            ((max.as_tuple().0) / 2 + 1, max.as_tuple().0 + 1),
+            ((max.as_tuple().1) / 2 + 1, max.as_tuple().1 + 1),
+        ),
+    ];
+    quads
 }

@@ -15,11 +15,11 @@ p=7,3 v=-1,2
 p=2,4 v=2,-3
 p=9,5 v=-3,-3";
 
-// #[rstest]
-// #[case::first(FULL, 12)]
-// fn test1(#[case] input: &str, #[case] result: i64) {
-//     assert_eq!(result, part1(input.to_string()));
-// }
+#[rstest]
+#[case::first(FULL, 21)]
+fn test1(#[case] input: &str, #[case] result: i64) {
+    assert_eq!(result, part1(input.to_string()));
+}
 
 // #[test]
 // fn test_part1_success() {
@@ -28,5 +28,5 @@ p=9,5 v=-3,-3";
 //         .arg("../../data/day14.txt")
 //         .assert()
 //         .success()
-//         .stdout("321\n386\n");
+//         .stdout("225810288\n386\n");
 // }

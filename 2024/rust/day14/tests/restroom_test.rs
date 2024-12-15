@@ -18,11 +18,12 @@ p=9,5 v=-3,-3";
 const SINGLE: &str = "p=2,4 v=2,-3";
 
 #[rstest]
-#[case(FULL, 1, 12)]
+#[case(FULL, 1, 16)]
 #[case(FULL, 100, 12)]
 fn safety_factor_test(#[case] input: &str, #[case] steps: u64, #[case] result: i64) {
     let mut restroom = Restroom::new(input, 11, 7);
     restroom.move_robots(steps);
+    restroom.print();
 
     assert_eq!(result, restroom.safety_factor() as i64);
 }
@@ -58,3 +59,9 @@ fn move_test(#[case] input: &str, #[case] steps: u64, #[case] result: (i64, i64)
 
     assert_eq!(result, restroom.get_robots()[0].p.as_tuple());
 }
+
+// #[test]
+// fn tree_test() {
+//     let mut restroom = Restroom::new(FULL, 11, 7);
+//     assert_eq!(105, restroom.tree())
+// }
