@@ -1,10 +1,11 @@
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 
 use crate::loc::Loc;
 
 pub struct Warehouse {
     pub walls: HashSet<Loc>,
     pub boxes: HashSet<Loc>,
+    pub box_pair: HashMap<Loc, Loc>,
     pub robot: Loc,
     pub moves: Vec<char>,
 }
@@ -37,13 +38,58 @@ impl Warehouse {
         Self {
             walls,
             boxes,
+            box_pair: HashMap::new(),
             robot,
             moves,
         }
     }
 
+    pub fn expand(&mut self) {
+        let mut exp_walls: HashSet<Loc> = HashSet::new();
+
+        for w in self.walls.clone() {
+            exp_walls.insert(Loc { x: w.x * 2, y: w.y });
+            exp_walls.insert(Loc {
+                x: w.x * 2 + 1,
+                y: w.y,
+            });
+        }
+
+        self.walls = exp_walls;
+
+        let mut exp_boxes: HashSet<Loc> = HashSet::new();
+        for b in self.boxes.clone() {
+            let b1 = Loc::new(b.x * 2, b.y);
+            let b2 = Loc::new(b.x * 2 + 1, b.y);
+
+            exp_boxes.insert(b1.clone());
+            exp_boxes.insert(b2.clone());
+            self.box_pair.insert(b1.clone(), b2.clone());
+            self.box_pair.insert(b2, b1);
+        }
+
+        self.boxes = exp_boxes;
+    }
+
     pub fn gps_sum(&self) -> i64 {
-        return self.boxes.clone().into_iter().map(|b| b.gps()).sum();
+        return self
+            .boxes
+            .clone()
+            .into_iter()
+            .enumerate()
+            .map(|(_k, b)| b.gps())
+            .sum();
+    }
+
+    pub fn gps_sum_2(&self) -> i64 {
+        return self
+            .boxes
+            .clone()
+            .into_iter()
+            .enumerate()
+            .filter(|(k, _v)| k % 2 == 0)
+            .map(|(_k, b)| b.gps())
+            .sum();
     }
 
     pub fn run_robot(&mut self) {
