@@ -11,5 +11,9 @@ pub fn part1(input: String) -> i64 {
 }
 
 pub fn part2(input: String) -> i64 {
-    return input.len().try_into().unwrap();
+    let mut w = Warehouse::new(&input);
+    w.expand();
+    w.run_robot();
+
+    return w.gps_sum_2();
 }

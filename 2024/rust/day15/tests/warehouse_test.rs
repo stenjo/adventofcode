@@ -69,6 +69,37 @@ fn test_move_robot(#[case] input: Vec<char>, #[case] moved: bool, #[case] result
     assert_eq!(result, w.robot.as_tuple(), "GPS should be {:?}", result);
 }
 
+const DOUBLE: &str = "#######
+#...#.#
+#.....#
+#..OO@#
+#..O..#
+#.....#
+#######
+
+<vv<<^^<<^^";
+
+#[rstest]
+#[case(vec!['<'], true, (9,3))]
+#[case(vec!['^'], true, (10,2))]
+#[case(vec!['>'], true, (11,3))]
+#[case(vec!['v'], true, (10,4))]
+#[case(vec!['>','>'], false, (11,3))]
+#[case(vec!['<','v'], true,(9,4))]
+#[case(vec!['<','v','v','<','<','^'], false, (5,2))]
+fn test_move_robot_2(#[case] input: Vec<char>, #[case] moved: bool, #[case] result: (i64, i64)) {
+    let mut w = Warehouse::new(DOUBLE);
+    let mut success = false;
+    w.expand();
+    w.print();
+    for &c in &input {
+        success = w.move_robot_2(c);
+    }
+    w.print();
+    assert_eq!(success, moved, "Moved should be {} for {:?}", moved, input);
+    assert_eq!(result, w.robot.as_tuple(), "GPS should be {:?}", result);
+}
+
 #[test]
 fn test_new_warehouse_large() {
     let w = Warehouse::new(LARGE);
