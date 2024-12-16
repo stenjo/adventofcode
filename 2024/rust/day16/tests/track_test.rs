@@ -40,7 +40,7 @@ const SMALL: &str = "###############
 #[case(LARGE, 11048)]
 fn test_run(#[case] input: &str, #[case] result: i64) {
     let mut t = Track::new(input);
-    let score = t.run_reindeer();
+    let score = t.run();
     t.print();
     assert_eq!(result, score, "Score should be {}", result);
 }

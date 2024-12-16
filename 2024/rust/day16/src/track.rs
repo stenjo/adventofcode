@@ -26,8 +26,10 @@ impl PartialOrd for State {
 
 pub struct Track {
     pub walls: HashSet<Loc>,
-    pub start: NodeIndex,
-    pub finish: NodeIndex,
+    pub start: Loc,
+    pub start_idx: NodeIndex,
+    pub finish: Loc,
+    pub finish_idx: NodeIndex,
     pub size: Loc,
     pub path: HashMap<Loc, char>,
     graph: DiGraph<Loc, usize>,
@@ -97,8 +99,10 @@ where
 impl Track {
     pub fn new(input: &str) -> Self {
         let mut walls: HashSet<Loc> = HashSet::new();
-        let mut start: NodeIndex = NodeIndex::new(0);
-        let mut finish: NodeIndex = NodeIndex::new(0);
+        let mut start: Loc = Loc::new(0, 0);
+        let mut finish: Loc = Loc::new(0, 0);
+        let mut start_idx: NodeIndex = NodeIndex::new(0);
+        let mut finish_idx: NodeIndex = NodeIndex::new(0);
         let mut size: Loc = Loc::new(0, 0);
         let mut graph: DiGraph<Loc, usize> = DiGraph::new();
         for (y, line) in input.lines().into_iter().enumerate() {
@@ -106,9 +110,11 @@ impl Track {
                 if c == '#' {
                     walls.insert(Loc::new(x as i64, y as i64));
                 } else if c == 'S' {
-                    start = graph.add_node(Loc::new(x as i64, y as i64));
+                    start = Loc::new(x as i64, y as i64);
+                    start_idx = graph.add_node(start.clone());
                 } else if c == 'E' {
-                    finish = graph.add_node(Loc::new(x as i64, y as i64));
+                    finish = Loc::new(x as i64, y as i64);
+                    finish_idx = graph.add_node(finish.clone());
                 } else {
                     graph.add_node(Loc::new(x as i64, y as i64));
                 }
@@ -138,7 +144,9 @@ impl Track {
         Self {
             walls,
             start,
+            start_idx,
             finish,
+            finish_idx,
             size,
             path: HashMap::new(),
             graph,
@@ -146,14 +154,12 @@ impl Track {
     }
 
     pub fn run_reindeer(&mut self) -> i64 {
-        let dir = '>';
         let shortest_path = dynamic_dijkstra(
             &self.graph,
-            self.start,
-            self.finish,
+            self.start_idx,
+            self.finish_idx,
             |prev, current, next| {
                 if let Some(p) = prev {
-                    // If the direction changes (current is not in the same path as prev), add 300
                     if p != current {
                         1000
                     } else {
@@ -174,6 +180,58 @@ impl Track {
             println!("No path found from {:?} to {:?}", self.start, self.finish);
         }
         0
+    }
+
+    pub fn run(&mut self) -> i64 {
+        let directions = ['>', 'v', '<', '^'];
+        let mut cost_path: HashMap<Loc, u64> = HashMap::new();
+        let mut min_cost = u64::MAX;
+
+        cost_path.insert(self.finish.clone(), u64::MAX);
+
+        for &d in &directions {
+            let next_pos = self.finish.get_next(d);
+            let cost = self.backtrack(next_pos, d, 0, &mut cost_path);
+            if cost != u64::MAX {
+                min_cost = min_cost.min(cost);
+            }
+        }
+        return cost_path.get(&self.start).unwrap().clone() as i64;
+    }
+
+    pub fn backtrack(
+        &self,
+        node: Loc,
+        dir: char,
+        acc_cost: u64,
+        cost_path: &mut HashMap<Loc, u64>,
+    ) -> u64 {
+        if node == self.finish {
+            return 0;
+        }
+        if self.walls.contains(&node) {
+            return u64::MAX;
+        }
+        let new_cost = acc_cost + 1;
+        if let Some(cost) = cost_path.get(&node) {
+            if new_cost < *cost {
+                cost_path.insert(node.clone(), new_cost);
+                return new_cost;
+            }
+            return *cost;
+        } else {
+            cost_path.insert(node.clone(), new_cost);
+
+            let directions = ['>', 'v', '<', '^'];
+
+            for &d in &directions {
+                let next_pos = node.get_next(d);
+                let turn_cost = if d == dir { 0 } else { 1000 };
+                let total_cost = turn_cost + new_cost;
+                self.backtrack(next_pos, d, total_cost, cost_path);
+            }
+        }
+        cost_path.get(&node).unwrap().clone()
     }
 
     // pub fn find_min_cost(&mut self, pos: Loc, dir: char) -> i64 {
@@ -210,12 +268,19 @@ impl Track {
         for y in 0..ym + 1 {
             for x in 0..xm + 1 {
                 let loc = Loc::new(x, y);
+                let loc_idx = self
+                    .graph
+                    .node_indices()
+                    .find(|i| self.graph[*i] == loc)
+                    .unwrap();
                 if self.walls.contains(&loc) {
                     print!("#");
-                // } else if loc == self.start {
-                //     print!("S");
-                // } else if loc == self.finish {
-                //     print!("E");
+                    continue;
+                }
+                if loc == self.start {
+                    print!("S");
+                } else if loc == self.finish {
+                    print!("E");
                 } else if self.path.contains_key(&loc) {
                     let dir = self.path.get(&loc).unwrap();
                     print!("{}", dir);
@@ -223,7 +288,7 @@ impl Track {
                     print!(".")
                 }
             }
-            println!();
+            println!("{}", 0);
         }
         println!();
     }
