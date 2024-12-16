@@ -95,7 +95,7 @@ impl Warehouse {
             .clone()
             .into_iter()
             .enumerate()
-            .filter(|(k, _v)| k % 2 == 0)
+            .filter(|(_k, v)| *self.box_map.get(v).unwrap() == '[')
             .map(|(_k, b)| b.gps())
             .sum();
     }
@@ -120,15 +120,19 @@ impl Warehouse {
         return true;
     }
 
+    pub fn run_robot_2(&mut self) {
+        for dir in self.moves.clone() {
+            self.move_robot_2(dir);
+        }
+    }
+
     pub fn move_robot_2(&mut self, dir: char) -> bool {
         let next_pos = self.robot.get_next(dir);
-        if self.walls.contains(&next_pos) {
+        // if self.walls.contains(&next_pos) {
+        //     return false;
+        // }
+        if !self.push_boxes_2(&next_pos, dir) {
             return false;
-        }
-        if self.boxes.contains(&next_pos) {
-            if !self.push_boxes_2(&next_pos, dir) {
-                return false;
-            }
         }
         self.robot = next_pos;
         return true;
@@ -150,30 +154,44 @@ impl Warehouse {
     }
 
     fn push_boxes_2(&mut self, loc: &Loc, dir: char) -> bool {
-        let next_pos = loc.get_next(dir);
-        let other_pos = self.get_other_pos(&loc).unwrap();
-        let other_next = other_pos.get_next(dir);
-
-        if self.walls.contains(&next_pos) || self.walls.contains(&other_next) {
+        if self.walls.contains(&loc) {
             return false;
         }
-        if self.boxes.contains(&next_pos) {
+        if self.boxes.contains(&loc) {
+            let next_pos = loc.get_next(dir);
+
             if !self.push_boxes_2(&next_pos, dir) {
                 return false;
             }
-            if !self.push_boxes_2(&other_next, dir) {
-                return false;
+            if vec!['^', 'v'].contains(&dir) {
+                let other_pos = self.get_other_pos(&loc).unwrap();
+                let other_next = other_pos.get_next(dir);
+                if !self.push_boxes_2(&other_next, dir) {
+                    return false;
+                }
+                self.boxes.remove(&other_pos);
+                self.boxes.insert(other_next.clone());
+                if let Some(b2) = self.box_map.remove(&other_pos) {
+                    self.box_map.insert(other_next, b2);
+                }
+            }
+            self.boxes.remove(&loc);
+            self.boxes.insert(next_pos.clone());
+            if let Some(b1) = self.box_map.remove(&loc) {
+                self.box_map.insert(next_pos, b1);
             }
         }
-        self.boxes.remove(&loc);
-        self.boxes.remove(&other_pos);
-        self.boxes.insert(next_pos.clone());
-        self.boxes.insert(other_next.clone());
-        if let Some(b1) = self.box_map.remove(&loc) {
-            self.box_map.insert(next_pos, b1);
-        }
-        if let Some(b2) = self.box_map.remove(&other_pos) {
-            self.box_map.insert(other_next, b2);
+        return true;
+    }
+
+    pub fn validate_2(&self) -> bool {
+        for (loc, side) in self.box_map.iter() {
+            if *side == '[' {
+                let other_pos = self.get_other_pos(loc).unwrap();
+                if !self.boxes.contains(&other_pos) {
+                    return false;
+                }
+            }
         }
         return true;
     }

@@ -1,3 +1,4 @@
+use assert_cmd::assert;
 use day15::*;
 use rstest::rstest;
 use warehouse::Warehouse;
@@ -40,6 +41,13 @@ const SMALL: &str = "########
 #[case(LARGE, 10092)]
 fn test1(#[case] input: &str, #[case] result: i64) {
     assert_eq!(result, part1(input.to_string()), "GPS should be {}", result);
+}
+
+#[rstest]
+#[case(SMALL, 1751)]
+#[case(LARGE, 9021)]
+fn test2(#[case] input: &str, #[case] result: i64) {
+    assert_eq!(result, part2(input.to_string()), "GPS should be {}", result);
 }
 
 // ########
@@ -86,7 +94,8 @@ const DOUBLE: &str = "#######
 #[case(vec!['v'], true, (10,4))]
 #[case(vec!['>','>'], false, (11,3))]
 #[case(vec!['<','v'], true,(9,4))]
-#[case(vec!['<','v','v','<','<','^'], false, (5,2))]
+#[case(vec!['<','v','v','<','<','^'], true, (7,4))]
+#[case(vec!['<','v','v','<','<','^','^'], false, (7,4))]
 fn test_move_robot_2(#[case] input: Vec<char>, #[case] moved: bool, #[case] result: (i64, i64)) {
     let mut w = Warehouse::new(DOUBLE);
     let mut success = false;
@@ -97,7 +106,41 @@ fn test_move_robot_2(#[case] input: Vec<char>, #[case] moved: bool, #[case] resu
     }
     w.print();
     assert_eq!(success, moved, "Moved should be {} for {:?}", moved, input);
-    assert_eq!(result, w.robot.as_tuple(), "GPS should be {:?}", result);
+    assert_eq!(
+        result,
+        w.robot.as_tuple(),
+        "Position of robot should be {:?}",
+        result
+    );
+}
+
+#[rstest]
+#[case("#####\n#O@.#\n#####\n\n<", 102)]
+#[case("#####\n#.@.#\n#.O.#\n#####\n\n<", 204)]
+#[case("#####\n#.@.#\n#...#\n#..O#\n#####\n\n<", 306)]
+#[case(LARGE, 9021)]
+fn test_gps_2(#[case] input: &str, #[case] result: i64) {
+    let mut w = Warehouse::new(&input);
+    let walls = w.walls.len();
+    w.expand();
+    assert_eq!(walls * 2, w.walls.len(), "Walls should be doubled");
+    w.run_robot_2();
+    assert_eq!(walls * 2, w.walls.len(), "Walls should still be doubled");
+    w.print();
+    assert!(w.validate_2(), "Boxes should be paired");
+    assert_eq!(result, w.gps_sum_2());
+}
+
+#[rstest]
+#[case(DOUBLE, 618)]
+#[case(LARGE, 9021)]
+fn test_part2(#[case] input: &str, #[case] result: i64) {
+    let mut w = Warehouse::new(&input);
+    w.expand();
+    w.run_robot_2();
+
+    w.print();
+    assert_eq!(result, w.gps_sum_2());
 }
 
 #[test]
