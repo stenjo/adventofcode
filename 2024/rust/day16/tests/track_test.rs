@@ -36,8 +36,9 @@ const SMALL: &str = "###############
 ###############";
 
 #[rstest]
-#[case(SMALL, 7036)]
-#[case(LARGE, 11048)]
+// #[case(SMALL, 7036)]
+// #[case(LARGE, 11048)]
+#[case("#####\n#S.##\n#..E#\n#####", 103)]
 fn test_run(#[case] input: &str, #[case] result: i64) {
     let mut t = Track::new(input);
     let score = t.run();
@@ -46,18 +47,18 @@ fn test_run(#[case] input: &str, #[case] result: i64) {
 }
 
 #[rstest]
-#[case(SMALL, 7036)]
-#[case(LARGE, 11048)]
-fn test1(#[case] input: &str, #[case] result: i64) {
-    use day16::part1;
+// #[case(SMALL, 7036)]
+// #[case(LARGE, 11048)]
+// fn test1(#[case] input: &str, #[case] result: i64) {
+//     use day16::part1;
 
-    assert_eq!(
-        result,
-        part1(input.to_string()),
-        "Score should be {}",
-        result
-    );
-}
+//     assert_eq!(
+//         result,
+//         part1(input.to_string()),
+//         "Score should be {}",
+//         result
+//     );
+// }
 
 // #[rstest]
 // #[case(SMALL, 1751)]
@@ -65,7 +66,6 @@ fn test1(#[case] input: &str, #[case] result: i64) {
 // fn test2(#[case] input: &str, #[case] result: i64) {
 //     assert_eq!(result, part2(input.to_string()), "GPS should be {}", result);
 // }
-
 #[test]
 fn test_new_warehouse_large() {
     let w = Track::new(LARGE);

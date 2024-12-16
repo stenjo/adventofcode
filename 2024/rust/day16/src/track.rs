@@ -32,6 +32,7 @@ pub struct Track {
     pub finish_idx: NodeIndex,
     pub size: Loc,
     pub path: HashMap<Loc, char>,
+    pub cost_path: HashMap<Loc, Vec<u64>>,
     graph: DiGraph<Loc, usize>,
 }
 
@@ -149,6 +150,7 @@ impl Track {
             finish_idx,
             size,
             path: HashMap::new(),
+            cost_path: HashMap::new(),
             graph,
         }
     }
@@ -184,54 +186,56 @@ impl Track {
 
     pub fn run(&mut self) -> i64 {
         let directions = ['>', 'v', '<', '^'];
-        let mut cost_path: HashMap<Loc, u64> = HashMap::new();
-        let mut min_cost = u64::MAX;
 
-        cost_path.insert(self.finish.clone(), u64::MAX);
+        self.cost_path.insert(self.finish.clone(), vec![0]);
 
         for &d in &directions {
             let next_pos = self.finish.get_next(d);
-            let cost = self.backtrack(next_pos, d, 0, &mut cost_path);
-            if cost != u64::MAX {
-                min_cost = min_cost.min(cost);
-            }
+            self.backtrack(next_pos, d, 0, &vec![]);
         }
-        return cost_path.get(&self.start).unwrap().clone() as i64;
+
+        if let Some(cost) = self.cost_path.get(&self.start) {
+            let sum = cost.iter().sum::<u64>();
+            println!(
+                "The shortest path cost from {:?} to {:?} is {}",
+                self.start, self.finish, sum as i64
+            );
+            return sum as i64;
+        } else {
+            println!("No path found from {:?} to {:?}", self.start, self.finish);
+        }
+        0
     }
 
-    pub fn backtrack(
-        &self,
-        node: Loc,
-        dir: char,
-        acc_cost: u64,
-        cost_path: &mut HashMap<Loc, u64>,
-    ) -> u64 {
+    pub fn backtrack(&mut self, node: Loc, dir: char, cost: u64, trail: &Vec<u64>) -> u64 {
         if node == self.finish {
-            return 0;
+            return u64::MAX;
         }
         if self.walls.contains(&node) {
             return u64::MAX;
         }
-        let new_cost = acc_cost + 1;
-        if let Some(cost) = cost_path.get(&node) {
-            if new_cost < *cost {
-                cost_path.insert(node.clone(), new_cost);
+        let new_cost = trail.iter().sum::<u64>() + 1;
+        let mut my_trail = trail.clone();
+        if let Some(cost_trail) = self.cost_path.get(&node) {
+            let cost = cost_trail.iter().sum::<u64>();
+            if new_cost < cost {
+                self.cost_path.insert(node.clone(), trail.clone());
                 return new_cost;
             }
-            return *cost;
+            return cost;
         } else {
-            cost_path.insert(node.clone(), new_cost);
+            my_trail.push(new_cost);
+            self.cost_path.insert(node.clone(), my_trail.clone());
 
             let directions = ['>', 'v', '<', '^'];
-
             for &d in &directions {
                 let next_pos = node.get_next(d);
-                let turn_cost = if d == dir { 0 } else { 1000 };
+                let turn_cost = if d == dir { 0 } else { 100 };
                 let total_cost = turn_cost + new_cost;
-                self.backtrack(next_pos, d, total_cost, cost_path);
+                self.backtrack(next_pos, d, total_cost, &my_trail);
             }
         }
-        cost_path.get(&node).unwrap().clone()
+        return my_trail.iter().sum::<u64>();
     }
 
     // pub fn find_min_cost(&mut self, pos: Loc, dir: char) -> i64 {
@@ -268,24 +272,19 @@ impl Track {
         for y in 0..ym + 1 {
             for x in 0..xm + 1 {
                 let loc = Loc::new(x, y);
-                let loc_idx = self
-                    .graph
-                    .node_indices()
-                    .find(|i| self.graph[*i] == loc)
-                    .unwrap();
                 if self.walls.contains(&loc) {
-                    print!("#");
+                    print!("#####");
                     continue;
                 }
                 if loc == self.start {
-                    print!("S");
+                    print!("   S ");
                 } else if loc == self.finish {
-                    print!("E");
-                } else if self.path.contains_key(&loc) {
-                    let dir = self.path.get(&loc).unwrap();
-                    print!("{}", dir);
+                    print!("   E ");
+                } else if self.cost_path.contains_key(&loc) {
+                    let dir = self.cost_path.get(&loc).unwrap();
+                    print!(" {:03} ", dir.iter().sum::<u64>() % 1000);
                 } else {
-                    print!(".")
+                    print!("  .  ")
                 }
             }
             println!("{}", 0);
