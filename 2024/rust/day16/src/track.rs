@@ -56,69 +56,42 @@ impl Track {
         }
     }
 
-    pub fn stands(&self, loc: Loc) -> i64 {
-        let mut count: i64 = 0;
+    pub fn stands(&self, loc: &Loc) -> HashSet<Loc> {
+        let mut stands: HashSet<Loc> = HashSet::new();
         let directions = ['>', 'v', '<', '^'];
         for &d in &directions {
             let next_pos = loc.get_next(d);
             if self.walls.contains(&next_pos) {
-                count += 1;
+                stands.insert(next_pos);
             }
         }
-        count
+        return stands;
     }
 
-    pub fn get_trail(&self) -> Vec<Loc> {
-        let mut trail: Vec<Loc>=Vec::new();
+    pub fn get_stands(&self) -> HashSet<Loc> {
+        let mut trail: HashSet<Loc> = HashSet::new();
         let mut spot = self.start.clone();
-        trail.push(spot);
+        let mut cost = u64::MAX;
+        trail.insert(self.finish.clone());
+        trail.insert(self.start.clone());
         let directions = ['>', 'v', '<', '^'];
-        let cost = u64::MAX;
         while spot != self.finish {
             let mut lowest = spot.clone();
-
             for &d in &directions {
                 let next_pos = spot.get_next(d);
-                if let Some(next) = self.cost_patha.get(&next_pos) {
-                    if 
-                }
-                if self.walls.contains(&next_pos) {
-                    count += 1;
+                if let Some(next) = self.cost_path.get(&next_pos) {
+                    if next < &cost {
+                        lowest = next_pos.clone();
+                        cost = *next;
+                    }
                 }
             }
+            spot = lowest.clone();
+            trail.insert(lowest);
         }
 
         return trail;
     }
-
-    // pub fn run_reindeer(&mut self) -> i64 {
-    //     let shortest_path = dynamic_dijkstra(
-    //         &self.graph,
-    //         self.start_idx,
-    //         self.finish_idx,
-    //         |prev, current, next| {
-    //             if let Some(p) = prev {
-    //                 if p != current {
-    //                     1000
-    //                 } else {
-    //                     0
-    //                 }
-    //             } else {
-    //                 0
-    //             }
-    //         },
-    //     );
-    //     if let Some(cost) = shortest_path {
-    //         println!(
-    //             "The shortest path cost from {:?} to {:?} is {}",
-    //             self.start, self.finish, cost
-    //         );
-    //         return cost as i64;
-    //     } else {
-    //         println!("No path found from {:?} to {:?}", self.start, self.finish);
-    //     }
-    //     0
-    // }
 
     pub fn run(&mut self) -> i64 {
         let directions = ['<', '^', '>', 'v'];
@@ -198,24 +171,27 @@ impl Track {
     //     min_cost
     // }
 
-    pub fn print(&self) {
+    pub fn print(&self, set: &HashSet<Loc>) {
         let (xm, ym) = self.size.as_tuple();
         for y in 0..ym + 1 {
             for x in 0..xm + 1 {
                 let loc = Loc::new(x, y);
                 if self.walls.contains(&loc) {
-                    print!("######");
+                    print!("#");
+                    continue;
+                }
+                if set.contains(&loc) {
+                    print!("O");
                     continue;
                 }
                 if loc == self.start {
-                    print!("   S  ");
+                    print!("S");
                 } else if loc == self.finish {
-                    print!("   E  ");
+                    print!("E");
                 } else if self.cost_path.contains_key(&loc) {
-                    let &dir = self.cost_path.get(&loc).unwrap();
-                    print!(" {:4} ", dir % 1000 + (dir / 1000 * 100));
+                    print!(" ");
                 } else {
-                    print!("   .  ")
+                    print!(".")
                 }
             }
             println!("{}", 0);
