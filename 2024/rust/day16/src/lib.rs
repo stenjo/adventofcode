@@ -5,7 +5,7 @@ pub mod track;
 pub fn part1(input: String) -> i64 {
     let mut t = Track::new(input.as_str());
 
-    return t.run_reindeer();
+    return t.run();
 }
 
 pub fn part2(input: String) -> i64 {
