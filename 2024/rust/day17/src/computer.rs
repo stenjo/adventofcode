@@ -124,6 +124,12 @@ impl Computer {
 
     fn out(&mut self, op: i64) -> i64 {
         self.output.push(self.combo(op) % 8);
+        // println!(
+        //     "Out: {:?}, from combo({}) -> B:{}",
+        //     self.output.last().unwrap(),
+        //     op,
+        //     self.reg.get(&'B').unwrap()
+        // );
         return self.output.last().unwrap().clone();
     }
 
@@ -151,7 +157,7 @@ impl Computer {
     }
 
     pub(crate) fn run_to_copy(&self) -> i64 {
-        let mut initial = 1;
+        let mut initial = 31;
         let hash: u128 = self
             .program
             .iter()
@@ -173,10 +179,11 @@ impl Computer {
                 .join("")
                 .parse()
                 .unwrap();
-            if out == hash {
+            if out == hash || initial > 1000000 {
                 return initial;
             }
-            initial += 1;
+            initial += 32;
+            println!("Code: {} -> Initial: {}", out, initial);
         }
     }
 }

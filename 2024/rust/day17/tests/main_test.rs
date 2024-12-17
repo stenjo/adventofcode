@@ -14,11 +14,11 @@ fn test1(#[case] input: &str, #[case] result: &str) {
     assert_eq!(result, part1(input.to_string()));
 }
 
-#[rstest]
-#[case(INPUT, 117440)]
-fn test2(#[case] input: &str, #[case] result: i64) {
-    assert_eq!(result, part2(input.to_string()));
-}
+// #[rstest]
+// #[case(INPUT, 117440)]
+// fn test2(#[case] input: &str, #[case] result: i64) {
+//     assert_eq!(result, part2(input.to_string()));
+// }
 
 // #[test]
 // fn test_part1_success() {

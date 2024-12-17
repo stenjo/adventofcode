@@ -1,4 +1,6 @@
-use day17::computer::Computer;
+use std::fs;
+
+use day17::{computer::Computer, part1, part2};
 use rstest::rstest;
 
 const TEST: &str = "Register A: 729
@@ -116,3 +118,36 @@ fn test1(#[case] input: &str, #[case] result: Vec<usize>) {
 
     assert_eq!(s, part1(input.to_string()));
 }
+
+#[test]
+pub fn test_main() {
+    let path = "".to_string() + "../../data/day17.txt";
+    let input = match fs::read_to_string(&path) {
+        Ok(input) => input,
+        Err(e) => panic!("Error reading file: {}", e),
+    };
+    println!("{}", part1(input.clone()));
+    assert!(false)
+}
+#[test]
+pub fn test_run_to_copy() {
+    let path = "".to_string() + "../../data/day17.txt";
+    let input = match fs::read_to_string(&path) {
+        Ok(input) => input,
+        Err(e) => panic!("Error reading file: {}", e),
+    };
+    part2(input.clone());
+    assert!(false)
+}
+
+// 2,4,1,7,7,5,1,7,4,6,0,3,5,5,3,0
+// 2 bst(4) -> A % 8
+// 1 bxl(7) -> B ^ 7
+// 7 cdv(5) -> A/ 32 -> C
+// 1 bxl(7) -> B ^ 7
+// 4 bxc(6) -> B ^ C -> B
+// 0 adv(3) -> A / 8 -> A
+// 5 out(5) -> output B
+// 3 jnz(0) -> jump to 0
+
+// A * 8
