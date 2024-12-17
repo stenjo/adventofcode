@@ -4,26 +4,9 @@ use petgraph::visit::EdgeRef;
 use std::cmp::Reverse;
 use std::collections::HashSet;
 use std::collections::{BinaryHeap, HashMap};
+use std::u64;
 
 #[derive(Debug, Clone, Eq, PartialEq)]
-struct State {
-    cost: usize,
-    node: NodeIndex,
-    previous: Option<NodeIndex>,
-}
-
-impl Ord for State {
-    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
-        other.cost.cmp(&self.cost) // Reverse to make min-heap
-    }
-}
-
-impl PartialOrd for State {
-    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-        Some(self.cmp(other))
-    }
-}
-
 pub struct Track {
     pub walls: HashSet<Loc>,
     pub start: Loc,
@@ -33,7 +16,6 @@ pub struct Track {
     pub size: Loc,
     pub path: HashMap<Loc, char>,
     pub cost_path: HashMap<Loc, u64>,
-    graph: DiGraph<Loc, usize>,
 }
 
 impl Track {
@@ -44,19 +26,14 @@ impl Track {
         let mut start_idx: NodeIndex = NodeIndex::new(0);
         let mut finish_idx: NodeIndex = NodeIndex::new(0);
         let mut size: Loc = Loc::new(0, 0);
-        let mut graph: DiGraph<Loc, usize> = DiGraph::new();
         for (y, line) in input.lines().into_iter().enumerate() {
             for (x, c) in line.chars().into_iter().enumerate() {
                 if c == '#' {
                     walls.insert(Loc::new(x as i64, y as i64));
                 } else if c == 'S' {
                     start = Loc::new(x as i64, y as i64);
-                    start_idx = graph.add_node(start.clone());
                 } else if c == 'E' {
                     finish = Loc::new(x as i64, y as i64);
-                    finish_idx = graph.add_node(finish.clone());
-                } else {
-                    graph.add_node(Loc::new(x as i64, y as i64));
                 }
                 size = Loc::new(x as i64, y as i64);
             }
@@ -64,20 +41,6 @@ impl Track {
         for y in 0..size.y + 1 {
             for x in 0..size.x + 1 {
                 let loc = Loc::new(x, y);
-                if !walls.contains(&loc) {
-                    let directions = ['>', 'v', '<', '^'];
-                    let loc_idx = graph.node_indices().find(|i| graph[*i] == loc).unwrap();
-                    for &d in &directions {
-                        let next_pos = loc.get_next(d);
-                        if !walls.contains(&next_pos) {
-                            let next_idx = graph
-                                .node_indices()
-                                .find(|i| graph[*i] == next_pos)
-                                .unwrap();
-                            graph.add_edge(loc_idx, next_idx, 1);
-                        }
-                    }
-                }
             }
         }
 
@@ -90,8 +53,42 @@ impl Track {
             size,
             path: HashMap::new(),
             cost_path: HashMap::new(),
-            graph,
         }
+    }
+
+    pub fn stands(&self, loc: Loc) -> i64 {
+        let mut count: i64 = 0;
+        let directions = ['>', 'v', '<', '^'];
+        for &d in &directions {
+            let next_pos = loc.get_next(d);
+            if self.walls.contains(&next_pos) {
+                count += 1;
+            }
+        }
+        count
+    }
+
+    pub fn get_trail(&self) -> Vec<Loc> {
+        let mut trail: Vec<Loc>=Vec::new();
+        let mut spot = self.start.clone();
+        trail.push(spot);
+        let directions = ['>', 'v', '<', '^'];
+        let cost = u64::MAX;
+        while spot != self.finish {
+            let mut lowest = spot.clone();
+
+            for &d in &directions {
+                let next_pos = spot.get_next(d);
+                if let Some(next) = self.cost_patha.get(&next_pos) {
+                    if 
+                }
+                if self.walls.contains(&next_pos) {
+                    count += 1;
+                }
+            }
+        }
+
+        return trail;
     }
 
     // pub fn run_reindeer(&mut self) -> i64 {
