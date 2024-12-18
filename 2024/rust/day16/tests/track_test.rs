@@ -55,9 +55,17 @@ fn test_run(#[case] input: &str, #[case] result: i64) {
 #[case(LARGE, 64)]
 #[case("#####\n#S.##\n#..E#\n#####", 2003)]
 fn test_stands(#[case] input: &str, #[case] result: i64) {
+    use day16::loc::Loc;
+
     let mut t = Track::new(input);
     t.run();
-    let stands = t.get_stands();
+    let mut stands: HashSet<Loc> = HashSet::new();
+    let directions: [[char; 4]; 2] = [['>', 'v', '<', '^'], ['^', '<', 'v', '>']];
+    for dir in directions {
+        for l in t.get_stands(dir) {
+            stands.insert(l);
+        }
+    }
     t.print(&stands);
     assert_eq!(result, stands.len() as i64, "Score should be {}", result);
 }

@@ -68,13 +68,12 @@ impl Track {
         return stands;
     }
 
-    pub fn get_stands(&self) -> HashSet<Loc> {
+    pub fn get_stands(&self, directions: [char; 4]) -> HashSet<Loc> {
         let mut trail: HashSet<Loc> = HashSet::new();
         let mut spot = self.start.clone();
         let mut cost = u64::MAX;
         trail.insert(self.finish.clone());
         trail.insert(self.start.clone());
-        let directions = ['>', 'v', '<', '^'];
         while spot != self.finish {
             let mut lowest = spot.clone();
             for &d in &directions {
@@ -94,13 +93,18 @@ impl Track {
     }
 
     pub fn run(&mut self) -> i64 {
-        let directions = ['<', '^', '>', 'v'];
-
+        let directions: [[char; 4]; 4] = [
+            ['>', 'v', '<', '^'],
+            ['v', '<', '^', '>'],
+            ['<', '^', '>', 'v'],
+            ['^', '>', 'v', '<'],
+        ];
         self.cost_path.insert(self.finish.clone(), 0);
-
-        for &d in &directions {
-            let next_pos = self.finish.get_next(d);
-            self.backtrack(next_pos, d, 0);
+        for dir in directions {
+            for &d in &dir {
+                let next_pos = self.finish.get_next(d);
+                self.backtrack(next_pos, d, 0, dir);
+            }
         }
 
         if let Some(&cost) = self.cost_path.get(&self.start) {
@@ -109,7 +113,7 @@ impl Track {
         0
     }
 
-    pub fn backtrack(&mut self, node: Loc, dir: char, cost: u64) -> u64 {
+    pub fn backtrack(&mut self, node: Loc, dir: char, cost: u64, directions: [char; 4]) -> u64 {
         if node == self.finish {
             return u64::MAX;
         }
@@ -132,44 +136,14 @@ impl Track {
 
         self.cost_path.insert(node.clone(), new_cost);
 
-        let directions = ['<', '^', '>', 'v'];
         for &d in &directions {
             let next_pos = node.get_next(d);
             let turn_cost = if d == dir { 0 } else { 1000 };
             let total_cost = turn_cost + new_cost;
-            self.backtrack(next_pos, d, total_cost);
+            self.backtrack(next_pos, d, total_cost, directions);
         }
         return new_cost;
     }
-
-    // pub fn find_min_cost(&mut self, pos: Loc, dir: char) -> i64 {
-    //     if pos == self.finish {
-    //         return 0;
-    //     }
-    //     if self.walls.contains(&pos) || self.path.contains_key(&pos) {
-    //         return i64::MAX;
-    //     }
-
-    //     self.path.insert(pos.clone(), dir);
-
-    //     let directions = ['>', 'v', '<', '^'];
-    //     let mut min_cost = i64::MAX;
-
-    //     for &d in &directions {
-    //         let next_pos = pos.get_next(d);
-    //         let turn_cost = if d == dir { 0 } else { 1000 };
-    //         let move_cost = 1;
-    //         let total_cost = turn_cost + move_cost;
-
-    //         let cost = self.find_min_cost(next_pos, d);
-    //         if cost != i64::MAX {
-    //             min_cost = min_cost.min(cost + total_cost);
-    //         }
-    //     }
-
-    //     self.path.remove(&pos);
-    //     min_cost
-    // }
 
     pub fn print(&self, set: &HashSet<Loc>) {
         let (xm, ym) = self.size.as_tuple();
