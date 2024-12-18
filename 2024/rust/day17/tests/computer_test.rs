@@ -149,7 +149,7 @@ fn test1(#[case] input: &str, #[case] result: Vec<usize>) {
 #[rstest]
 #[case(7, vec![0])]
 #[case(0b111, vec![0])]
-#[case(0b11000111, vec![3,0])]
+#[case(0b11111001, vec![2,4])]
 fn test_backtrack(#[case] input: i64, #[case] result: Vec<i64>) {
     let mut initial = input;
     let path = "".to_string() + "../../data/day17.txt";

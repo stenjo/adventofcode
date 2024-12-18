@@ -15,7 +15,7 @@ pub fn part1(input: String) -> String {
 }
 
 pub fn part2(input: String) -> i64 {
-    let mut c = Computer::new(input.as_str());
+    let c = Computer::new(input.as_str());
     let result = c.run_to_copy();
     return result;
 }
