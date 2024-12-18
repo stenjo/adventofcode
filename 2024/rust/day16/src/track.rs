@@ -77,7 +77,7 @@ impl Track {
         while spot != self.finish {
             let mut lowest = spot.clone();
             for &d in &directions {
-                let next_pos = spot.get_next(d);
+                let next_pos = spot.get_next(d);a
                 if let Some(next) = self.cost_path.get(&next_pos) {
                     if next < &cost {
                         lowest = next_pos.clone();

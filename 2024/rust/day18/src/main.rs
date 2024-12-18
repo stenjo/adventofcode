@@ -1,4 +1,4 @@
-use day17::{part1, part2};
+use day18::{part1, part2};
 use std::fs;
 
 pub fn main() {
@@ -8,5 +8,5 @@ pub fn main() {
         Err(e) => panic!("Error reading file: {}", e),
     };
     println!("{}", part1(input.clone()));
-    // println!("{}", part2(input));
+    println!("{}", part2(input));
 }

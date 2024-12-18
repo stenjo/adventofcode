@@ -101,6 +101,7 @@ impl Computer {
     pub fn bst(&mut self, op: i64) -> i64 {
         let result = self.combo(op) % 8;
         self.reg.insert('B', result);
+        println!("B: {:?}, from combo({}) -> B:{}", result, op, result);
         return result;
     }
 
@@ -124,12 +125,12 @@ impl Computer {
 
     fn out(&mut self, op: i64) -> i64 {
         self.output.push(self.combo(op) % 8);
-        // println!(
-        //     "Out: {:?}, from combo({}) -> B:{}",
-        //     self.output.last().unwrap(),
-        //     op,
-        //     self.reg.get(&'B').unwrap()
-        // );
+        println!(
+            "Out: {:?}, from combo({}) -> B:{}",
+            self.output.last().unwrap(),
+            op,
+            self.reg.get(&'B').unwrap()
+        );
         return self.output.last().unwrap().clone();
     }
 

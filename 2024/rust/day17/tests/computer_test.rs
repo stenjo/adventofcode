@@ -44,11 +44,19 @@ fn test_bst(#[case] input: i64, #[case] result: i64) {
 #[case(0, 7, 7)]
 #[case(3, 7, 4)]
 #[case(2, 7, 5)]
+#[case(7, 17, 22)]
+#[case(7, 22, 17)]
 fn test_bxl(#[case] input: i64, #[case] reg_b: i64, #[case] result: i64) {
     let mut c = Computer::new(TEST);
     c.reg.insert('B', reg_b);
     let res = c.bxl(input);
-    assert_eq!(&result, c.reg.get(&'B').unwrap());
+    assert_eq!(
+        &result,
+        c.reg.get(&'B').unwrap(),
+        "B {:b} -> {:b}",
+        reg_b,
+        result
+    );
     assert_eq!(result, res);
 }
 #[rstest]
@@ -119,35 +127,58 @@ fn test1(#[case] input: &str, #[case] result: Vec<usize>) {
     assert_eq!(s, part1(input.to_string()));
 }
 
-#[test]
-pub fn test_main() {
-    let path = "".to_string() + "../../data/day17.txt";
-    let input = match fs::read_to_string(&path) {
-        Ok(input) => input,
-        Err(e) => panic!("Error reading file: {}", e),
-    };
-    println!("{}", part1(input.clone()));
-    assert!(false)
-}
-#[test]
-pub fn test_run_to_copy() {
-    let path = "".to_string() + "../../data/day17.txt";
-    let input = match fs::read_to_string(&path) {
-        Ok(input) => input,
-        Err(e) => panic!("Error reading file: {}", e),
-    };
-    part2(input.clone());
-    assert!(false)
-}
+// #[test]
+// pub fn test_main() {
+//     let path = "".to_string() + "../../data/day17.txt";
+//     let input = match fs::read_to_string(&path) {
+//         Ok(input) => input,
+//         Err(e) => panic!("Error reading file: {}", e),
+//     };
+//     println!("{}", part1(input.clone()));
+//     assert!(false)
+// }
 
 // 2,4,1,7,7,5,1,7,4,6,0,3,5,5,3,0
 // 2 bst(4) -> A % 8
-// 1 bxl(7) -> B ^ 7
 // 7 cdv(5) -> A/ 32 -> C
-// 1 bxl(7) -> B ^ 7
 // 4 bxc(6) -> B ^ C -> B
 // 0 adv(3) -> A / 8 -> A
-// 5 out(5) -> output B
-// 3 jnz(0) -> jump to 0
 
-// A * 8
+// A : 111 00 000
+//
+#[rstest]
+#[case(7, vec![0])]
+#[case(0b111, vec![0])]
+#[case(0b11000111, vec![3,0])]
+fn test_backtrack(#[case] input: i64, #[case] result: Vec<i64>) {
+    let mut initial = input;
+    let path = "".to_string() + "../../data/day17.txt";
+    let config = match fs::read_to_string(&path) {
+        Ok(input) => input,
+        Err(e) => panic!("Error reading file: {}", e),
+    };
+    let mut c = Computer::new(&config);
+    c.reg.insert('A', initial);
+    c.run();
+    let out: u128 = c
+        .output
+        .iter()
+        .map(|p| p.to_string())
+        .collect::<Vec<String>>()
+        .join("")
+        .parse()
+        .unwrap();
+    println!("\nCode: {} -> Initial: {}", out, initial);
+    assert_eq!(result, c.output);
+}
+
+// #[test]
+// pub fn test_run_to_copy() {
+//     let path = "".to_string() + "../../data/day17.txt";
+//     let input = match fs::read_to_string(&path) {
+//         Ok(input) => input,
+//         Err(e) => panic!("Error reading file: {}", e),
+//     };
+//     part2(input.clone());
+//     assert!(false)
+// }
