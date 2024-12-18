@@ -101,7 +101,7 @@ impl Computer {
     pub fn bst(&mut self, op: i64) -> i64 {
         let result = self.combo(op) % 8;
         self.reg.insert('B', result);
-        println!("B: {:?}, from combo({}) -> B:{}", result, op, result);
+        // println!("B: {:?}, from combo({}) -> B:{}", result, op, result);
         return result;
     }
 
@@ -125,12 +125,12 @@ impl Computer {
 
     fn out(&mut self, op: i64) -> i64 {
         self.output.push(self.combo(op) % 8);
-        println!(
-            "Out: {:?}, from combo({}) -> B:{}",
-            self.output.last().unwrap(),
-            op,
-            self.reg.get(&'B').unwrap()
-        );
+        // println!(
+        //     "Out: {:?}, from combo({}) -> B:{}",
+        //     self.output.last().unwrap(),
+        //     op,
+        //     self.reg.get(&'B').unwrap()
+        // );
         return self.output.last().unwrap().clone();
     }
 
@@ -158,15 +158,19 @@ impl Computer {
     }
 
     pub(crate) fn run_to_copy(&self) -> i64 {
-        let mut initial = 31;
+        let take = 14;
+        let mut initial = 23244506011;
+        let mut i = 0;
         let hash: u128 = self
             .program
             .iter()
+            .take(take)
             .map(|p| p.to_string())
             .collect::<Vec<String>>()
             .join("")
             .parse()
             .unwrap();
+        println!("Initial: {:b}, target: {:o}", initial, hash);
         let original = self.clone();
         loop {
             let mut c = original.clone();
@@ -175,16 +179,22 @@ impl Computer {
             let out: u128 = c
                 .output
                 .iter()
+                .take(take)
                 .map(|p| p.to_string())
                 .collect::<Vec<String>>()
                 .join("")
                 .parse()
                 .unwrap();
-            if out == hash || initial > 1000000 {
+            if out == hash || i > 1000000 {
+                if i > 1000000 {
+                    println!("Maxed out. Try again");
+                    return 0;
+                }
+                println!("Code: {} -> Initial: {} ({})", out, initial, i);
                 return initial;
             }
-            initial += 32;
-            println!("Code: {} -> Initial: {}", out, initial);
+            initial += 1 << 25;
+            i += 1;
         }
     }
 }

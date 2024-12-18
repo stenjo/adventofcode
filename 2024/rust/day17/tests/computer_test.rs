@@ -139,7 +139,7 @@ fn test1(#[case] input: &str, #[case] result: Vec<usize>) {
 // }
 
 // 2,4,1,7,7,5,1,7,4,6,0,3,5,5,3,0
-// 2 bst(4) -> A % 8
+// 2 bst(4) -> A % 8 -> B
 // 7 cdv(5) -> A/ 32 -> C
 // 4 bxc(6) -> B ^ C -> B
 // 0 adv(3) -> A / 8 -> A
@@ -149,7 +149,8 @@ fn test1(#[case] input: &str, #[case] result: Vec<usize>) {
 #[rstest]
 #[case(7, vec![0])]
 #[case(0b111, vec![0])]
-#[case(0b11111001, vec![2,4])]
+#[case(923, vec![2,4,1])]
+#[case(923<<5, vec![2,4])]
 fn test_backtrack(#[case] input: i64, #[case] result: Vec<i64>) {
     let mut initial = input;
     let path = "".to_string() + "../../data/day17.txt";
@@ -172,13 +173,13 @@ fn test_backtrack(#[case] input: i64, #[case] result: Vec<i64>) {
     assert_eq!(result, c.output);
 }
 
-// #[test]
-// pub fn test_run_to_copy() {
-//     let path = "".to_string() + "../../data/day17.txt";
-//     let input = match fs::read_to_string(&path) {
-//         Ok(input) => input,
-//         Err(e) => panic!("Error reading file: {}", e),
-//     };
-//     part2(input.clone());
-//     assert!(false)
-// }
+#[test]
+pub fn test_run_to_copy() {
+    let path = "".to_string() + "../../data/day17.txt";
+    let input = match fs::read_to_string(&path) {
+        Ok(input) => input,
+        Err(e) => panic!("Error reading file: {}", e),
+    };
+    let initial = part2(input.clone());
+    assert_eq!(2417751746035530, initial)
+}

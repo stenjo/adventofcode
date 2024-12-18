@@ -8,5 +8,5 @@ pub fn main() {
         Err(e) => panic!("Error reading file: {}", e),
     };
     println!("{}", part1(input.clone()));
-    // println!("{}", part2(input));
+    println!("{}", part2(input));
 }
