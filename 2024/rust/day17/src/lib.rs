@@ -14,7 +14,7 @@ pub fn part1(input: String) -> String {
     return s;
 }
 
-pub fn part2(input: String) -> i64 {
+pub fn part2(input: String) -> u128 {
     let c = Computer::new(input.as_str());
     let result = c.run_to_copy();
     return result;

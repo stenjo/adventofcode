@@ -22,9 +22,9 @@ fn test_combo(#[case] input: i64, #[case] result: i64) {
 #[case(1, 364)]
 #[case(2, 182)]
 #[case(5, 729)]
-fn test_adv(#[case] input: i64, #[case] result: i64) {
+fn test_adv(#[case] input: i64, #[case] result: u128) {
     let mut c = Computer::new(TEST);
-    let res = c.adv(input);
+    let res = c.adv(input) as u128;
     assert_eq!(&result, c.reg.get(&'A').unwrap());
     assert_eq!(result, res);
 }
@@ -33,9 +33,9 @@ fn test_adv(#[case] input: i64, #[case] result: i64) {
 #[case(0, 0)]
 #[case(4, 1)]
 #[case(5, 0)]
-fn test_bst(#[case] input: i64, #[case] result: i64) {
+fn test_bst(#[case] input: i64, #[case] result: u128) {
     let mut c = Computer::new(TEST);
-    let res = c.bst(input);
+    let res = c.bst(input) as u128;
     assert_eq!(&result, c.reg.get(&'B').unwrap());
     assert_eq!(result, res);
 }
@@ -46,10 +46,10 @@ fn test_bst(#[case] input: i64, #[case] result: i64) {
 #[case(2, 7, 5)]
 #[case(7, 17, 22)]
 #[case(7, 22, 17)]
-fn test_bxl(#[case] input: i64, #[case] reg_b: i64, #[case] result: i64) {
+fn test_bxl(#[case] input: i64, #[case] reg_b: u128, #[case] result: u128) {
     let mut c = Computer::new(TEST);
     c.reg.insert('B', reg_b);
-    let res = c.bxl(input);
+    let res = c.bxl(input) as u128;
     assert_eq!(
         &result,
         c.reg.get(&'B').unwrap(),
@@ -78,9 +78,9 @@ fn test_jnz(#[case] input: i64, #[case] ip: i32, #[case] result: i64) {
 #[case("Register B: 2024\nRegister C: 43690\n\nProgram: 4,0", 0, 44354, 43690, vec![])]
 fn test_step(
     #[case] input: &str,
-    #[case] reg_a: i64,
-    #[case] reg_b: i64,
-    #[case] reg_c: i64,
+    #[case] reg_a: u128,
+    #[case] reg_b: u128,
+    #[case] reg_c: u128,
     #[case] result: Vec<i64>,
 ) {
     let mut c = Computer::new(input);
@@ -149,10 +149,9 @@ fn test1(#[case] input: &str, #[case] result: Vec<usize>) {
 #[rstest]
 #[case(7, vec![0])]
 #[case(0b111, vec![0])]
-#[case(923, vec![2,4,1])]
-#[case(923<<5, vec![2,4])]
-fn test_backtrack(#[case] input: i64, #[case] result: Vec<i64>) {
-    let mut initial = input;
+#[case(923, vec![2,4,1,1])]
+fn test_backtrack(#[case] input: u128, #[case] result: Vec<i64>) {
+    let initial = input;
     let path = "".to_string() + "../../data/day17.txt";
     let config = match fs::read_to_string(&path) {
         Ok(input) => input,
@@ -181,5 +180,16 @@ pub fn test_run_to_copy() {
         Err(e) => panic!("Error reading file: {}", e),
     };
     let initial = part2(input.clone());
-    assert_eq!(2417751746035530, initial)
+    let mut c = Computer::new(&input);
+    c.reg.insert('A', initial);
+    c.run();
+    let out: u128 = c
+        .output
+        .iter()
+        .map(|p| p.to_string())
+        .collect::<Vec<String>>()
+        .join("")
+        .parse()
+        .unwrap();
+    assert_eq!(2417751746035530, out)
 }

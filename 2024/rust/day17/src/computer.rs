@@ -10,7 +10,7 @@ pub struct OpCode {
 #[derive(Clone)]
 pub struct Computer {
     pub program: Vec<i64>,
-    pub reg: HashMap<char, i64>,
+    pub reg: HashMap<char, u128>,
     pub ip: i32,
     pub output: Vec<i64>,
 }
@@ -18,7 +18,7 @@ pub struct Computer {
 impl Computer {
     pub fn new(input: &str) -> Self {
         let mut program: Vec<i64> = Vec::new();
-        let mut reg: HashMap<char, i64> = HashMap::from([('A', 0), ('B', 0), ('C', 0)]);
+        let mut reg: HashMap<char, u128> = HashMap::from([('A', 0), ('B', 0), ('C', 0)]);
         let ip: i32 = 0;
 
         let mut parts = input.split("\n\n");
@@ -78,9 +78,9 @@ impl Computer {
 
         return match op {
             0 | 1 | 2 | 3 => op,
-            4 => a.clone(),
-            5 => b.clone(),
-            6 => c.clone(),
+            4 => a.clone() as i64,
+            5 => b.clone() as i64,
+            6 => c.clone() as i64,
             _ => panic!("Unknown operand: {}", op),
         };
     }
@@ -88,21 +88,21 @@ impl Computer {
     pub fn adv(&mut self, op: i64) -> i64 {
         let result = self.reg.get(&'A').unwrap() / (1 << self.combo(op));
         self.reg.insert('A', result);
-        return result;
+        return result as i64;
     }
 
     pub fn bxl(&mut self, op: i64) -> i64 {
         let b = self.reg.get(&'B').unwrap();
-        let result = b ^ op;
+        let result = b ^ op as u128;
         self.reg.insert('B', result);
-        return result;
+        return result as i64;
     }
 
     pub fn bst(&mut self, op: i64) -> i64 {
         let result = self.combo(op) % 8;
-        self.reg.insert('B', result);
+        self.reg.insert('B', result as u128);
         // println!("B: {:?}, from combo({}) -> B:{}", result, op, result);
-        return result;
+        return result as i64;
     }
 
     fn jnz(&mut self, op: i64) -> i64 {
@@ -120,7 +120,7 @@ impl Computer {
 
         let result = b ^ c;
         self.reg.insert('B', result);
-        return result;
+        return result as i64;
     }
 
     fn out(&mut self, op: i64) -> i64 {
@@ -137,13 +137,13 @@ impl Computer {
     fn bdv(&mut self, op: i64) -> i64 {
         let result = self.reg.get(&'A').unwrap() / (1 << self.combo(op));
         self.reg.insert('B', result);
-        return result;
+        return result as i64;
     }
 
     fn cdv(&mut self, op: i64) -> i64 {
         let result = self.reg.get(&'A').unwrap() / (1 << self.combo(op));
         self.reg.insert('C', result);
-        return result;
+        return result as i64;
     }
 
     pub(crate) fn output(&self) -> Vec<i64> {
@@ -157,44 +157,64 @@ impl Computer {
         return self.output();
     }
 
-    pub(crate) fn run_to_copy(&self) -> i64 {
-        let take = 14;
-        let mut initial = 23244506011;
+    pub(crate) fn run_to_copy(&self) -> u128 {
+        let mut take = 3;
+        let mut shifter: usize = 0;
+        let mut initial: u128 = 0;
+        let mut working: u128 = initial;
         let mut i = 0;
-        let hash: u128 = self
-            .program
-            .iter()
-            .take(take)
-            .map(|p| p.to_string())
-            .collect::<Vec<String>>()
-            .join("")
-            .parse()
-            .unwrap();
-        println!("Initial: {:b}, target: {:o}", initial, hash);
+        println!(
+            "Initial: {:b}, target: {:o}",
+            initial,
+            vec_as_u128(take, self.program.clone())
+        );
+        let mut hash = vec_as_u128(take, self.program.clone());
         let original = self.clone();
         loop {
             let mut c = original.clone();
-            c.reg.insert('A', initial);
+            c.reg.insert('A', working);
             c.run();
-            let out: u128 = c
-                .output
-                .iter()
-                .take(take)
-                .map(|p| p.to_string())
-                .collect::<Vec<String>>()
-                .join("")
-                .parse()
-                .unwrap();
-            if out == hash || i > 1000000 {
-                if i > 1000000 {
-                    println!("Maxed out. Try again");
+            let out = vec_as_u128(take, c.output.clone());
+
+            if i > 10000000 {
+                // println!(
+                //     "Increment {} takes too long. Trying: {} (bit:{})",
+                //     (1 as u128) << shifter,
+                //     (1 as u128) << (shifter + 1),
+                //     shifter
+                // );
+                shifter += 1;
+                if shifter > 64 {
+                    println!("Fail! Shifter: {}, Take: {}", shifter, take);
                     return 0;
                 }
-                println!("Code: {} -> Initial: {} ({})", out, initial, i);
-                return initial;
+                working = initial;
+                i = 0;
             }
-            initial += 1 << 25;
+            if out == hash {
+                initial = working;
+                if take >= self.program.len() {
+                    println!("Winner: {} -> Initial: {} ({})", out, initial, i);
+                    return initial as u128;
+                }
+                println!("Out: {} -> first {} digits done. {}", out, take, initial);
+                take += 1;
+                hash = vec_as_u128(take, self.program.clone());
+            }
+            working += (1 as u128) << shifter;
             i += 1;
         }
     }
+}
+
+fn vec_as_u128(take: usize, v: Vec<i64>) -> u128 {
+    let out: u128 = v
+        .iter()
+        .take(take)
+        .map(|p| p.to_string())
+        .collect::<Vec<String>>()
+        .join("")
+        .parse()
+        .unwrap();
+    out
 }
