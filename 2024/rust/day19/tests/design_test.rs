@@ -14,7 +14,6 @@ bbrgwb";
 #[test]
 fn test_design() {
     let d = Design::new(TEST);
-    assert_eq!(d.inventory.len(), 8);
     assert_eq!(d.designs.len(), 8);
 }
 

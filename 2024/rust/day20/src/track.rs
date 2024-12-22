@@ -163,6 +163,38 @@ impl Track {
         }
         return cheat_list;
     }
+
+    pub fn calculate_possible_paths(&self) -> usize {
+        let mut paths: HashSet<(Loc, Loc)> = HashSet::new();
+        for &start in self.path.keys() {
+            for &end in self.path.keys() {
+                if start != end && self.is_within_max_distance(start, end) {
+                    let path = self.find_path(start, end);
+                    paths.insert(path);
+                }
+            }
+        }
+        return paths.len();
+    }
+
+    fn is_within_max_distance(&self, start: Loc, end: Loc) -> bool {
+        let distance = (start.x - end.x).abs() + (start.y - end.y).abs();
+        return distance <= 20;
+    }
+
+    fn find_path(&self, start: Loc, end: Loc) -> (Loc, Loc) {
+        let mut path = (start, end);
+        let mut current = start;
+        while current != end {
+            let direction = self.path[&current];
+            current = current.get_next(direction);
+            if self.walls.contains(&current) {
+                path = (start, current);
+                break;
+            }
+        }
+        return path;
+    }
 }
 
 fn is_saving(track: &HashMap<Loc, i64>, one: Loc, other: Loc) -> Option<i64> {
