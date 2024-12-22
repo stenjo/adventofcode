@@ -188,6 +188,7 @@ name = "day15"
 version = "0.1.0"
 dependencies = [
  "assert_cmd",
+ "itertools",
  "once_cell",
  "rstest",
 ]
@@ -235,6 +236,15 @@ dependencies = [
  "assert_cmd",
  "once_cell",
  "petgraph",
+ "rstest",
+]
+
+[[package]]
+name = "day21"
+version = "0.1.0"
+dependencies = [
+ "assert_cmd",
+ "once_cell",
  "rstest",
 ]
 

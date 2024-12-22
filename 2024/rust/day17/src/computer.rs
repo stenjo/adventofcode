@@ -158,7 +158,7 @@ impl Computer {
     }
 
     pub(crate) fn run_to_copy(&self) -> u128 {
-        let mut take = 3;
+        let mut take = 1;
         let mut shifter: usize = 0;
         let mut initial: u128 = 0;
         let mut working: u128 = initial;
@@ -176,7 +176,7 @@ impl Computer {
             c.run();
             let out = vec_as_u128(take, c.output.clone());
 
-            if i > 10000000 {
+            if i > 1024 {
                 // println!(
                 //     "Increment {} takes too long. Trying: {} (bit:{})",
                 //     (1 as u128) << shifter,
