@@ -62,5 +62,5 @@ fn test_part1_success() {
         .arg("../../data/day23.txt")
         .assert()
         .success()
-        .stdout("321\n386\n");
+        .stdout("1062\nbz,cs,fx,ms,oz,po,sy,uh,uv,vw,xu,zj,zm\n");
 }
