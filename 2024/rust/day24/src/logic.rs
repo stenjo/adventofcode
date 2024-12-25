@@ -141,4 +141,38 @@ impl Logic {
         }
         return number;
     }
+
+    pub(crate) fn swapped_gates(&mut self) -> i64 {
+        self.run();
+        let x = self.get_number('x');
+        let y = self.get_number('y');
+        let z = self.get_number('z');
+
+        println!("x: {}", x);
+        println!("y: {}", y);
+        println!("z: {:b}", z);
+        println!("-: {:b}", x + y);
+
+        z
+    }
+
+    fn get_number(&self, prefix: char) -> i64 {
+        let digits: Vec<String> = self
+            .gates
+            .keys()
+            .filter(|&n| n.starts_with(prefix))
+            .cloned()
+            .collect();
+        let mut number: i64 = 0;
+        for d in digits {
+            if let Some(gate) = self.gates.get::<String>(&d) {
+                if let Some(output) = gate.output {
+                    if output {
+                        number |= 1 << d[1..].parse::<i64>().unwrap();
+                    }
+                }
+            }
+        }
+        number
+    }
 }

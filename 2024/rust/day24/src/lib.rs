@@ -9,5 +9,7 @@ pub fn part1(input: String) -> i64 {
 }
 
 pub fn part2(input: String) -> i64 {
-    return input.len().try_into().unwrap();
+    let mut l = Logic::new(&input);
+    l.run();
+    return l.swapped_gates();
 }
