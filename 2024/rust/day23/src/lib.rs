@@ -1,5 +1,6 @@
 use std::collections::{BTreeSet, HashMap, HashSet, VecDeque};
 type Graph = HashMap<String, HashSet<String>>;
+pub mod lan;
 
 fn add_edge(graph: &mut Graph, node1: &str, node2: &str) {
     graph
@@ -46,7 +47,7 @@ pub fn bfs_longest(graph: &Graph, start: &str) -> (String, i64, HashSet<String>)
     let mut queue: VecDeque<(String, i64)> = VecDeque::from(vec![(start.to_string(), 0)]);
     let mut parents: HashMap<String, String> = HashMap::new();
     visited.insert(start.to_string());
-    let mut furthest = (start.to_string(), 0i64);
+    let mut furthest = (start.to_string(), 0);
     while !queue.is_empty() {
         if let Some((node, distance)) = queue.pop_front() {
             if distance > furthest.1 {
