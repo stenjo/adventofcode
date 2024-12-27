@@ -74,6 +74,15 @@ impl Loc {
             || ((other.y - self.y).abs() == 1 && other.x == self.x)
     }
     pub const DIRECTIONS: [char; 4] = ['>', 'v', '<', '^'];
+
+    fn get_dir_to(&self, next: Loc) -> Option<char> {
+        for dir in Loc::DIRECTIONS.iter() {
+            if next.get_next(*dir) == self.clone() {
+                return Some(*dir);
+            }
+        }
+        return None;
+    }
 }
 
 pub struct LocMap {
@@ -133,6 +142,14 @@ impl LocMap {
         }
     }
 
+    pub fn get_char_loc(&self, c: char) -> Loc {
+        for (loc, ch) in self.map.iter() {
+            if *ch == c {
+                return loc.clone();
+            }
+        }
+        panic!("Character not found: {}", c);
+    }
     pub fn get(&self, loc: &Loc) -> char {
         match self.map.get(loc) {
             Some(c) => *c,
@@ -187,19 +204,40 @@ impl LocMap {
             loc = node;
             self.cost.insert(loc.clone(), cost);
         }
-        cost = *self.cost.get(&end).unwrap();
-        while cost > 0 {
-            cost -= 1;
-            if let Some((l, c)) = self
-                .cost
-                .iter()
-                .find(|(&l, v)| loc.is_neighbor(&l) && **v == cost)
-            {
-                loc = l.clone();
-                path.push(loc.clone());
+        if let Some(node_cost) = self.cost.get_mut(&end) {
+            let mut loc = end.clone();
+            let mut current_cost = *node_cost;
+            path.push(end.clone());
+            while current_cost > 0 {
+                current_cost -= 1;
+                if let Some((l, c)) = self
+                    .cost
+                    .iter()
+                    .find(|(&l, &v)| loc.is_neighbor(&l) && v == current_cost)
+                {
+                    loc = l.clone();
+                    path.push(loc.clone());
+                }
             }
         }
         path
+    }
+
+    pub fn get_directions(&mut self, start: &Loc, end: &Loc) -> Vec<char> {
+        self.cost.clear();
+        let mut directions = vec![];
+        let mut path = self.get_path(start, end);
+        path.reverse();
+        let mut current = path.pop().unwrap();
+        while let Some(next) = path.pop() {
+            if let Some(dir) = current.get_dir_to(next) {
+                directions.push(dir);
+                current = next;
+            } else {
+                println!("No direction from {:?} to {:?}", current, next);
+            }
+        }
+        directions
     }
 
     pub fn visualize(&self, path: &Vec<Loc>, c: char) {
