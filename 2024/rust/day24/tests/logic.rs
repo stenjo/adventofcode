@@ -81,10 +81,37 @@ x04 AND y04 -> z04
 x05 AND y05 -> z00";
 
 #[rstest]
+#[case(LARGE, 3, 3)]
+fn test_find_input(#[case] input: &str, #[case] bit: usize, #[case] result: i64) {
+    let mut l = Logic::new(input);
+    let z_0 = l.gates.get(format!("z{:02}", bit).as_str()).unwrap();
+
+    l.find_input_x(bit, z_0);
+    assert_eq!(result, l.number() as i64);
+}
+
+#[rstest]
+#[case(LARGE, 2024)]
+fn testrun_adder(#[case] input: &str, #[case] result: i64) {
+    let mut l = Logic::new(input);
+    l.run_adder(0);
+    assert_eq!(result, l.number() as i64);
+}
+
+#[rstest]
 #[case(TEST, 4)]
 #[case(LARGE, 2024)]
 fn test1(#[case] input: &str, #[case] result: i64) {
     let mut l = Logic::new(input);
     l.run();
     assert_eq!(result, l.number() as i64);
+}
+
+#[rstest]
+#[case(TEST, 4)]
+#[case(LARGE, 2024)]
+fn test2(#[case] input: &str, #[case] result: i64) {
+    let mut l = Logic::new(input);
+    l.run();
+    assert_eq!(result, l.swapped_gates() as i64);
 }

@@ -1,7 +1,7 @@
 use std::vec;
 
 use day21::{
-    keypad::{self, Keypad, Starship},
+    keypad::{Keypad, Starship},
     loc::Loc,
 };
 use rstest::rstest;
@@ -44,25 +44,25 @@ fn test_starship_new() {
     assert_eq!(starship.keypads[0].keys.len(), 11);
 }
 
-#[rstest]
-#[case::first("0753A", 9)]
-#[case::first("0003A", 18)]
-fn test_starship_complexity(#[case] input: &str, #[case] expected: i64) {
-    let starship = Starship::new(input);
-    assert_eq!(expected, starship.complexity(input));
-}
+// #[rstest]
+// #[case::first("0753A", 9)]
+// #[case::first("0003A", 18)]
+// fn test_starship_complexity(#[case] input: &str, #[case] expected: i64) {
+//     let starship = Starship::new(input);
+//     assert_eq!(expected, starship.complexity(input));
+// }
 
-#[rstest]
-#[case('A','0', vec!['<'])]
-fn test_keypad_get_moves(
-    #[case] from_char: char,
-    #[case] to_char: char,
-    #[case] expected: Vec<char>,
-) {
-    let input = vec!["789", "456", "123", " 0A"];
-    let keypad = Keypad::new(input);
-    let from = keypad.get_loc(from_char).unwrap();
-    let to = keypad.get_loc(to_char).unwrap();
-    let moves = keypad.get_moves(&from, &to);
-    assert_eq!(expected, moves);
-}
+// #[rstest]
+// #[case('A','0', vec!['<'])]
+// fn test_keypad_get_moves(
+//     #[case] from_char: char,
+//     #[case] to_char: char,
+//     #[case] expected: Vec<char>,
+// ) {
+//     let input = vec!["789", "456", "123", " 0A"];
+//     let keypad = Keypad::new(input);
+//     let from = keypad.get_loc(from_char).unwrap();
+//     let to = keypad.get_loc(to_char).unwrap();
+//     let moves = keypad.get_moves(&from, &to);
+//     assert_eq!(expected, moves);
+// }

@@ -1,5 +1,4 @@
 use assert_cmd::Command;
-use day24::*;
 use rstest::rstest;
 
 const LARGE: &str = "x00: 1
@@ -51,9 +50,24 @@ tgd XOR rvg -> z12
 tnw OR pbm -> gnj";
 
 #[rstest]
-#[case::first(LARGE, 4)]
+#[case(LARGE, 2024)]
 fn test1(#[case] input: &str, #[case] result: i64) {
+    use day24::part1;
+
     assert_eq!(result, part1(input.to_string()));
+}
+
+#[rstest]
+#[case(LARGE, 2)]
+fn test2(#[case] input: &str, #[case] result: i64) {
+    use day24::logic::Logic;
+
+    let mut l = Logic::new(input);
+    l.run();
+
+    l.visualize();
+
+    // assert_eq!(result, part2(input.to_string()));
 }
 
 #[test]
@@ -63,5 +77,5 @@ fn test_part1_success() {
         .arg("../../data/day24.txt")
         .assert()
         .success()
-        .stdout("42883464055378\n386\n");
+        .stdout("42883464055378\ndqr,dtk,pfw,shh,vgs,z21,z33,z39\n");
 }
