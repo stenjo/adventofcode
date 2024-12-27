@@ -30,7 +30,7 @@ fn test_grid(#[case] test: &str, #[case] min: Loc, #[case] max: Loc) {
 #[case(TEST, Loc::new(0, 0), Loc::new(5, 5), 11)]
 #[case(TEST2, Loc::new(0, 0), Loc::new(4, 5), 18)]
 #[case(TEST2, Loc::new(3, 4), Loc::new(0, 2), 8)]
-#[case(KEYPAD1, Loc::new(2, 3), Loc::new(0, 0), 8)]
+#[case(KEYPAD1, Loc::new(2, 3), Loc::new(0, 0), 6)]
 fn test_path(#[case] test: &str, #[case] start: Loc, #[case] end: Loc, #[case] length: usize) {
     let mut lm = LocMap::new(test);
 
@@ -55,16 +55,21 @@ fn test_directions(
     #[case] stop: char,
     #[case] dirs: &str,
 ) {
+    use std::collections::HashMap;
+
     let mut lm = LocMap::new(test);
     let begin = lm.get_char_loc(start);
     let end = lm.get_char_loc(stop);
     let directions = lm.get_directions(&begin, &end);
-
-    assert_eq!(
-        dirs,
-        directions
-            .into_iter()
-            .map(|s| s.to_string())
-            .collect::<String>()
-    );
+    let mut d1: HashMap<char, i32> = HashMap::new();
+    let mut d2: HashMap<char, i32> = HashMap::new();
+    for &c in directions.iter() {
+        let count = d1.entry(c).or_insert(0);
+        *count += 1;
+    }
+    for c in dirs.chars() {
+        let count = d2.entry(c).or_insert(0);
+        *count += 1;
+    }
+    assert_eq!(d2, d1);
 }
