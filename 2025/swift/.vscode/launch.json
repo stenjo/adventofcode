@@ -1,0 +1,14 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug Swift Program",
+            "program": "${workspaceFolder}/.build/debug/AdventOfCode2025",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "preLaunchTask": "Swift: Build"
+        }
+    ]
+}

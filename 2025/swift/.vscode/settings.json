@@ -1,0 +1,11 @@
+{
+    "swift.path": "/usr/bin/swift",
+    "swift.buildPath": ".build",
+    "swift.autoGenerateLaunchConfigurations": true,
+    "files.exclude": {
+        "**/.build": true
+    },
+    "search.exclude": {
+        "**/.build": true
+    }
+}
