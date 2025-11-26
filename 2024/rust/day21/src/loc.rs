@@ -1,5 +1,12 @@
+use bimap::{BiHashMap, BiMap};
+use core::panic;
 use once_cell::sync::Lazy;
-use std::collections::{HashMap, VecDeque};
+use petgraph::algo::dijkstra;
+use petgraph::graph::{NodeIndex, UnGraph};
+use petgraph::visit::EdgeRef;
+use petgraph::{Graph, Undirected};
+use std::cmp::Ordering;
+use std::collections::{BinaryHeap, HashMap, HashSet};
 
 #[derive(Debug, Clone, Copy, Eq, Hash, PartialEq, PartialOrd, Ord)]
 pub struct Loc {
@@ -68,6 +75,12 @@ impl Loc {
     pub fn get_next(&self, dir: char) -> Loc {
         return self.clone().add(DIRECTION.get(&dir).unwrap());
     }
+    pub fn get_next_option(&self, dir: char) -> Option<Loc> {
+        if let Some(v) = DIRECTION.get(&dir) {
+            return Some(self.clone().add(v));
+        }
+        return None;
+    }
 
     pub fn is_neighbor(&self, other: &Loc) -> bool {
         ((other.x - self.x).abs() == 1 && other.y == self.y)
@@ -87,21 +100,51 @@ impl Loc {
 
 pub struct LocMap {
     pub map: HashMap<Loc, char>,
+    pub graph: Graph<char, i32, Undirected>,
+    pub graph_map: BiHashMap<Loc, NodeIndex>,
+    pub key_map: BiHashMap<char, Loc>,
+    pub weight_map: HashMap<NodeIndex, i32>,
     pub cost: HashMap<Loc, i32>,
     pub min: Loc,
     pub max: Loc,
+    pub current: Loc,
 }
 
 impl LocMap {
     pub fn new(input: &str) -> Self {
         let mut map: HashMap<Loc, char> = HashMap::new();
+        let mut graph = UnGraph::new_undirected();
+        let mut graph_map: BiHashMap<Loc, NodeIndex> = BiHashMap::new();
+        let mut key_map: BiHashMap<char, Loc> = BiHashMap::new();
+        let mut weight_map: HashMap<NodeIndex, i32> = HashMap::new();
         let mut min = Loc::new(0, 0);
         let mut max = Loc::new(0, 0);
+        let mut current = Loc::new(0, 0);
         for (y, ln) in input.lines().enumerate() {
             for (x, c) in ln.chars().enumerate() {
                 if c != ' ' {
                     let loc = Loc::new(x as i64, y as i64);
                     map.insert(loc.clone(), c);
+                    key_map.insert(c, loc.clone());
+                    let loc_idx = graph.add_node(c);
+                    graph_map.insert(loc.clone(), loc_idx);
+
+                    if x > 0 {
+                        let left = Loc::new(x as i64 - 1, y as i64);
+                        if let Some(left_idx) = graph_map.get_by_left(&left) {
+                            graph.add_edge(loc_idx, *left_idx, 1);
+                        }
+                    }
+                    if y > 0 {
+                        let up = Loc::new(x as i64, y as i64 - 1);
+                        if let Some(up_idx) = graph_map.get_by_left(&up) {
+                            graph.add_edge(loc_idx, *up_idx, 1);
+                        }
+                    }
+
+                    if c == 'A' {
+                        current = loc.clone();
+                    }
                     if loc.x < min.x {
                         min.x = loc.x;
                     }
@@ -118,11 +161,20 @@ impl LocMap {
             }
         }
 
+        if let Some(start) = graph_map.get_by_left(&current) {
+            weight_map = dijkstra(&graph, *start, None, |e| *e.weight())
+        }
+
         Self {
             map,
+            graph,
+            graph_map,
+            key_map,
+            weight_map,
             cost: HashMap::new(),
             min,
             max,
+            current,
         }
     }
 
@@ -142,22 +194,42 @@ impl LocMap {
         }
     }
 
-    pub fn get_char_loc(&self, c: char) -> Loc {
-        for (loc, ch) in self.map.iter() {
-            if *ch == c {
-                return loc.clone();
-            }
+    pub fn get_loc(&self, c: char) -> Loc {
+        if let Some(loc) = self.key_map.get_by_left(&c) {
+            return loc.clone();
         }
         panic!("Character not found: {}", c);
     }
     pub fn get(&self, loc: &Loc) -> char {
-        match self.map.get(loc) {
-            Some(c) => *c,
-            None => ' ',
+        if let Some(node_idx) = self.graph_map.get_by_left(loc) {
+            let c = self.graph[*node_idx];
+            if c == match self.map.get(loc) {
+                Some(c) => *c,
+                None => ' ',
+            } {
+                return c;
+            }
+            panic!("Character mismatch: {:?}", loc);
         }
+        panic!("Location not found: {:?}", loc);
     }
-    pub fn get_cost_option(&self, loc: &Loc) -> Option<&i32> {
-        return self.cost.get(loc);
+    pub fn get_cost_option(&mut self, loc: &Loc) -> Option<&i32> {
+        if let Some(idx) = self.graph_map.get_by_left(loc) {
+            return calc_weight(self, self.graph_map.get_by_right(idx).unwrap());
+            // return self.weight_map.get(idx);
+        }
+        None
+        // if self.cost.len() == 0 {
+        //     let ref_loc = self.current;
+        //     let start_idx = self.graph_map.get_by_left(&ref_loc).unwrap();
+        //     let cost = dijkstra(&self.graph, *start_idx, None, |e| *e.weight());
+        //     for (&node_idx, c) in cost.iter() {
+        //         let ch = self.graph[node_idx];
+        //         let l = self.get_loc(ch);
+        //         self.cost.insert(l, *c);
+        //     }
+        // }
+        // return self.cost.get(loc);
     }
 
     pub fn get_option(&self, loc: &Loc) -> Option<char> {
@@ -169,63 +241,22 @@ impl LocMap {
     }
 
     pub fn get_path(&mut self, start: &Loc, end: &Loc) -> Vec<Loc> {
-        let mut path = vec![];
-        let mut visited: HashMap<Loc, i32> = HashMap::new();
-        let mut queue: VecDeque<(Loc, i32)> = VecDeque::new();
-        let mut loc = start.clone();
-        let mut cost = 0;
-        visited.insert(loc.clone(), cost);
-        self.cost.insert(loc.clone(), cost);
-        while queue.len() > 0 || loc != *end {
-            for dir in Loc::DIRECTIONS.iter() {
-                let next_loc = loc.get_next(*dir);
-                if let Some(next) = self.get_option(&next_loc) {
-                    if next == ' ' {
-                        visited.insert(next_loc.clone(), i32::MAX);
-                        continue;
-                    }
-                    if visited.contains_key(&next_loc) {
-                        if visited[&next_loc] > cost + 1 {
-                            if let Some(v) = visited.get_mut(&next_loc) {
-                                *v = cost + 1;
-                            }
-                        }
-                        continue;
-                    }
-                    queue.push_back((next_loc.clone(), cost + 1));
-                    visited.insert(next_loc.clone(), cost + 1);
-                }
-            }
-            let (node, node_cost) = match queue.pop_front() {
-                Some((node, node_cost)) => (node, node_cost),
-                None => break,
-            };
-            cost = node_cost;
-            loc = node;
-            self.cost.insert(loc.clone(), cost);
+        let start_idx = self.graph_map.get_by_left(&start).unwrap();
+        let end_idx = self.graph_map.get_by_left(&end).unwrap();
+
+        let path =
+            shortest_path_with_priority(&self, &self.weight_map, *start_idx, *end_idx).unwrap();
+        let mut locs: Vec<Loc> = Vec::new();
+        for &l in &path {
+            let key = self.graph[l];
+            locs.push(self.get_loc(key).clone());
         }
-        if let Some(node_cost) = self.cost.get_mut(&end) {
-            let mut loc = end.clone();
-            let mut current_cost = *node_cost;
-            path.push(end.clone());
-            while current_cost > 0 {
-                current_cost -= 1;
-                if let Some((l, c)) = self
-                    .cost
-                    .iter()
-                    .find(|(&l, &v)| loc.is_neighbor(&l) && v == current_cost)
-                {
-                    loc = l.clone();
-                    path.push(loc.clone());
-                }
-            }
-        }
-        path
+        // (locs.len() as i32, locs)
+        locs
     }
 
     pub fn get_directions(&mut self, start: &Loc, end: &Loc) -> Vec<char> {
-        self.cost.clear();
-        let mut directions = vec![];
+        let mut directions: Vec<char> = Vec::new();
         let mut path = self.get_path(start, end);
         path.reverse();
         let mut current = path.pop().unwrap();
@@ -240,6 +271,117 @@ impl LocMap {
         directions
     }
 
+    pub fn directions_to(&mut self, to: char) -> Vec<char> {
+        let (_, idx_list) = self.dijkstra_pri(to);
+        idx_list
+    }
+
+    pub fn distance_to(&mut self, to: char) -> i32 {
+        let (cost, _) = self.dijkstra_pri(to);
+        cost
+    }
+
+    pub fn convert(&self, path: &Vec<char>) -> Vec<char> {
+        let mut new_path: Vec<char> = Vec::new();
+        let mut current = self.current;
+        for &dir in path.iter() {
+            if dir == 'A' {
+                if let Some(cr) = self.get_option(&current) {
+                    new_path.push(cr);
+                } else {
+                    new_path.push('x');
+                }
+            } else {
+                if let Some(next) = current.get_next_option(dir) {
+                    current = next;
+                } else {
+                    println!("No option for {:?} : {}", current, dir);
+                }
+            }
+        }
+        new_path
+    }
+
+    // pub fn dijkstra_to(&mut self, to: char) -> (i32, Vec<char>) {
+    //     let end = self.key_map.get(&to).unwrap();
+    //     let start = self.current;
+    //     let start_idx = self.graph_map.get(&start).unwrap();
+    //     let end_idx = self.graph_map.get(end).unwrap();
+
+    //     let path = dijkstra_with_paths(&self.graph, *start_idx, *end_idx).unwrap();
+    //     self.current = end.clone();
+    //     let mut keys: Vec<char> = Vec::new();
+    //     let mut locs: Vec<Loc> = Vec::new();
+    //     let mut dirs: Vec<char> = Vec::new();
+    //     for &l in &path {
+    //         let key = self.graph[l];
+    //         locs.push(self.get_loc(key).clone());
+    //         keys.push(key.clone());
+    //     }
+
+    //     locs.reverse();
+    //     let mut current = locs.pop().unwrap();
+    //     while let Some(loc) = locs.pop() {
+    //         let dir = loc.get_dir_to(current).unwrap();
+    //         dirs.push(dir);
+    //         current = loc;
+    //     }
+
+    //     (dirs.len() as i32, dirs)
+    // }
+
+    pub fn dijkstra_pri(&mut self, to: char) -> (i32, Vec<char>) {
+        let end = self.key_map.get_by_left(&to).unwrap();
+        let start = self.current;
+        let start_idx = self.graph_map.get_by_left(&start).unwrap();
+        let end_idx = self.graph_map.get_by_left(end).unwrap();
+
+        if let Some(path) =
+            shortest_path_with_priority(&self, &self.weight_map, *start_idx, *end_idx)
+        {
+            self.current = end.clone();
+
+            let mut dirs: Vec<char> = Vec::new();
+
+            let mut location_path: Vec<Loc> = path
+                .iter()
+                .map(|&n| self.graph_map.get_by_right(&n).unwrap().clone())
+                .collect();
+            location_path.reverse();
+            let mut current = location_path.pop().unwrap();
+            while let Some(loc) = location_path.pop() {
+                let dir = loc.get_dir_to(current).unwrap();
+                dirs.push(dir);
+                current = loc;
+            }
+            // println!(
+            //     "Prioritert korteste vei: {:?}",
+            //     dirs.iter().collect::<String>()
+            // );
+
+            return (dirs.len() as i32, dirs);
+        } else {
+            println!(
+                "Ingen vei funnet fra {:?} til {:?}",
+                self.map[&start], self.map[end]
+            );
+        }
+        (0 as i32, vec![])
+    }
+
+    // pub fn cost_sort(&mut self, dirs: &Vec<char>) -> Vec<char> {
+    //     let mut sorted = dirs.clone();
+    //     sorted.sort_by(|a, b| {
+    //         let a_loc = &self.get_loc(*a);
+    //         let b_loc = &self.get_loc(*b);
+    //         let a_cost = *self.get_cost_option(a_loc).unwrap();
+    //         let b_cost = *self.get_cost_option(b_loc).unwrap();
+    //         b_cost.cmp(&a_cost)
+    //     }); // Sorter etter retning
+
+    //     sorted
+    // }
+
     pub fn visualize(&self, path: &Vec<Loc>, c: char) {
         for y in self.min.y..self.max.y + 1 {
             for x in self.min.x..self.max.x + 1 {
@@ -247,14 +389,18 @@ impl LocMap {
                 if path.contains(&l) {
                     print!("{}", c);
                 } else {
-                    print!("{}", self.get(&l));
+                    if self.map.contains_key(&l) {
+                        print!("{}", self.get(&l));
+                    } else {
+                        print!("-");
+                    }
                 }
             }
             println!();
         }
     }
 
-    pub fn visualize_cost(&self, path: &Vec<Loc>, c: char) {
+    pub fn visualize_cost(&mut self, path: &Vec<Loc>, c: char) {
         for y in self.min.y..self.max.y + 1 {
             for x in self.min.x..self.max.x + 1 {
                 let l = Loc::new(x, y);
@@ -280,3 +426,140 @@ pub static DIRECTION: Lazy<HashMap<char, Loc>> = Lazy::new(|| {
     map.insert('v', Loc { x: 0, y: 1 });
     map
 });
+
+#[derive(Debug, PartialEq, Eq)]
+struct PathState {
+    cost: i32,
+    x_value: i32, // x-verdi for slutt-noden
+    path: Vec<NodeIndex>,
+}
+
+// Tilpasset sortering for å prioritere korteste vei, sekundært basert på lexikografisk rekkefølge
+impl Ord for PathState {
+    fn cmp(&self, other: &Self) -> Ordering {
+        other
+            .cost
+            .cmp(&self.cost) // Minimer kostnad
+            .then_with(|| self.x_value.cmp(&other.x_value)) // Minimer x-verdi
+                                                            // .then_with(|| self.x_value.cmp(&other.x_value)) // Minimer x-verdi
+    }
+}
+
+impl PartialOrd for PathState {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+// Modifisert Dijkstra for å prioritere veier
+fn shortest_path_with_priority(
+    loc_map: &LocMap,
+    weight_map: &HashMap<NodeIndex, i32>,
+    start: NodeIndex,
+    end: NodeIndex,
+) -> Option<Vec<NodeIndex>> {
+    let mut visited: HashSet<NodeIndex> = HashSet::new();
+    let mut heap = BinaryHeap::new();
+    let start_x = calc_weight(loc_map, start);
+
+    heap.push(PathState {
+        cost: 0,
+        x_value: start_x as i32,
+        path: vec![start],
+    });
+
+    while let Some(PathState {
+        cost,
+        x_value,
+        path,
+    }) = heap.pop()
+    {
+        let current = *path.last().unwrap();
+
+        if current == end {
+            return Some(path);
+        }
+
+        if !visited.insert(current) {
+            continue;
+        }
+
+        for edge in loc_map.graph.edges(current) {
+            let neighbor = edge.target();
+            let weight = *edge.weight();
+            let neighbor_x = calc_weight(loc_map, neighbor);
+            // let neghbor = key_map[&graph[neighbor]].clone();
+            // let neighbor_x = neghbor.x * 10 - neghbor.y;
+
+            if !visited.contains(&neighbor) {
+                let mut new_path = path.clone();
+                new_path.push(neighbor);
+
+                heap.push(PathState {
+                    cost: cost + weight,
+                    x_value: neighbor_x as i32,
+                    path: new_path,
+                });
+            }
+        }
+    }
+
+    None
+}
+
+fn calc_weight(lm: &LocMap, node_index: NodeIndex) -> i32 {
+    let ch = lm.graph[node_index];
+    return match ch {
+        'A' => 0,
+        '<' => 4,
+        '^' | 'v' => 3,
+        '>' => 2,
+        _ => lm.weight_map[&node_index],
+    };
+}
+
+// fn dijkstra_with_paths(
+//     graph: &UnGraph<char, i32>,
+//     start: NodeIndex,
+//     end: NodeIndex,
+// ) -> Option<Vec<NodeIndex>> {
+//     let distances = dijkstra(graph, start, None, |e| *e.weight());
+
+//     // Sjekk om mål-node kan nås
+//     if !distances.contains_key(&end) {
+//         return None; // Ingen vei til mål
+//     }
+
+//     // Bygg forgjenger-tabell
+//     let mut predecessors: HashMap<NodeIndex, NodeIndex> = HashMap::new();
+
+//     // Gå gjennom alle kanter og oppdater forgjenger
+//     for edge in graph.edge_references() {
+//         let (source, target) = (edge.source(), edge.target());
+//         let weight = *edge.weight();
+
+//         if let (Some(&source_dist), Some(&target_dist)) =
+//             (distances.get(&source), distances.get(&target))
+//         {
+//             if source_dist + weight == target_dist {
+//                 predecessors.insert(target, source);
+//             } else if target_dist + weight == source_dist {
+//                 predecessors.insert(source, target);
+//             }
+//         }
+//     }
+
+//     // Konstruer veien ved å gå bakover fra end
+//     let mut path = Vec::new();
+//     let mut current = end;
+
+//     while current != start {
+//         path.push(current);
+//         current = *predecessors.get(&current)?;
+//     }
+
+//     path.push(start);
+//     path.reverse(); // Gjør veien i riktig rekkefølge
+
+//     Some(path)
+// }
