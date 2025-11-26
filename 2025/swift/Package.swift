@@ -5,11 +5,44 @@ import PackageDescription
 
 let package = Package(
     name: "AdventOfCode2025",
+    platforms: [.macOS(.v13)],
+    products: [
+        .library(name: "AdventCore", targets: ["AdventCore"]),
+        .executable(name: "Day01", targets: ["Day01"]),
+        // Add more days here as you create them
+        // .executable(name: "Day02", targets: ["Day02"]),
+    ],
     targets: [
-        // Targets are the basic building blocks of a package, defining a module or a test suite.
-        // Targets can depend on other targets in this package and products from dependencies.
-        .executableTarget(
-            name: "AdventOfCode2025"
+        // Shared utilities and helpers
+        .target(
+            name: "AdventCore",
+            dependencies: [],
+            path: "Sources/AdventCore"
         ),
+        
+        // Day 01
+        .executableTarget(
+            name: "Day01",
+            dependencies: ["AdventCore"],
+            path: "Sources/Day01"
+        ),
+        .testTarget(
+            name: "Day01Tests",
+            dependencies: ["Day01", "AdventCore"],
+            path: "Tests/Day01Tests"
+        ),
+        
+        // Add more days here following the same pattern
+        // Day 02
+        // .executableTarget(
+        //     name: "Day02",
+        //     dependencies: ["AdventCore"],
+        //     path: "Sources/Day02"
+        // ),
+        // .testTarget(
+        //     name: "Day02Tests",
+        //     dependencies: ["Day02", "AdventCore"],
+        //     path: "Tests/Day02Tests"
+        // ),
     ]
 )

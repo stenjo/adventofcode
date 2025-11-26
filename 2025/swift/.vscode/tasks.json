@@ -2,7 +2,7 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Swift: Build",
+            "label": "Swift: Build All",
             "type": "shell",
             "command": "swift build",
             "group": {
@@ -12,13 +12,27 @@
             "problemMatcher": []
         },
         {
-            "label": "Swift: Run",
+            "label": "Swift: Test All",
             "type": "shell",
-            "command": "swift run",
-            "group": {
-                "kind": "test",
-                "isDefault": true
-            },
+            "command": "swift test",
+            "problemMatcher": []
+        },
+        {
+            "label": "Swift: Run Day",
+            "type": "shell",
+            "command": "swift run ${input:dayNumber}",
+            "problemMatcher": []
+        },
+        {
+            "label": "Swift: Test Day",
+            "type": "shell",
+            "command": "swift test --filter ${input:dayNumber}Tests",
+            "problemMatcher": []
+        },
+        {
+            "label": "Swift: Create New Day",
+            "type": "shell",
+            "command": "./new_day.sh ${input:newDayNumber}",
             "problemMatcher": []
         },
         {
@@ -26,6 +40,20 @@
             "type": "shell",
             "command": "swift package clean",
             "problemMatcher": []
+        }
+    ],
+    "inputs": [
+        {
+            "id": "dayNumber",
+            "type": "promptString",
+            "description": "Enter day number (e.g., Day01, Day02)",
+            "default": "Day01"
+        },
+        {
+            "id": "newDayNumber",
+            "type": "promptString",
+            "description": "Enter new day number (1-25)",
+            "default": "2"
         }
     ]
 }
