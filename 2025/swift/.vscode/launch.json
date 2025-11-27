@@ -9,6 +9,26 @@
             "args": [],
             "cwd": "${workspaceFolder}",
             "preLaunchTask": "Swift: Build"
+        },
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:swift}",
+            "name": "Debug Day01",
+            "target": "Day01",
+            "configuration": "debug",
+            "preLaunchTask": "swift: Build Debug Day01"
+        },
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:swift}",
+            "name": "Release Day01",
+            "target": "Day01",
+            "configuration": "release",
+            "preLaunchTask": "swift: Build Release Day01"
         }
     ]
 }

@@ -1,5 +1,5 @@
 {
-    "swift.path": "/usr/bin/swift",
+    "swift.path": "/Users/sten/Library/Developer/Toolchains/swift-6.2.1-RELEASE.xctoolchain/usr/bin",
     "swift.buildPath": ".build",
     "swift.autoGenerateLaunchConfigurations": true,
     "files.exclude": {
