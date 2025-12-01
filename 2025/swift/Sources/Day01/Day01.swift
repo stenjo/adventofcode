@@ -3,6 +3,7 @@ import AdventCore
 
 struct Dial {
     var code = 50
+    var zero: Int  = 0
     mutating func turn(instruction: String) -> Dial {
         let direction = instruction.first!
         let codeString = instruction.dropFirst()
@@ -32,7 +33,6 @@ struct Dial {
 
         return self
     }
-    var zero: Int  = 0
 }
 
 struct Day01 {

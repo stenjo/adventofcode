@@ -47,6 +47,10 @@ struct Day01Tests {
         #expect(dial.zero == 5) 
         dial = dial.turn(instruction: "L200") // 46
         #expect(dial.zero == 7)
+        dial = dial.turn(instruction: "R250") // 96
+        #expect(dial.zero == 9)
+        dial = dial.turn(instruction: "L96") // 96
+        #expect(dial.zero == 10)
     }
 
     @Test("Part 1 - Sample Input")
