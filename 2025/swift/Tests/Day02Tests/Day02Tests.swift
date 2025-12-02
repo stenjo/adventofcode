@@ -42,6 +42,32 @@ struct Day02Tests {
         #expect( Day02.countInvalids(in: ("824824821", "824824827")) == []) // 824824824
     }
 
+    @Test("Validate2 multiple patterns")
+    func testValidate2() async throws {
+        #expect(Day02.validate2(idString: "12345678") == 0)
+        #expect(Day02.validate2(idString: "123123") == 123123)
+        #expect(Day02.validate2(idString: "123123123") == 123123123)
+        #expect(Day02.validate2(idString: "101010101010") == 101010101010)
+        #expect(Day02.validate2(idString: "1010101010101") == 0)
+        #expect(Day02.validate2(idString: "1101010101010") == 0)
+        #expect(Day02.validate2(idString: "11111") == 11111)
+    }
+
+    @Test("countInvalids2 multiple patterns")
+    func testCountInvalids2() async throws {
+        #expect( Day02.countInvalids2(in: ("11", "22")) == [11,22]) // 11 and 22 are invalid
+        #expect( Day02.countInvalids2(in: ("95", "115")) == [99, 111]) // 99
+        #expect( Day02.countInvalids2(in: ("998", "1012")) == [999, 1010]) // 1010
+        #expect( Day02.countInvalids2(in: ("1188511880", "1188511890")) == [1188511885]) // 1188511885
+        #expect( Day02.countInvalids2(in: ("222220", "222224")) == [222222]) // 222222
+        #expect( Day02.countInvalids2(in: ("1698522", "1698528")) == []) // None
+        #expect( Day02.countInvalids2(in: ("446443", "446449")) == [446446]) // 446446
+        #expect( Day02.countInvalids2(in: ("38593856", "38593862")) == [38593859]) // 38593860
+        #expect( Day02.countInvalids2(in: ("565653", "565659")) == [565656])
+        #expect( Day02.countInvalids2(in: ("824824821", "824824827")) == [824824824]) //
+        #expect( Day02.countInvalids2(in: ("2121212118", "2121212124")) == [2121212121]) //
+    }
+    
     @Test("Part 1 - Sample Input")
     func testPart1Sample() async throws {
         let result = Day02.part1(sampleInput)
@@ -62,7 +88,7 @@ struct Day02Tests {
     @Test("Part 2 - Sample Input")
     func testPart2Sample() async throws {
         let result = Day02.part2(sampleInput)
-        // #expect(result == expectedValue)
+        #expect(result == 4174379265)
         print("Part 2 sample result: \(result)")
     }
     
