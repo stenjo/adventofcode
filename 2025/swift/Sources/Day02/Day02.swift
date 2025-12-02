@@ -9,57 +9,64 @@ struct Day02 {
             let parts = line.split(separator: ",")
             for part in parts {
                 let bounds: [String.SubSequence] = part.split(separator: "-")
-                if bounds.count == 2,
-                if let start = String(bounds[0]) {
+                if bounds.count == 2 {
+                    let start = String(bounds[0])
                     let end = String(bounds[1])
                     ranges.append((start, end))
                 }
+            }
         }
         return ranges
     }
 
-    static func valid(_ idString: String) -> Bool {
-        let length = idString.count
-        guard length >= 0 else {
-            return false
-        }
-        
-        var repeated = false
-        var previousChar: Character?
-        if (idString.first == "0") {
-            return false
-        }
-        for char in idString {
-            if let prev = previousChar {
-                if char == prev {
-                    repeated = true
-                }
-            }
-            previousChar = char
-        }
-        
-        return !repeated
+    static func substring(_ str: String, from: Int, to: Int) -> String {
+        let startIndex = str.index(str.startIndex, offsetBy: from)
+        let endIndex = str.index(str.startIndex, offsetBy: to)
+        return String(str[startIndex..<endIndex])
     }
 
-    static func countInvalids(in range: (String, String)) -> Int {
+    static func valid(_ idString: String) -> Int {
+        let length = idString.count
+
+        guard length > 0 else {
+            return 0
+        }
+        if idString.first == "0" {
+            return 0
+        }   
+        
+        let pos = length/2 
+        let firstSubstring = substring(idString, from: 0, to: pos)
+        let secondSubstring = substring(idString, from: pos, to: length)
+        if firstSubstring == secondSubstring {
+            return Int(idString) ?? 0
+        }
+        return 0
+   
+    }
+
+    static func countInvalids(in range: (String, String)) -> [Int] {
         let (start, end) = range
-        var invalidCount = 0
+        if start.first == "0" {
+            return []
+        }
+        var invalidIds: [Int] = []
         for id in Int(start)!...Int(end)! {
-            if !valid(String(id)) {
-                invalidCount += 1
+            let validValue = valid(String(id))
+            if validValue != 0 {
+                invalidIds.append(validValue)
             }
         }
-        return invalidCount
+        return invalidIds
     }
     static func part1(_ input: String) -> Int {
-        // TODO: Implement part 1 solution
         let lines = input.nonEmptyLines
         let ranges = parseRanges(lines.first ?? "")
-        var totalInvalids = 0
+        var invalidIds: [Int] = []
         for range in ranges {
-            totalInvalids += countInvalids(in: range)
+            invalidIds.append(contentsOf: countInvalids(in: range))
         }   
-        return totalInvalids
+        return invalidIds.reduce(0, +)
     }
     
     static func part2(_ input: String) -> Int {
