@@ -47,7 +47,7 @@ struct Day03Tests {
     @Test("Part 2 - Sample Input")
     func testPart2Sample() async throws {
         let result = Day03.part2(sampleInput)
-        // #expect(result == expectedValue)
+        #expect(result == 3121910778619)
         print("Part 2 sample result: \(result)")
     }
     
