@@ -10,6 +10,7 @@ let package = Package(
         .library(name: "AdventCore", targets: ["AdventCore"]),
         .executable(name: "Day01", targets: ["Day01"]),
         .executable(name: "Day02", targets: ["Day02"]),
+        .executable(name: "Day03", targets: ["Day03"]),
         // Add more days here as you create them
         // .executable(name: "Day02", targets: ["Day02"]),
     ],
@@ -41,6 +42,16 @@ let package = Package(
           name: "Day02Tests",
           dependencies: ["Day02", "AdventCore"],
           path: "Tests/Day02Tests"
+      ),
+           .executableTarget(
+          name: "Day03",
+          dependencies: ["AdventCore"],
+          path: "Sources/Day03"
+      ),
+      .testTarget(
+          name: "Day03Tests",
+          dependencies: ["Day03", "AdventCore"],
+          path: "Tests/Day03Tests"
       ),
         // Add more days here following the same pattern
         // Day 02
