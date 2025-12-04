@@ -50,7 +50,6 @@ struct Day04 {
     var grid : Grid
 
     static func part1(_ input: String) -> Int {
-        // TODO: Implement part 1 solution
         let grid = Grid(from: input)
         var availableCount = 0
         for y in 0..<grid.cells.count {
@@ -67,9 +66,35 @@ struct Day04 {
         return availableCount
     }
     
-    static func part2(_ input: String) -> Int {
-        // TODO: Implement part 2 solution
-        return 0
+    fileprivate static func getAvailable(_ x: Int, _ y: Int, _ grid: Day04.Grid)-> Bool {
+        let point = Point(x: x, y: y)
+        let occupiedNeighbors = grid.countNeighbors(at: point, ofType: .occupied)
+        if occupiedNeighbors < 4 && grid.cells[y][x] != .empty {
+            return true
+        }
+        return false
+}
+
+static func part2(_ input: String) -> Int {
+        var grid = Grid(from: input)
+        var totalRemoved = 0
+        while true {
+            var removed = 0
+            for y in 0..<grid.cells.count {
+                for x in 0..<grid.cells[y].count {
+                    if getAvailable(x, y, grid) {
+                        removed += 1
+                        grid.cells[y][x] = .empty
+                    }
+                }
+            }
+            if removed == 0 {
+                break
+            }
+            totalRemoved += removed
+        }
+
+        return totalRemoved
     }
 }
 
