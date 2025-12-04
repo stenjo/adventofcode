@@ -54,19 +54,16 @@ struct Day04 {
         var availableCount = 0
         for y in 0..<grid.cells.count {
             for x in 0..<grid.cells[y].count {
-                let point = Point(x: x, y: y)
-                let occupiedNeighbors = grid.countNeighbors(at: point, ofType: .occupied)
-                if occupiedNeighbors < 4 && grid.cells[y][x] != .empty {
+                if isAvailable(x, y, grid) {
                     availableCount += 1
                 }
-                // print("Point (\(x), \(y)) has \(occupiedNeighbors) occupied neighbors.")
             }
         }
 
         return availableCount
     }
     
-    fileprivate static func getAvailable(_ x: Int, _ y: Int, _ grid: Day04.Grid)-> Bool {
+    fileprivate static func isAvailable(_ x: Int, _ y: Int, _ grid: Day04.Grid)-> Bool {
         let point = Point(x: x, y: y)
         let occupiedNeighbors = grid.countNeighbors(at: point, ofType: .occupied)
         if occupiedNeighbors < 4 && grid.cells[y][x] != .empty {
@@ -82,7 +79,7 @@ static func part2(_ input: String) -> Int {
             var removed = 0
             for y in 0..<grid.cells.count {
                 for x in 0..<grid.cells[y].count {
-                    if getAvailable(x, y, grid) {
+                    if isAvailable(x, y, grid) {
                         removed += 1
                         grid.cells[y][x] = .empty
                     }
