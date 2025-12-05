@@ -47,6 +47,43 @@ struct Day05 {
             }
             return freshCount
         }
+
+        func getOverlappingRanges() -> [ClosedRange<Int>] {
+            var overlappingRanges: [ClosedRange<Int>] = []
+            for i in 0..<ranges.count {
+                for j in (i + 1)..<ranges.count {
+                    if ranges[i].overlaps(ranges[j]) {
+                        let lowerBound = max(ranges[i].lowerBound, ranges[j].lowerBound)
+                        let upperBound = min(ranges[i].upperBound, ranges[j].upperBound)
+                        overlappingRanges.append(lowerBound...upperBound)
+                    }
+                }
+            }
+            return overlappingRanges
+        }
+
+        func mergeOverlappingRanges() -> [ClosedRange<Int>] {
+            let sortedRanges = ranges.sorted { $0.lowerBound < $1.lowerBound }
+            var mergedRanges: [ClosedRange<Int>] = []
+            
+            for range in sortedRanges {
+                if let last = mergedRanges.last, last.overlaps(range) || last.upperBound + 1 == range.lowerBound {
+                    let newRange = last.lowerBound...max(last.upperBound, range.upperBound)
+                    mergedRanges[mergedRanges.count - 1] = newRange
+                } else {
+                    mergedRanges.append(range)
+                }
+            }
+            return mergedRanges
+        }   
+
+        func rangeCount(mergedRanges: [ClosedRange<Int>]) -> Int {
+            var count = 0
+            for range in mergedRanges {
+                count += (range.upperBound - range.lowerBound + 1)
+            }
+            return count
+        }
     }
 
     static func part1(_ input: String) -> Int {
@@ -55,8 +92,9 @@ struct Day05 {
     }
     
     static func part2(_ input: String) -> Int {
-        // TODO: Implement part 2 solution
-        return 0
+        let inventory = Inventory(from: input)
+        let mergedRanges = inventory.mergeOverlappingRanges()
+        return inventory.rangeCount(mergedRanges: mergedRanges)
     }
 }
 
