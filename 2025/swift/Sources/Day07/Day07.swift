@@ -4,18 +4,17 @@ import AdventCore
 struct Day07 {
 
     struct Manifold {
-        var grid: [[Character]]
+        var grid: [[String]]
         let rows: Int
         let cols: Int
         
         init(from input: String) {
             let lines = input.nonEmptyLines
-            self.grid = lines.map { Array($0) }
+            self.grid = lines.map { $0.split(separator: "").map { String($0) } }
             self.rows = grid.count
             self.cols = grid.first?.count ?? 0
         }
         
-        // Additional methods to analyze the manifold can be added here
         mutating func tachyonPaths() -> Int {
             var splits = 0
             for row in 1..<rows {
@@ -41,6 +40,40 @@ struct Day07 {
             }
             return splits
         } 
+        mutating func timelines() -> Int {
+            let _ = tachyonPaths()
+            for row in (0..<rows) {
+                for col in 0..<cols {
+                    let cell = grid[row][col]
+                    if cell == "S" {
+                        grid[row][col] = "1"
+                    }
+                    if cell == "|" {
+                        grid[row][col] = grid[row-1][col]
+                    }
+                    if cell == "^" {
+                        let tachyonPath = Int(grid[row-1][col]) ?? 0
+                        if tachyonPath > 0   
+                        {
+                            let existingLeft = Int(String(grid[row][col-1])) ?? 0
+                            let existingRightOver = Int(String(grid[row-1][col+1])) ?? 0
+                            grid[row][col-1] = String("\(tachyonPath + existingLeft)") // Left path
+                            grid[row][col+1] = String("\(tachyonPath + existingRightOver)") // Right path
+                        }
+                    } 
+                }
+            }
+
+            return grid[rows - 1].compactMap { Int($0) }.reduce(0, +)
+        } 
+
+        func printGrid() {
+            print("\n\n")
+            for row in grid {
+                print(String(row.joined(separator: String(" "))))
+            }
+            print("\n\n")
+        }
     }
 
     static func part1(_ input: String) -> Int {
@@ -50,8 +83,9 @@ struct Day07 {
     }
     
     static func part2(_ input: String) -> Int {
-        // TODO: Implement part 2 solution
-        return 0
+        var manifold = Day07.Manifold(from: input)
+        let timelines = manifold.timelines()
+        return timelines
     }
 }
 

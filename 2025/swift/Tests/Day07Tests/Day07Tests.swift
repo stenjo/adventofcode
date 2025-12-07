@@ -32,6 +32,69 @@ let sampleInput = """
         // #expect(pathCount == expectedValue)
         print("Tachyon path count: \(pathCount)")
     }
+
+    @Test("Test timeline calculation")
+    func testTimelineCalculation_0() async throws {
+        var manifold = Day07.Manifold(from: 
+        """
+        ..S..
+        ..^..
+        .....
+        """)
+        #expect(manifold.timelines() == 2)
+    }
+    @Test("Test timeline calculation with splits")
+    func testTimelineCalculation_1() async throws {
+        var manifold = Day07.Manifold(from: 
+        """
+        ...S...
+        ...^...
+        ..^.^..
+        .......
+        """)
+        // manifold.printGrid()
+        #expect(manifold.timelines() == 4)
+    }
+    @Test("Test timeline calculation with splits 2")
+    func testTimelineCalculation_2() async throws {
+        var manifold = Day07.Manifold(from: 
+        """
+        ...S...
+        ...^...
+        ..^....
+        .^.....
+        """)
+        // manifold.printGrid()
+        #expect(manifold.timelines() == 4)
+    }
+    @Test("Test timeline calculation with splits 3")
+    func testTimelineCalculation_3() async throws {
+        var manifold = Day07.Manifold(from: 
+        """
+        ...S...
+        ...^...
+        ..^.^..
+        .^...^.
+        """)
+        // manifold.printGrid()
+        #expect(manifold.timelines() == 6)
+    }
+    @Test("Test timeline calculation with splits 4")
+    func testTimelineCalculation_4() async throws {
+        var manifold = Day07.Manifold(from: 
+        """
+        ...S...
+        ...^...
+        ..^.^..
+        .......
+        .^.^.^.
+        """)
+        let _ = manifold.tachyonPaths()
+        let timelines = manifold.timelines()
+        // manifold.printGrid()
+        #expect(timelines == 8)
+
+    }
     @Test("Part 1 - Sample Input")
     func testPart1Sample() async throws {
         let result = Day07.part1(sampleInput)
@@ -52,7 +115,7 @@ let sampleInput = """
     @Test("Part 2 - Sample Input")
     func testPart2Sample() async throws {
         let result = Day07.part2(sampleInput)
-        // #expect(result == expectedValue)
+        #expect(result == 40)
         print("Part 2 sample result: \(result)")
     }
     
