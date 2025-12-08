@@ -149,6 +149,26 @@
             "target": "Day07",
             "configuration": "release",
             "preLaunchTask": "swift: Build Release Day07"
+        },
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:swift}",
+            "name": "Debug Day08",
+            "target": "Day08",
+            "configuration": "debug",
+            "preLaunchTask": "swift: Build Debug Day08"
+        },
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:swift}",
+            "name": "Release Day08",
+            "target": "Day08",
+            "configuration": "release",
+            "preLaunchTask": "swift: Build Release Day08"
         }
     ]
 }

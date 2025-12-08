@@ -14,7 +14,8 @@ let package = Package(
         .executable(name: "Day04", targets: ["Day04"]),
         .executable(name: "Day05", targets: ["Day05"]),
         .executable(name: "Day06", targets: ["Day06"]),
-         .executable(name: "Day07", targets: ["Day07"]),
+        .executable(name: "Day07", targets: ["Day07"]),
+        .executable(name: "Day08", targets: ["Day08"]),
         // Add more days here as you create them
         // .executable(name: "Day02", targets: ["Day02"]),
     ],
@@ -97,7 +98,16 @@ let package = Package(
           dependencies: ["Day07", "AdventCore"],
           path: "Tests/Day07Tests"
       ),
-
+      .executableTarget(
+          name: "Day08",
+          dependencies: ["AdventCore"],
+          path: "Sources/Day08"
+      ),
+      .testTarget(
+          name: "Day08Tests",
+          dependencies: ["Day08", "AdventCore"],
+          path: "Tests/Day08Tests"
+      ),
         // Add more days here following the same pattern
         // Day 02
         // .executableTarget(
