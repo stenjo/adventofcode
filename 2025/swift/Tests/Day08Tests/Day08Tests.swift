@@ -41,12 +41,46 @@ struct Day08Tests {
     
     }   
 
-    @Test("Create circuits")
-    func testCreateCircuits() async throws {
+    @Test("BoxPairs creation")
+    func testBoxPairsCreation() async throws {
+        let boxGrid = Day08.BoxGrid(from: sampleInput)
+        let boxPairs = Day08.BoxPairs(boxGrid: boxGrid)
+        #expect(boxPairs.pairs.count == 10)
+        let pair0 = boxPairs.pairs[0]
+        #expect(pair0.box1.pos.toString() == "(162,817,812)")
+        #expect(pair0.box2.pos.toString() == "(425,690,689)")
+        let pair1 = boxPairs.pairs[1]
+        #expect(pair1.box1.pos.toString() == "(162,817,812)")
+        #expect(pair1.box2.pos.toString() == "(431,825,988)")
+        let pair2 = boxPairs.pairs[2]
+        #expect(pair2.box1.pos.toString() == "(906,360,560)")
+        #expect(pair2.box2.pos.toString() == "(805,96,715)")
+        let pair3 = boxPairs.pairs[3]
+        #expect(pair3.box1.pos.toString() == "(431,825,988)")
+        #expect(pair3.box2.pos.toString() == "(425,690,689)")
+        print("Box pairs count: \(boxPairs.pairs.count)")
+        print(" 1: ", boxPairs.pairs[0].box1.toString(), boxPairs.pairs[0].box2.toString(), Int(boxPairs.pairs[0].distance))
+        print(" 2: ", boxPairs.pairs[1].box1.toString(), boxPairs.pairs[1].box2.toString(), Int(boxPairs.pairs[1].distance))
+        print(" 3: ", boxPairs.pairs[2].box1.toString(), boxPairs.pairs[2].box2.toString(), Int(boxPairs.pairs[2].distance))
+    }
+
+    @Test("Create circuits 10 iterations")
+    func testCreateCircuits10() async throws {
         let boxGrid = Day08.BoxGrid(from: sampleInput)
         let circuits = boxGrid.createCircuits()
         #expect(circuits.circuits.count == 11)
         print("Circuits: \(circuits.circuits)")
+    }
+    @Test("Create circuits 3 iterations")
+    func testCreateCircuits3() async throws {
+        let boxGrid = Day08.BoxGrid(from: sampleInput)
+        var circuits = Day08.Circuits(from: boxGrid, iterations: 3)
+        circuits.circuits.sort { $0.count > $1.count }
+        #expect(circuits.circuits[0].count == 3)
+        #expect(circuits.circuits[1].count == 2)
+        #expect(circuits.circuits[3].count == 1)
+        #expect(circuits.circuits.count == 17)
+        print("Circuits (3 iterations): \(circuits.circuits)")
     }
 
     @Test("Part 1 - Sample Input")
