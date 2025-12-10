@@ -14,6 +14,7 @@ struct Day09 {
             return "(\(x),\(y))"
         }
     }
+
     struct Floor
     {
         let tiles: [Tile]
@@ -42,10 +43,10 @@ struct Day09 {
             }
 
             // Check surrounding tiles to see
-            let q1=tiles.filter({$0.x <= x && $0.y <= y})
-            let q2=tiles.filter({$0.x >= x && $0.y <= y})
-            let q3=tiles.filter({$0.x <= x && $0.y >= y})
-            let q4=tiles.filter({$0.x >= x && $0.y >= y})
+            let q1=tiles.filter({$0.x <= x && $0.y <= y}) // upper left
+            let q2=tiles.filter({$0.x >= x && $0.y <= y}) // upper right
+            let q3=tiles.filter({$0.x <= x && $0.y >= y}) // lower left
+            let q4=tiles.filter({$0.x >= x && $0.y >= y}) // lower right
             if 
             q1.count > 0 && q4.count > 0 && q3.count > 0 && q2.count > 0
             {
@@ -54,9 +55,32 @@ struct Day09 {
             return false
         }
 
+        func isInsideGreen(tile1: Tile, tile2: Tile) -> Bool {
+            // Check if other two corners are green
+            if 
+            tile1.x <= tile2.x && tile1.y <= tile2.y ||
+            tile2.x <= tile1.x && tile2.y <= tile1.y 
+            { // corners are top-left and bottom-right
+                // Check the other two corners
+                if isInside(x: tile1.x, y: tile2.y) &&
+                   isInside(x: tile2.x, y: tile1.y) {
+                    return true
+                }
+            }
+            else if 
+            tile1.x >= tile2.x && tile1.y <= tile2.y ||
+            tile2.x >= tile1.x && tile2.y <= tile1.y 
+            { // corners are bottom-right and top-left
+                if isInside(x: tile1.x, y: tile2.y) &&
+                   isInside(x: tile2.x, y: tile1.y) {
+                    return true
+                }
+            }
+            return false
+        }
+
         func largestRectangle() -> Int {
             var largestArea = 0
-            var corners: (Tile, Tile)? = nil
             for i in 0..<tiles.count-1 {
                 let tile = tiles[i]
                 var area = 0
@@ -65,45 +89,35 @@ struct Day09 {
                     area = tile.area(otherTile)
                     if area > largestArea {
                         largestArea = area
-                        corners = (tile, otherTile)
-                        print("New largest area: \(largestArea) with corners \(tile.toString()) and \(otherTile.toString())")
+                        // print("New largest area: \(largestArea) with corners \(tile.toString()) and \(otherTile.toString())")
                     }
                 }
             }
             return largestArea
         }
 
-        
 
         func largestAllGreens() -> Int {
             var largestArea = 0
+            // var largestTiles: (Tile?, Tile?) = (nil, nil)
             for i in 0..<tiles.count-1 {
-                let tile = tiles[i]
+                let tile1 = tiles[i]
                 var area = 0
                 for j in i+1..<tiles.count {
-                    if i == j {
-                        continue
-                    }
-                    let otherTile = tiles[j]
-                    area = tile.area(otherTile)
-                    if area > largestArea && allGreens(tile1: tile, tile2: otherTile) {
-                        largestArea = area
+                    let tile2 = tiles[j]
+
+                    // Check if other two corners are green
+                    if isInsideGreen(tile1: tile1, tile2: tile2) {
+                        area = tile1.area(tile2)
+                        if area > largestArea{
+                            // largestTiles = (tile1, tile2)
+                            largestArea = area
+                        }
                     }
                 }
             }
+            // printRectangle(tile1: largestTiles.0, tile2: largestTiles.1)
             return largestArea
-        }
-
-        func allGreens(tile1: Tile, tile2: Tile) -> Bool {
-            let minX = min(tile1.x, tile2.x)
-            let maxX = max(tile1.x, tile2.x)
-            let minY = min(tile1.y, tile2.y)
-            let maxY = max(tile1.y, tile2.y)
-
-            let middleX = abs(maxX - minX) / 2 + minX
-            let middleY = abs(maxY - minY) / 2 + minY
-
-            return !isInside(x: middleX, y: middleY)
         }
 
         func printRectangle(tile1: Tile?, tile2: Tile?) {

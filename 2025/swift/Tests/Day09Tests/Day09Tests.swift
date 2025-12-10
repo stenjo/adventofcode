@@ -14,7 +14,7 @@ let sampleInput =
 9,7
 9,5
 2,5
-2,3         
+2,3
 7,3
 """
     
@@ -40,6 +40,7 @@ let sampleInput =
     @Test("Get rectangle")
     func testGetRectangle() async throws {
         let floor = Day09.Floor(from: sampleInput)
+        floor.printFloor()
         let rect1 = floor.largestRectangle()
         #expect(rect1 == 50)
     }

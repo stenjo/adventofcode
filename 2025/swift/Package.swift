@@ -17,8 +17,8 @@ let package = Package(
         .executable(name: "Day07", targets: ["Day07"]),
         .executable(name: "Day08", targets: ["Day08"]),
         .executable(name: "Day09", targets: ["Day09"]),
+        .executable(name: "Day10", targets: ["Day10"]),
         // Add more days here as you create them
-        // .executable(name: "Day02", targets: ["Day02"]),
     ],
     targets: [
         // Shared utilities and helpers
@@ -39,86 +39,96 @@ let package = Package(
             dependencies: ["Day01", "AdventCore"],
             path: "Tests/Day01Tests"
         ),
-              .executableTarget(
+        .executableTarget(
           name: "Day02",
           dependencies: ["AdventCore"],
           path: "Sources/Day02"
-      ),
-      .testTarget(
-          name: "Day02Tests",
-          dependencies: ["Day02", "AdventCore"],
-          path: "Tests/Day02Tests"
-      ),
-           .executableTarget(
-          name: "Day03",
+        ),
+        .testTarget(
+            name: "Day02Tests",
+            dependencies: ["Day02", "AdventCore"],
+            path: "Tests/Day02Tests"
+        ),
+            .executableTarget(
+            name: "Day03",
+            dependencies: ["AdventCore"],
+            path: "Sources/Day03"
+        ),
+        .testTarget(
+            name: "Day03Tests",
+            dependencies: ["Day03", "AdventCore"],
+            path: "Tests/Day03Tests"
+        ),
+        .executableTarget(
+            name: "Day04",
+            dependencies: ["AdventCore"],
+            path: "Sources/Day04"
+        ),
+        .testTarget(
+            name: "Day04Tests",
+            dependencies: ["Day04", "AdventCore"],
+            path: "Tests/Day04Tests"
+        ),
+        .executableTarget(
+            name: "Day05",
+            dependencies: ["AdventCore"],
+            path: "Sources/Day05"
+        ),
+        .testTarget(
+            name: "Day05Tests",
+            dependencies: ["Day05", "AdventCore"],
+            path: "Tests/Day05Tests"
+        ),
+        .executableTarget(
+            name: "Day06",
+            dependencies: ["AdventCore"],
+            path: "Sources/Day06"
+        ),
+        .testTarget(
+            name: "Day06Tests",
+            dependencies: ["Day06", "AdventCore"],
+            path: "Tests/Day06Tests"
+        ),
+            .executableTarget(
+            name: "Day07",
+            dependencies: ["AdventCore"],
+            path: "Sources/Day07"
+        ),
+        .testTarget(
+            name: "Day07Tests",
+            dependencies: ["Day07", "AdventCore"],
+            path: "Tests/Day07Tests"
+        ),
+        .executableTarget(
+            name: "Day08",
+            dependencies: ["AdventCore"],
+            path: "Sources/Day08"
+        ),
+        .testTarget(
+            name: "Day08Tests",
+            dependencies: ["Day08", "AdventCore"],
+            path: "Tests/Day08Tests"
+        ),
+        .executableTarget(
+            name: "Day09",
+            dependencies: ["AdventCore"],
+            path: "Sources/Day09"
+        ),
+        .testTarget(
+            name: "Day09Tests",
+            dependencies: ["Day09", "AdventCore"],
+            path: "Tests/Day09Tests"
+        ),
+        .executableTarget(
+          name: "Day10",
           dependencies: ["AdventCore"],
-          path: "Sources/Day03"
-      ),
-      .testTarget(
-          name: "Day03Tests",
-          dependencies: ["Day03", "AdventCore"],
-          path: "Tests/Day03Tests"
-      ),
-       .executableTarget(
-          name: "Day04",
-          dependencies: ["AdventCore"],
-          path: "Sources/Day04"
-      ),
-      .testTarget(
-          name: "Day04Tests",
-          dependencies: ["Day04", "AdventCore"],
-          path: "Tests/Day04Tests"
-      ),
-      .executableTarget(
-          name: "Day05",
-          dependencies: ["AdventCore"],
-          path: "Sources/Day05"
-      ),
-      .testTarget(
-          name: "Day05Tests",
-          dependencies: ["Day05", "AdventCore"],
-          path: "Tests/Day05Tests"
-      ),
-      .executableTarget(
-          name: "Day06",
-          dependencies: ["AdventCore"],
-          path: "Sources/Day06"
-      ),
-      .testTarget(
-          name: "Day06Tests",
-          dependencies: ["Day06", "AdventCore"],
-          path: "Tests/Day06Tests"
-      ),
-           .executableTarget(
-          name: "Day07",
-          dependencies: ["AdventCore"],
-          path: "Sources/Day07"
-      ),
-      .testTarget(
-          name: "Day07Tests",
-          dependencies: ["Day07", "AdventCore"],
-          path: "Tests/Day07Tests"
-      ),
-      .executableTarget(
-          name: "Day08",
-          dependencies: ["AdventCore"],
-          path: "Sources/Day08"
-      ),
-      .testTarget(
-          name: "Day08Tests",
-          dependencies: ["Day08", "AdventCore"],
-          path: "Tests/Day08Tests"
-      ),
-      .executableTarget(
-          name: "Day09",
-          dependencies: ["AdventCore"],
-          path: "Sources/Day09"
-      ),
-      .testTarget(
-          name: "Day09Tests",
-          dependencies: ["Day09", "AdventCore"],
-          path: "Tests/Day09Tests"
-      ),
+          path: "Sources/Day10"
+        ),
+        .testTarget(
+            name: "Day10Tests",
+            dependencies: ["Day10", "AdventCore"],
+            path: "Tests/Day10Tests"
+        ),
         // Add more days here following the same pattern
         // Day 02
         // .executableTarget(
