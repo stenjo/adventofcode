@@ -19,7 +19,35 @@ ggg: out
 hhh: ccc fff iii
 iii: out
 """
+
+    let complexSampleInput =
+"""
+svr: aaa bbb
+aaa: fft
+fft: ccc
+bbb: tty
+tty: ccc
+ccc: ddd eee
+ddd: hub
+hub: fff
+eee: dac
+dac: fff
+fff: ggg hhh
+ggg: out
+hhh: out
+"""
     
+
+    @Test("Counting paths in sample input")
+    func testCountingPathsSample() async throws {
+        var rack = Day11.ServerRack(sampleInput, topName: "you")
+        #expect(rack.paths.count == 5)
+
+        rack.paths.removeAll()
+        _ = rack.buildPartTree(top: "you", target: "out", exclude: [])
+        #expect(rack.paths.count == 5)
+    }
+
     @Test("Part 1 - Sample Input")
     func testPart1Sample() async throws {
         let result = Day11.part1(sampleInput)
@@ -39,8 +67,8 @@ iii: out
     
     @Test("Part 2 - Sample Input")
     func testPart2Sample() async throws {
-        let result = Day11.part2(sampleInput)
-        // #expect(result == expectedValue)
+        let result = Day11.part2(complexSampleInput)
+        #expect(result == 2)
         print("Part 2 sample result: \(result)")
     }
     

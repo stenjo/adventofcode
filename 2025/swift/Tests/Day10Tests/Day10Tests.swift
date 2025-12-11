@@ -13,6 +13,7 @@ struct Day10Tests {
 [.###.#] (0,1,2,3,4) (0,3,4) (0,1,2,4,5) (1,2) {10,11,11,5,10,5}
 """
 
+
     @Test("Loading Machines")
     func testLoadingMachines() async throws {
         let lines = sampleInput.nonEmptyLines

@@ -6,6 +6,7 @@ struct Day11 {
         let name: String
         var connections: [Node] = []
         var path: [String] = []
+        var visitedPaths: [[String]] = []
         init(name: String, connections: [Node] = [], paths: [String] = []) {
             self.name = name
             self.connections = connections
@@ -16,7 +17,9 @@ struct Day11 {
         var devices: [String: [String]]=[:]
         var paths: [String]=[]
         var tree = [String: Set<String>]()
-        init(_ input: String) {
+        let compulsoryDevices: [String]
+        var nodes = [String: Node]()
+        init(_ input: String, topName: String, compulsoryDevices: [String] = []) {
             let lines = input.nonEmptyLines
             for line in lines {
                 let parts = line.split(separator: ":")
@@ -26,8 +29,9 @@ struct Day11 {
                     devices[device] = connections
                 }
             }
-            var top = Node(name: "you" )
-            top.connections = buildConnectionTree(top: "you")
+            self.compulsoryDevices = compulsoryDevices
+            var top = Node(name: topName )
+            top.connections = buildConnectionTree(top: topName)
 
         }
 
@@ -35,7 +39,9 @@ struct Day11 {
             var newPath = path
             newPath.append(top)
             if top == "out" {
-                paths.append(newPath.joined(separator: "->"))
+                if compulsoryDevices.allSatisfy({ newPath.contains($0) }) {
+                    paths.append(newPath.joined(separator: "->"))
+                }
                 return []  
             }
             var connections: [Node] = []
@@ -49,32 +55,96 @@ struct Day11 {
             return connections
         }
 
-        func reachableDevices(from start: String) -> Set<String> {
-            var visited: Set<String> = []
-            var toVisit: [String] = [start]
-            
-            while !toVisit.isEmpty {
-                let current = toVisit.removeLast()
-                if !visited.contains(current) {
-                    visited.insert(current)
-                    if let neighbors = devices[current] {
-                        for neighbor in neighbors {
-                            toVisit.append(neighbor)
-                        }
+        mutating func dfs(current: String, target: String, visited: inout Set<String>, path: inout [String]) {
+            visited.insert(current)
+            path.append(current)
+
+            if current == target {
+                if compulsoryDevices.allSatisfy({ path.contains($0) }) {
+                    paths.append(path.joined(separator: "->"))
+                }
+            } else {
+                for neighbor in devices[current] ?? [] {
+                    if !visited.contains(neighbor) {
+                        dfs(current: neighbor, target: target, visited: &visited, path: &path)
                     }
                 }
             }
-            return visited
+
+            path.removeLast()
+            visited.remove(current)
+        }
+
+        mutating func buildPartTree(top: String, path: [String] = [], target: String, exclude: Set<String> = [], visited: Set<String> = []) -> ([Node], Set<String>) {
+            var newPath = path
+            var newVisited = visited
+
+            newPath.append(top)
+            newVisited.insert(top)
+            if exclude.contains(top) {
+                return ([], newVisited)
+            }
+            if visited.contains(top) {
+                return ([], newVisited)
+            }
+            if top == target {
+
+                nodes[target]?.visitedPaths.append(newPath)
+                print("At target: \(target), visited paths: \(nodes[target]?.visitedPaths ?? [])")
+                return ([], newVisited)
+            }
+            var connections: [Node] = []
+            for conn in devices[top] ?? [] {
+                if !newPath.contains(conn) {
+                    nodes[conn] = Node(name: conn, paths: newPath + [conn])
+                    let (childConnections, _) = buildPartTree(top: conn, path: newPath, target: target, exclude: exclude, visited: newVisited)
+                    nodes[conn]?.connections = childConnections
+                    connections.append(nodes[conn]!)
+                }
+            }
+            return (connections, newVisited)
+        }
+
+        mutating func getPaths(from top: String, to target: String, exclude: Set<String> = []) -> [Set<String>] {
+
+            nodes.removeAll()
+            nodes[top] = Node(name: top)
+            let (connections, _) = buildPartTree(top: top, target: target, exclude: exclude)
+            print("Target node: \(String(describing: nodes[target]))")
+            nodes[top]?.connections = connections
+            return nodes[target]?.visitedPaths.map { Set($0) } ?? []
         }
     }
+
     static func part1(_ input: String) -> Int {
-        let rack = ServerRack(input)
+        let rack = ServerRack(input,topName: "you")
         return rack.paths.count
     }
     
     static func part2(_ input: String) -> Int {
-        // TODO: Implement part 2 solution
-        return 0
+        var rack = ServerRack(input, topName: "you")
+        rack.nodes.removeAll()
+        var pathsCount = [Int]()
+
+        rack.paths.removeAll()
+        var visited = Set<String>()
+        var path = [String]()
+        rack.dfs(current: "svr", target: "out", visited: &visited, path: &path)
+        
+        // let paths = rack.getPaths(from: "svr", to: "out", exclude: Set([]))
+        print(rack.paths)
+        // print("Paths from svr to out: \(rack.nodes["out"]?.visitedPaths ?? [])")
+        pathsCount.append(rack.paths.count)
+
+        // let (_, paths2) = rack.buildPartTree(top: "fft", target: "dac", exclude: Set(["fft", "out"]).union(paths).subtracting("fft","svr"))
+        // pathsCount.append(paths2.count)
+
+        // let (_, paths3) = rack.buildPartTree(top: "dac", target: "out", exclude: Set(["fft", "srv"]).union(paths2).union(paths))
+        // pathsCount.append(paths3.count)
+
+        print("Paths counts: \(pathsCount)")
+
+        return pathsCount.reduce(1, *)
     }
 }
 
