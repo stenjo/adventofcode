@@ -52,9 +52,39 @@ struct Day10 {
         
 
         func keyPresses() -> Int {
-            return 0
+            var bitIndicator = 0
+            for (i, light) in self.indicator.enumerated() {
+                if light {
+                    bitIndicator |= (1 << i)
+                }
+            }
+
+            var bitButtons: [Int] = []
+            var resultSet: Set<Int> = []
+            for button in buttons {
+                var bitButton = 0
+                for light in button {
+                    bitButton |= (1 << light)
+                }
+                bitButtons.append(bitButton)
+            }
+                resultSet.insert(bitIndicator)
+            var count = 0
+            while !resultSet.contains(0) {
+                var newResults: Set<Int> = []
+                let resultSetCopy = resultSet
+                for res in resultSetCopy {
+                    for bitButton in bitButtons {
+                        let newRes = res ^ bitButton
+                        newResults.insert(newRes)
+                    }
+                }
+                resultSet = newResults
+                count += 1
+            }
+
+            return count
         }
-        // Additional properties and methods can be added here
     }    
     static func part1(_ input: String) -> Int {
         let lines = input.nonEmptyLines
@@ -62,8 +92,12 @@ struct Day10 {
         for line in lines {
             machines.append(Machine(line))
         }
+        var totalPresses = 0
+        for m in machines {
+            totalPresses += m.keyPresses()
+        }
 
-        return machines.reduce(0) { $0 + $1.keyPresses() }
+        return totalPresses
     }
     
     static func part2(_ input: String) -> Int {

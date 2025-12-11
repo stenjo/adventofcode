@@ -32,6 +32,24 @@ struct Day10Tests {
         #expect(machines[2].buttons.count == 4)
         #expect(machines[2].joltage == [10,11,11,5,10,5])
     }   
+
+    @Test("Button press count")
+    func testButtonPressCount() async throws {
+        let lines = sampleInput.nonEmptyLines
+        var machines: [Day10.Machine] = []
+        for line in lines {
+            machines.append(Day10.Machine(line))
+        }
+        
+        let presses1 = machines[0].keyPresses()
+        #expect(presses1 == 2)
+        
+        let presses2 = machines[1].keyPresses()
+        #expect(presses2 == 3)
+        
+        let presses3 = machines[2].keyPresses()
+        #expect(presses3 == 2)
+    }
     
     @Test("Part 1 - Sample Input")
     func testPart1Sample() async throws {
@@ -53,7 +71,7 @@ struct Day10Tests {
     @Test("Part 2 - Sample Input")
     func testPart2Sample() async throws {
         let result = Day10.part2(sampleInput)
-        // #expect(result == expectedValue)
+        #expect(result == 2)
         print("Part 2 sample result: \(result)")
     }
     
